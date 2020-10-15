@@ -4,6 +4,7 @@ export async function query() {
   return request<API.CurrentUser[]>('/api/users');
 }
 
+//获取当前用户信息
 export async function queryCurrent() {
   return request<API.CurrentUser>('/api/currentUser');
 }

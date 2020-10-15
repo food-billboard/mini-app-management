@@ -12,11 +12,11 @@ export default defineConfig({
   dva: {
     hmr: true,
   },
-  layout: {
-    name: 'Ant Design Pro',
-    locale: true,
-    ...defaultSettings,
-  },
+  // layout: {
+  //   name: 'Ant Design Pro',
+  //   locale: true,
+  //   ...defaultSettings,
+  // },
   locale: {
     // default zh-CN
     default: 'zh-CN',

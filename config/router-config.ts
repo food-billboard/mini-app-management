@@ -2,22 +2,21 @@ export default [
   {
     path: '/user',
     layout: false,
-    component: '../layouts/UserLayout',
     routes: [
       {
         name: 'login',
         path: '/user/login',
-        component: './user/login',
+        component: './User/login',
       },
     ],
   },
   {
     path: '/',
-    // component: '',
+    component: '@/layouts/SecurityLayout',
     routes: [
       {
         path: '/',
-        component: '',
+        component: '@/layouts/BasicLayout',
         routes: [
           {
             path: '/',
@@ -28,7 +27,8 @@ export default [
             component: '@/pages/Dashboard',
             name: 'home',
             icon: 'home',
-            title: '首页'
+            title: '首页',
+            authority: [ 'admin'], //如果用户的权限不在这里面的话就不显示当前路由
           },
           {
             path: '/member',
@@ -39,42 +39,42 @@ export default [
             routes: [
               {
                 path: 'member/:id',
-                component: '@pages/MemberDetail',
+                component: '@/pages/MemberDetail',
                 title: '用户详情'
               }
             ]
           },
           {
             path: '/data',
-            component: '@pages/Data',
+            component: '@/pages/Data',
             name: 'data',
             title: '数据管理',
             icon: 'database',
             routes: [
               {
                 path: 'data/:id',
-                component: '@pages/DataDetail',
+                component: '@/pages/DataDetail',
                 title: '数据详情'
               }
             ]
           },
           {
             path: '/error',
-            component: '@pages/Error',
+            component: '@/pages/Error',
             name: 'error',
             icon: 'meh',
             title: '错误管理',
           },
           {
             path: '/admin',
-            component: '@pages/Admin',
+            component: '@/pages/Admin',
             name: 'admin',
             title: '个人中心',
             icon: 'setting',
             routes: [
               {
                 path: '/admin/setting',
-                component: '@pages/Setting',
+                component: '@/pages/Setting',
                 title: '个人设置'
               }
             ]
@@ -83,37 +83,6 @@ export default [
       }
     ]
   },
-  // {
-  //   path: '/',
-  //   name: 'home',
-  //   icon: 'home',
-  //   component: './Welcome',
-  // },
-  // {
-  //   path: '/admin',
-  //   name: 'admin',
-  //   icon: 'crown',
-  //   access: 'canAdmin',
-  //   component: './Admin',
-  //   routes: [
-  //     {
-  //       path: '/admin/sub-page',
-  //       name: 'sub-page',
-  //       icon: 'smile',
-  //       component: './Welcome',
-  //     },
-  //   ],
-  // },
-  // {
-  //   name: 'list.table-list',
-  //   icon: 'table',
-  //   path: '/list',
-  //   component: './ListTableList',
-  // },
-  // {
-  //   path: '/',
-  //   redirect: '/welcome',
-  // },
   {
     component: './404',
   },

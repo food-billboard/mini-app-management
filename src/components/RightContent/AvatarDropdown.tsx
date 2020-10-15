@@ -1,10 +1,10 @@
-import React, { useCallback } from 'react';
+import React, { Component } from 'react';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Menu, Spin } from 'antd';
-import { history, useModel } from 'umi';
-import { outLogin } from '@/services/login';
+import { history, connect } from 'umi';
 import { stringify } from 'querystring';
 import HeaderDropdown from '../HeaderDropdown';
+import { ConnectState } from '@/models/connect'
 import styles from './index.less';
 
 export interface GlobalHeaderRightProps {
@@ -15,7 +15,7 @@ export interface GlobalHeaderRightProps {
  * 退出登录，并且将当前的 url 保存
  */
 const loginOut = async () => {
-  await outLogin();
+  // await outLogin();
   const { query, pathname } = history.location;
   const { redirect } = query;
   // Note: There may be security issues, please note
@@ -29,28 +29,27 @@ const loginOut = async () => {
   }
 };
 
-const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
-  const { initialState, setInitialState } = useModel('@@initialState');
+class AvatarDropdown extends Component<any> {
 
-  const onMenuClick = useCallback(
-    (event: {
-      key: React.Key;
-      keyPath: React.Key[];
-      item: React.ReactInstance;
-      domEvent: React.MouseEvent<HTMLElement>;
-    }) => {
-      const { key } = event;
-      if (key === 'logout' && initialState) {
-        setInitialState({ ...initialState, currentUser: undefined });
-        loginOut();
-        return;
-      }
-      history.push(`/account/${key}`);
-    },
-    [],
-  );
+  public onMenuClick = async (event: {
+    key: React.Key;
+    keyPath: React.Key[];
+    item: React.ReactInstance;
+    domEvent: React.MouseEvent<HTMLElement>;
+  }) => {
+    const { key } = event;
+    if (key === 'logout') {
+      const { dispatch } = this.props
+      await dispatch({
+        type: 'user/logout'
+      })
+      loginOut()
+      return
+    }
+    history.push(`/account/${key}`);
+  }
 
-  const loading = (
+  readonly loading = (
     <span className={`${styles.action} ${styles.account}`}>
       <Spin
         size="small"
@@ -60,48 +59,52 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
         }}
       />
     </span>
-  );
+  )
 
-  if (!initialState) {
-    return loading;
-  }
-
-  const { currentUser } = initialState;
-
-  if (!currentUser || !currentUser.name) {
-    return loading;
-  }
-
-  const menuHeaderDropdown = (
-    <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
-      {menu && (
+  readonly menuHeaderDropdown = (
+    <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
+      {this.props.menu && (
         <Menu.Item key="center">
           <UserOutlined />
           个人中心
         </Menu.Item>
       )}
-      {menu && (
+      {this.props.menu && (
         <Menu.Item key="settings">
           <SettingOutlined />
           个人设置
         </Menu.Item>
       )}
-      {menu && <Menu.Divider />}
+      {this.props.menu && <Menu.Divider />}
 
       <Menu.Item key="logout">
         <LogoutOutlined />
         退出登录
       </Menu.Item>
     </Menu>
-  );
-  return (
-    <HeaderDropdown overlay={menuHeaderDropdown}>
-      <span className={`${styles.action} ${styles.account}`}>
-        <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
-        <span className={`${styles.name} anticon`}>{currentUser.name}</span>
-      </span>
-    </HeaderDropdown>
-  );
-};
+  )
 
-export default AvatarDropdown;
+  public render = () => {
+    
+    const { currentUser } = this.props
+  
+    if (!currentUser || !currentUser.name) {
+      return this.loading
+    }
+
+    return (
+      <HeaderDropdown overlay={this.menuHeaderDropdown}>
+        <span className={`${styles.action} ${styles.account}`}>
+          <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
+          <span className={`${styles.name} anticon`}>{currentUser.name}</span>
+        </span>
+      </HeaderDropdown>
+    )
+
+  }
+
+}
+
+export default connect(({ user }: ConnectState) => ({
+  currentUser: user.currentUser
+}))(AvatarDropdown)

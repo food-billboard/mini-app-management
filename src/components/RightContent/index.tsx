@@ -1,11 +1,15 @@
-import { Tooltip, Tag, Space } from 'antd';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { Tag, Space } from 'antd';
+import { Settings as ProSettings } from '@ant-design/pro-layout';
 import React from 'react';
-import { useModel, SelectLang } from 'umi';
+import { ConnectProps } from 'umi';
 import Avatar from './AvatarDropdown';
 import styles from './index.less';
 
 export type SiderTheme = 'light' | 'dark';
+
+export interface GlobalHeaderRightProps extends Partial<ConnectProps>, Partial<ProSettings> {
+  theme?: ProSettings['navTheme'] | 'realDark';
+}
 
 const ENVTagColor = {
   dev: 'orange',
@@ -13,19 +17,15 @@ const ENVTagColor = {
   pre: '#87d068',
 };
 
-const GlobalHeaderRight: React.FC<{}> = () => {
-  const { initialState } = useModel('@@initialState');
+const GlobalHeaderRight: React.FC<GlobalHeaderRightProps> = (props) => {
 
-  if (!initialState || !initialState.settings) {
-    return null;
+  const { theme, layout } = props
+  let className = styles.right
+
+  if (theme === 'dark' && layout === 'top') {
+    className = `${styles.right}  ${styles.dark}`
   }
 
-  const { navTheme, layout } = initialState.settings;
-  let className = styles.right;
-
-  if ((navTheme === 'dark' && layout === 'top') || layout === 'mix') {
-    className = `${styles.right}  ${styles.dark}`;
-  }
   return (
     <Space className={className}>
       <Avatar />
