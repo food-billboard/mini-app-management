@@ -1,4 +1,5 @@
 import React, {Component  } from 'react'
+import { history, Link } from 'umi'
 
 interface IProps {
 
@@ -13,7 +14,9 @@ export default class extends Component<IProps, IState> {
   public render = () => {
 
     return (
-      <div>1111</div>
+      <Link to="/home">
+              忘记密码
+            </Link>
     )
 
   }

@@ -1,8 +1,9 @@
 import { stringify } from 'querystring'
-import { queryCurrent, LoginParamsType, fakeAccountLogin } from '@/services'
+import { queryCurrent, forgetPassword, register, LoginParamsType, fakeAccountLogin, RegisterParamsType, ResetParamsType } from '@/services'
 import { setAuthority } from '@/utils/authority'
 import { getPageQuery, setLocalStorage, removeLocalStorate, getLocalStorage } from '@/utils'
 import { history } from 'umi'
+import { message } from 'antd'
 
 interface IUserModelState {
   currentUser?: CurrentUser
@@ -109,6 +110,38 @@ export default {
         });
       }
     },
+
+    //注册
+    * register({ payload }: { payload: RegisterParamsType }, { call }: { call: any }) {
+      const response = yield call(register, payload)
+
+      //注册成功跳转至登录
+      if (response.status === 'ok') {
+        message.success({
+          content: '注册成功',
+          duration: 1.5,
+          onClose: () => {
+            history.replace('/user/login');
+          }
+        })
+      }
+    },
+
+    //重置密码
+    * forger({ payload }: { payload: ResetParamsType }, { call }: { call: any }) {
+      const response = yield call(forgetPassword, payload)
+
+      //重置成功跳转至登录
+      if (response.status === 'ok') {
+        message.success({
+          content: '重置成功',
+          duration: 1.5,
+          onClose: () => {
+            history.replace('/user/login');
+          }
+        })
+      }
+    }
 
   },
 

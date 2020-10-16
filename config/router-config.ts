@@ -1,18 +1,32 @@
 export default [
   {
     path: '/user',
-    layout: false,
+    // layout: false,
+    component: '@/layouts/UserLayout',
     routes: [
       {
         name: 'login',
         path: '/user/login',
         component: './User/login',
       },
+      {
+        name: 'register',
+        path: '/user/register',
+        component: './User/register',
+        title: '注册'
+      },
+      {
+        name: 'forget',
+        path: '/user/forget',
+        component: './User/forget',
+        title: '忘记密码'
+      },
     ],
   },
   {
     path: '/',
     component: '@/layouts/SecurityLayout',
+    wrappers: ['@/layouts/Authority'],
     routes: [
       {
         path: '/',
@@ -28,7 +42,7 @@ export default [
             name: 'home',
             icon: 'home',
             title: '首页',
-            authority: [ 'admin'], //如果用户的权限不在这里面的话就不显示当前路由
+            // authority: [ 'admin'], //如果用户的权限不在这里面的话就不显示当前路由
           },
           {
             path: '/member',
