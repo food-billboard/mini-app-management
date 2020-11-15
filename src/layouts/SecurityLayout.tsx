@@ -24,11 +24,9 @@ class SecurityLayout extends React.Component<SecurityLayoutProps, SecurityLayout
       isReady: true,
     });
     const { dispatch } = this.props;
-    if (dispatch) {
-      dispatch({
-        type: 'user/fetchCurrent',
-      });
-    }
+    dispatch && dispatch({
+      type: 'user/fetchCurrent',
+    })
   }
 
   render() {
