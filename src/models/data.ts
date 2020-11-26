@@ -1,3 +1,4 @@
+import {  } from '@/services'
 
 interface IDataState {
 
@@ -10,9 +11,7 @@ export {
 export default {
   namespace: 'data',
 
-  state: {
-
-  },
+  state: {},
 
   effects: {
 

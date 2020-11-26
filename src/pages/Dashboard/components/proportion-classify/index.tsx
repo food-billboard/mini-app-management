@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Card, Radio } from 'antd'
 import { Pie } from '../Charts'
+import noop from 'lodash/noop'
+import { connect } from 'react-redux'
+import { mapStateToProps, mapDispatchToProps } from './connect'
 import styles from './index.less'
 
 export interface IClassifyData {
@@ -23,11 +26,13 @@ const ProportionClassify: React.FC<any> = ({
     _id: null,
     value: 1
   }],
-  total=0
+  total=0,
+  fetchData=noop
 }: {
   loading: boolean,
   total: number,
   data: Array<IClassifyData>
+  fetchData: () => any
 }) => {
 
   const [ classifyType, setClassifyType ] =  useState<keyof typeof EType>(EType.classify)
@@ -35,6 +40,10 @@ const ProportionClassify: React.FC<any> = ({
   const onClassifyChange = (value: any) => {
     setClassifyType(value)
   }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
 
   return (
     <Card
@@ -88,4 +97,4 @@ const ProportionClassify: React.FC<any> = ({
 
 }
 
-export default ProportionClassify
+export default connect(mapStateToProps, mapDispatchToProps)(ProportionClassify)

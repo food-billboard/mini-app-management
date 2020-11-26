@@ -1,20 +1,14 @@
-import React, { Suspense } from 'react'
+import React, { useEffect } from 'react'
 import { Table, Card, Row, Col, Tooltip } from 'antd'
 import { InfoCircleOutlined, CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons'
 import numeral from 'numeral'
 import NumberInfo from '../NumberInfo'
-import { MiniArea } from '../Charts'
-import PageLoading from '@/components/PageLoading'
-import KeyWord, { IStatisticsTopSearchChart } from './key-word'
+import { MiniArea, TagCloud } from '../Charts'
+import { connect } from 'react-redux'
+import noop from 'lodash/noop'
+import { mapStateToProps, mapDispatchToProps } from './connect'
+import { IKyewordStatisticsTotalChart, IKyewordStatisticsAverageChart, IKyewordStatisticsData } from '../../service'
 import columns from './columns'
-
-export interface IStatisticsTopSearchAverageChart extends IStatisticsTopSearchChart {}
-
-export interface ITopSearchList {
-  index: number
-  key_wrod: string
-  count: number
-}
 
 export interface IKeyword {
   count: number
@@ -30,18 +24,34 @@ const SalesCard: React.FC<any> = ({
   statisticsTopSearchChart=[],
   statisticsTopSearchAverageChart=[],
   topSearchList=[],
-  keyword=[]
+  keyword=[{
+    name: 'text',
+    count: 111
+  }, {
+    name: 'text',
+    count: 11122
+  }],
+  fetchData=noop
 }: {
   loading: boolean,
   totalSearch: number,
   totalTrend: number,
   averageSearch: number,
   averageTrend: number,
-  statisticsTopSearchChart: Array<IStatisticsTopSearchChart>,
-  statisticsTopSearchAverageChart: Array<IStatisticsTopSearchAverageChart>,
-  topSearchList: Array<ITopSearchList>
+  statisticsTopSearchChart: Array<IKyewordStatisticsTotalChart>,
+  statisticsTopSearchAverageChart: Array<IKyewordStatisticsAverageChart>,
+  topSearchList: Array<IKyewordStatisticsData>
   keyword: Array<IKeyword>
+  fetchData: (params?: {
+    currPage?: number
+    pageSize?: number
+    sort?: string
+  }) => any
 }) => {
+
+  useEffect(() => {
+    fetchData()
+  }, [])
 
   return (
     <Card
@@ -51,18 +61,17 @@ const SalesCard: React.FC<any> = ({
       style={{
         height: '100%',
       }}
-      extra={
-        <Tooltip
-          title={
-            // <Suspense fallback={<PageLoading />}>
-            //   <KeyWord data={keyword} />
-            // </Suspense>
-            '开发中...'
-          }
-        >
-          <InfoCircleOutlined />
-        </Tooltip>
-      }
+      // extra={
+      //   <Tooltip
+      //     title={
+      //       <Suspense fallback={<PageLoading />}>
+      //         <KeyWord data={keyword} />
+      //       </Suspense>
+      //     }
+      //   >
+      //     <InfoCircleOutlined />
+      //   </Tooltip>
+      // }
     >
       <Row gutter={24}>
         <Col 
@@ -121,9 +130,10 @@ const SalesCard: React.FC<any> = ({
         </Col>
       </Row>
       <Table
+        style={{marginBottom: 20}}
         rowKey={record => record.index}
         columns={columns as any[]}
-        dataSource={topSearchList}
+        dataSource={topSearchList.map((item, index) => ({ ...item, index }))}
         size="small"
         pagination={{
           style: {
@@ -132,9 +142,10 @@ const SalesCard: React.FC<any> = ({
           pageSize: 5,
         }}
       ></Table>
+      <TagCloud data={keyword.map((item: IKeyword) => ({ name: item.name, text: item.name, value: item.count }))} height={100} />
     </Card>
   )
 
 }
 
-export default SalesCard
+export default connect(mapStateToProps, mapDispatchToProps)(SalesCard)

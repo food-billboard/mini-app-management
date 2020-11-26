@@ -1,7 +1,19 @@
-import { Chart, Coord, Geom, Shape, Tooltip } from 'bizcharts';
+// import { Chart, Coord, Geom, Shape, Tooltip, goord } from 'bizcharts';
+import {
+  Chart,
+  Geom,
+  Tooltip,
+  registerShape,
+  Legend,
+  Axis,
+  Interaction,
+  G2,
+  Coordinate
+} from 'bizcharts'
 import React, { Component } from 'react';
 import DataSet from '@antv/data-set';
-import Debounce from 'lodash.debounce';
+import Debounce from 'lodash/debounce';
+import assign from 'lodash/assign'
 import classNames from 'classnames';
 import autoHeight from '../autoHeight';
 import styles from './index.less';
@@ -11,8 +23,27 @@ import styles from './index.less';
 
 const imgUrl = 'https://gw.alipayobjects.com/zos/rmsportal/gWyeGLCdFFRavBGIDzWk.png';
 
-class TagCloud extends Component {
-  state = {
+export interface ICloudData {
+  name: string,
+  text: string,
+  value: number
+}
+
+interface IProps {
+  data: Array<ICloudData>
+  className?: string
+  height?: number
+}
+
+interface IState {
+  dv: any
+  height: number
+  width: number
+}
+
+class TagCloud extends Component<IProps, IState> {
+
+  public state: IState = {
     dv: null,
     height: 0,
     width: 0,
@@ -22,9 +53,9 @@ class TagCloud extends Component {
 
   requestRef = 0;
 
-  root = undefined;
+  root: any = undefined;
 
-  imageMask = undefined;
+  imageMask: any = undefined;
 
   componentDidMount() {
     requestAnimationFrame(() => {
@@ -36,7 +67,7 @@ class TagCloud extends Component {
     });
   }
 
-  componentDidUpdate(preProps) {
+  componentDidUpdate(preProps: IProps) {
     const { data } = this.props;
 
     if (preProps && JSON.stringify(preProps.data) !== JSON.stringify(data)) {
@@ -56,31 +87,39 @@ class TagCloud extends Component {
     });
   };
 
-  saveRootRef = node => {
+  saveRootRef = (node: React.ReactNode) => {
     this.root = node;
   };
 
   initTagCloud = () => {
-    function getTextAttrs(cfg) {
-      return {
-        ...cfg.style,
-        fillOpacity: cfg.opacity,
-        fontSize: cfg.origin._origin.size,
-        rotate: cfg.origin._origin.rotate,
-        text: cfg.origin._origin.text,
-        textAlign: 'center',
-        fontFamily: cfg.origin._origin.font,
-        fill: cfg.color,
-        textBaseline: 'Alphabetic',
-      };
-    }
+    function getTextAttrs(cfg: any) {
+			return assign(
+				{},
+				cfg.style,
+				{
+					fontSize: cfg.data.size,
+					text: cfg.data.text,
+					textAlign: 'center',
+					fontFamily: cfg.data.font,
+					fill: cfg.color,
+					textBaseline: 'Alphabetic'
+				}
+			);
+		}
 
-    Shape && Shape.registerShape('point', 'cloud', {
-      drawShape(cfg, container) {
-        const attrs = getTextAttrs(cfg);
-        return container.addShape('text', {
-          attrs: { ...attrs, x: cfg.x, y: cfg.y },
-        });
+    registerShape('point', 'cloud', {
+      draw(cfg: any, container) {
+				const attrs = getTextAttrs(cfg);
+				const textShape = container.addShape("text", {
+					attrs: assign(attrs, {
+						x: cfg.x,
+						y: cfg.y
+					})
+				});
+				if (cfg.data.rotate) {
+					G2.Util.rotate(textShape, cfg.data.rotate * Math.PI / 180);
+				}
+				return textShape;
       },
     });
   };
@@ -94,7 +133,7 @@ class TagCloud extends Component {
     }
 
     const h = height;
-    const w = this.root.offsetWidth;
+    const w = this.root && this.root.offsetWidth;
 
     const onload = () => {
       const dv = new DataSet.View().source(data);
@@ -169,9 +208,13 @@ class TagCloud extends Component {
               },
             }}
           >
-            <Tooltip showTitle={false} />
-            <Coord reflect="y" />
-            <Geom
+
+						<Tooltip showTitle={false} />
+						<Coordinate reflect="y" />
+						<Axis name='x' visible={false} />
+						<Axis name='y' visible={false} />
+						<Legend visible={false} />
+						<Geom
               type="point"
               position="x*y"
               color="text"
@@ -186,6 +229,7 @@ class TagCloud extends Component {
                 },
               ]}
             />
+						<Interaction type='element-active' />
           </Chart>
         )}
       </div>

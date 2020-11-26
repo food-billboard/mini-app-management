@@ -1,20 +1,29 @@
-import React from 'react'
-import { Card, Tabs } from 'antd'
-import {} from '../Charts'
+import React, { useEffect } from 'react'
+import { Card } from 'antd'
+import { TimelineChart } from '../Charts'
+import { connect } from 'react-redux'
+import { mapStateToProps, mapDispatchToProps } from './connect'
+import noop from 'lodash/noop'
+import { IVisitStatisticsData } from '../../service'
 import styles from './index.less'
-
-export interface IUserVisitData {
-  day: string
-  count: number
-}
 
 const UserVisit: React.FC<any> = ({
   loading,
-  data=[]
+  data=[],
+  fetchData=noop
 }: {
   loading: boolean
-  data: Array<IUserVisitData>
+  data: Array<IVisitStatisticsData>
+  fetchData: (params?: {
+    date_type?: 'year' | 'month' | 'week' | 'day'
+    start_date?: string
+    end_date?: string
+  }) => any
 }) => {
+
+  useEffect(() => {
+    fetchData()
+  }, [])
 
   return (
     <Card
@@ -30,18 +39,14 @@ const UserVisit: React.FC<any> = ({
           padding: '0 24px',
         }}
       >
-        {/* <TimelineChart
+        <TimelineChart
           height={400}
-          data={data}
-          titleMap={{
-            y1: 'a',
-            y2: 'b',
-          }}
-        /> */}
+          data={data.map((item: IVisitStatisticsData) => ({ x: item.day, y1: item.count }))}
+        />
       </div>
     </Card>
   )
 
 }
 
-export default UserVisit
+export default connect(mapStateToProps, mapDispatchToProps)(UserVisit)

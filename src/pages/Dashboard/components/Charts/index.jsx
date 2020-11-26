@@ -8,7 +8,7 @@ import MiniBar from './MiniBar';
 import MiniProgress from './MiniProgress';
 import Pie from './Pie';
 import TagCloud from './TagCloud';
-// import TimelineChart from './TimelineChart';
+import TimelineChart from './TimelineSlider';
 import WaterWave from './WaterWave';
 
 const yuan = val => `¥ ${numeral(val).format('0,0')}`;
@@ -25,7 +25,7 @@ const Charts = {
   Field,
   WaterWave,
   TagCloud,
-  // TimelineChart,
+  TimelineChart,
 };
 export {
   Charts as default,
@@ -40,5 +40,5 @@ export {
   Field,
   WaterWave,
   TagCloud,
-  // TimelineChart,
+  TimelineChart,
 };

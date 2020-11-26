@@ -1,46 +1,13 @@
-import React, { Fragment } from 'react'
+import React, { useEffect } from 'react'
 import { Row, Col, Tooltip } from 'antd'
 import { InfoCircleOutlined } from '@ant-design/icons'
-import numeral from 'numeral'
-import { ChartCard, MiniArea, MiniBar, MiniProgress, Field, Pie } from '../Charts';
+import { ChartCard, MiniArea, MiniBar, MiniProgress, Field } from '../Charts';
 import Trend from '../Trend'
+import { INavUserCount, INavVisitDay, INavDataCount, INavFeedbackCount, IDataStatisticsData } from '../../service'
+import noop from 'lodash/noop'
+import { connect } from 'react-redux'
+import { mapStateToProps, mapDispatchToProps } from './connect'
 import styles from './index.less'
-
-interface IVisitDayChart {
-  day: string
-  count: number
-}
-
-interface IDataCountChart extends IVisitDayChart {}
-
-export interface IUserCount {
-  total: number
-  week_add: number
-  day_add: number
-  day_add_count: number
-}
-
-export interface IVisitDay {
-  total: number
-  data: Array<IVisitDayChart>
-  day_count: number
-}
-
-export interface IDataCount {
-  total: number
-  week_add: number
-  day_add: number
-  day_count: number
-  data: Array<IDataCountChart>
-}
-
-export interface IFeedbackCount {
-  total: number
-  week_add: number
-  day_add: number
-  day_add_count: number
-  transform_count: number
-}
 
 const topColResponsiveProps = {
   xs: 24,
@@ -58,14 +25,20 @@ const NavCard: React.FC<any> = ({
   user_count,
   visit_day,
   data_count,
-  feedback_count
+  feedback_count,
+  fetchData=noop
 }: {
   loading: boolean,
-  user_count: IUserCount,
-  visit_day: IVisitDay,
-  data_count: IDataCount,
-  feedback_count: IFeedbackCount
+  user_count: INavUserCount,
+  visit_day: INavVisitDay,
+  data_count: INavDataCount,
+  feedback_count: INavFeedbackCount
+  fetchData: () => any
 }) => {
+
+  useEffect(() => {
+    fetchData()
+  }, [])
 
   return (
     <Row gutter={24}>
@@ -140,7 +113,7 @@ const NavCard: React.FC<any> = ({
           }
           contentHeight={46}
         >
-          <MiniBar data={(data_count?.data || []).map((item: IDataCountChart) => ({ x: item.day, y: item.count }))} />
+          <MiniBar data={(data_count?.data || []).map((item: IDataStatisticsData) => ({ x: item.day, y: item.count }))} />
         </ChartCard>
       </Col>
       <Col {...topColResponsiveProps}>
@@ -170,7 +143,7 @@ const NavCard: React.FC<any> = ({
           }
           contentHeight={46}
         >
-          <MiniArea data={(visit_day?.data || []).map((item: IDataCountChart) => ({ x: item.day, y: item.count }))} />
+          <MiniArea data={(visit_day?.data || []).map((item: IDataStatisticsData) => ({ x: item.day, y: item.count }))} />
         </ChartCard>
       </Col>
       <Col {...topColResponsiveProps}>
@@ -230,4 +203,4 @@ const NavCard: React.FC<any> = ({
   
 }
 
-export default NavCard
+export default connect(mapStateToProps, mapDispatchToProps)(NavCard)

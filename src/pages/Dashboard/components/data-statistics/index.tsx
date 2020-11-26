@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { Tabs, DatePicker, Card, Row, Col } from 'antd'
 import moment, { Moment } from 'moment'
 import noop from 'lodash/noop'
+import { connect } from 'react-redux'
 import RankList, { IRankData } from './rank'
 import { Bar } from '../Charts'
+import { mapStateToProps, mapDispatchToProps } from './connect'
 import styles from './index.less'
 
 const { TabPane } = Tabs
@@ -20,12 +22,12 @@ const TopSearch: React.FC<any> = ({
   data=[],
   loading,
   rank=[],
-  onChange=noop
+  fetchData=noop
 }: {
   data: Array<IDataStatisticsChartData>,
   rank: Array<IRankData>,
   loading: boolean,
-  onChange: (params: { startDate: string, endDate: string } | { dateType: TDateType }) => any
+  fetchData: (params: { start_date: string, end_date: string } | { date_type: TDateType }) => any
 }) => {
 
   const [ dateType, setDateType ] = useState<TDateType | undefined>('day')
@@ -33,7 +35,7 @@ const TopSearch: React.FC<any> = ({
 
   useEffect(() => {
     const [ startDate, endDate ] = date
-    !!dateType ? onChange({ dateType }) : onChange({ startDate: startDate.format('YYYY-MM-DD'), endDate: endDate.format('YYYY-MM-DD') })
+    !!dateType ? fetchData({ date_type: dateType }) : fetchData({ start_date: startDate.format('YYYY-MM-DD'), end_date: endDate.format('YYYY-MM-DD') })
   }, [date])
 
   const isActive = (type: TDateType) => type === dateType ? styles.currentDate : ''
@@ -140,4 +142,4 @@ const TopSearch: React.FC<any> = ({
 
 }
 
-export default TopSearch
+export default connect(mapStateToProps, mapDispatchToProps)(TopSearch)
