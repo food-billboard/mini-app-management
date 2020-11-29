@@ -4,9 +4,9 @@ import { Link, history, History, connect } from 'umi';
 import { LoginParamsType } from '@/services/login';
 import LoginFrom from './components/Login';
 import styles from './style.less';
-import { getLocalStorage } from '@/utils'
+import { ConnectState } from '@/models/connect';
 
-const { Tab, Username, Password, Submit } = LoginFrom;
+const { Tab, Username, Password, Submit, Mobile } = LoginFrom;
 
 const LoginMessage: React.FC<{
   content: string;
@@ -29,7 +29,7 @@ const replaceGoto = () => {
     const { query } = history.location;
     const { redirect } = query as { redirect: string };
     if (!redirect) {
-      history.replace('/');
+      history.replace('/home');
       return;
     }
     (history as History).replace(redirect);
@@ -45,8 +45,7 @@ class Login extends Component<any> {
   }
 
   public componentDidMount = () => {
-    const token = getLocalStorage('token')
-    if(!!token) {
+    if(!!this.props.isLogin) {
       replaceGoto()
     }
   }
@@ -86,13 +85,13 @@ class Login extends Component<any> {
               <LoginMessage content="账户或密码错误（admin/ant.design）" />
             )}
 
-            <Username
-              name="username"
-              placeholder="请输入用户名: admin or user"
+            <Mobile
+              name="mobile"
+              placeholder="请输入手机号: 18368003190"
             />
             <Password
               name="password"
-              placeholder="请输入密码: ant.design"
+              placeholder="请输入密码: shenjing8"
             />
           </Tab>
           <Submit loading={submitting}>登录</Submit>
@@ -112,4 +111,6 @@ class Login extends Component<any> {
 
 }
 
-export default connect(() => ({}))(Login)
+export default connect((state: ConnectState) => ({
+  isLogin: !!state.user.currentUser._id
+}))(Login)

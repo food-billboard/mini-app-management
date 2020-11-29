@@ -5,15 +5,13 @@ export async function query() {
 }
 
 //获取当前用户信息
-export async function queryCurrent() {
-  return request<API.CurrentUser>('/api/currentUser');
+export async function getUserInfo() {
+  return request<API.CurrentUser>('/api/manage/admin');
 }
 
 export async function queryNotices(): Promise<any> {
   return request<{ data: API.NoticeIconData[] }>('/api/notices');
 }
-
-
 
 //用户列表
 export const getUserList = (params: API_USER.IGetUserListParams) => {

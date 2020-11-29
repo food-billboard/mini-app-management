@@ -33,7 +33,7 @@ class SecurityLayout extends React.Component<SecurityLayoutProps, SecurityLayout
     const { isReady } = this.state;
     const { children, loading, currentUser } = this.props;
 
-    const isLogin = currentUser && currentUser.userid
+    const isLogin = currentUser && !!currentUser._id
     const queryString = stringify({
       redirect: window.location.href,
     });

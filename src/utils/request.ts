@@ -1,5 +1,9 @@
-import { extend, ResponseError } from 'umi-request'
-import { notification } from 'antd';
+import { extend, ResponseError, RequestOptionsInit as RequestOptionsOrigin } from 'umi-request'
+import { notification, message } from 'antd';
+import { getDvaApp, history } from 'umi'
+import { stringify } from 'querystring'
+import debounce from 'lodash/debounce'
+import { formatQuery } from './utils'
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -24,28 +28,122 @@ const codeMessage = {
  * 异常处理程序
  */
 const errorHandler = (error: ResponseError) => {
+  // const { response } = error;
+  // if (response && response.status) {
+  //   const errorText = codeMessage[response.status] || response.statusText;
+  //   const { status, url } = response;
+
+  //   notification.error({
+  //     message: `请求错误 ${status}: ${url}`,
+  //     description: errorText,
+  //   });
+  // }
+
+  // if (!response) {
+  //   notification.error({
+  //     description: '您的网络发生异常，无法连接服务器',
+  //     message: '网络异常',
+  //   });
+  // }
+  throw error;
+};
+
+interface RequestOptions extends RequestOptionsOrigin{
+  mis?: boolean
+}
+
+const requestOrigin = extend({
+  errorHandler,
+  timeout: 300000,
+  credentials: 'include',
+})
+
+const request = async <ResBody>(url: string, setting: RequestOptions = {} as RequestOptions)=>{
+
+  // 过滤URL参数
+  const { params, mis=true, ...options } = setting
+
+  let body: any
+  let error: any
+
+  try{
+    body = await requestOrigin(url, {
+      requestType: 'json',
+      ...options,
+      ...(params ? { params: formatQuery(params) } : {}),
+    });
+  } catch(err) {
+    error = err
+  }
+
+  // 报错分为两种，
+  // 系统错误，由 httpClient 拦截到的错误 如，4xx，5xx
+  if( error ){
+    error.errorType = 'system';
+    error.messageType = 'response';
+    mis && misManage(error);
+    throw error
+  }
+
+  // 业务错误，客户端返回的 statusCode === 200 但是response.body 中的success 返回为 false的错误
+  if( body && body.success === false ){
+    error = body;
+    error.errorType = 'logic';
+    error.messageType = 'body';
+  }
+
+  // 返回真正的response body res 内容
+  if( !error ){
+    return (body.res.data || {}) as ResBody
+  }
+  error.mis = mis
+  mis && misManage(error);
+  throw error
+};
+
+// 未登录的多次触发处理
+const dispathLogin = debounce(function(err){
+  const app = getDvaApp()
+  const dispatch = app._store.dispatch
+  const querystring = stringify({
+    redirect: window.location.href,
+  })
+  history.replace(`/user/login?${querystring}`)
+  if( dispatch ){
+    dispatch({type: 'user/logout'});
+  }
+  message.error(err.msg || '未登录请先登录');
+}, 1000, {'leading': true, 'trailing': false} )
+
+// 处理报错
+export const misManage = (error: any): any=>{
+  if( error.messageType === 'body' ){
+    const err = error.err || {}
+
+    // 未登录处理
+    if( error.errorType === 'system' && err.code === '401' ){
+      return dispathLogin(err);
+    }
+    message.error(err.msg || '网络错误');
+    return
+  }
   const { response } = error;
+  if( response && response.status === 401 ){
+    return dispathLogin(error);
+  }
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
     const { status, url } = response;
-
     notification.error({
       message: `请求错误 ${status}: ${url}`,
       description: errorText,
     });
-  }
-
-  if (!response) {
+  } else if (!response) {
     notification.error({
       description: '您的网络发生异常，无法连接服务器',
       message: '网络异常',
     });
   }
-  throw error;
-};
-
-const request = extend({
-  errorHandler
-})
+}
 
 export default request

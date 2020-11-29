@@ -18,7 +18,7 @@ const LoginMessage: React.FC<{
   />
 );
 
-const { Tab, Username, Password, Captcha, Submit, Email } = LoginForm;
+const { Tab, Username, Password, Captcha, Submit, Email, Mobile } = LoginForm;
 
 class Register extends Component<any> {
 
@@ -62,18 +62,21 @@ class Register extends Component<any> {
             {status === 'error' && !submitting && (
               <LoginMessage content="账户或密码不合理（admin/ant.design）" />
             )}
-
+            <Mobile
+              name="mobile"
+              placeholder="请输入手机号"
+            />
             <Username
-              name="userName"
-              placeholder="请输入用户名用户名: admin or user"
+              name="username"
+              placeholder="请输入用户名"
             />
             <Password
               name="password"
-              placeholder="请输入密码: ant.design"
+              placeholder="请输入密码"
             />
             <Email 
               name="email"
-              placeholder="请输入邮箱，随便输"
+              placeholder="请输入邮箱"
             />
             <Captcha
               name="captcha"
@@ -81,6 +84,7 @@ class Register extends Component<any> {
               countDown={120}
               getCaptchaButtonText=""
               getCaptchaSecondText="秒"
+              captchaType={'register'}
             />
           </Tab>
           <Submit loading={submitting}>注册</Submit>

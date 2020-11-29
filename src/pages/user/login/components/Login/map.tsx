@@ -63,23 +63,23 @@ export default {
       },
     ],
   },
-  // Mobile: {
-  //   props: {
-  //     size: 'large',
-  //     prefix: <MobileTwoTone className={styles.prefixIcon} />,
-  //     placeholder: 'mobile number',
-  //   },
-  //   rules: [
-  //     {
-  //       required: true,
-  //       message: 'Please enter mobile number!',
-  //     },
-  //     {
-  //       pattern: /^1\d{10}$/,
-  //       message: 'Wrong mobile number format!',
-  //     },
-  //   ],
-  // },
+  Mobile: {
+    props: {
+      size: 'large',
+      prefix: <MobileTwoTone className={styles.prefixIcon} />,
+      placeholder: 'mobile number',
+    },
+    rules: [
+      {
+        required: true,
+        message: '请输入手机号',
+      },
+      {
+        pattern: /^1\d{10}$/,
+        message: '不正确的手机格式',
+      },
+    ],
+  },
   Captcha: {
     props: {
       size: 'large',

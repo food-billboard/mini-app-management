@@ -15,18 +15,18 @@ export interface RegisterParamsType extends Pick<LoginParamsType, 'mobile' | 'pa
 export interface ResetParamsType extends Pick<RegisterParamsType, 'email' | 'password' | 'captcha'> {}
 
 //登录
-export async function fakeAccountLogin(params: Pick<LoginParamsType, 'mobile' | 'password'>) {
-  return request<API.LoginStateType>('/api/login/account', {
+export async function accountLogin(params: Pick<LoginParamsType, 'mobile' | 'password'>) {
+  return request<API.LoginStateType>('/api/user/logon/account', {
     method: 'POST',
     data: params,
   });
 }
 
 //邮箱验证码
-export async function getFakeCaptcha(email: string, type: 'register' | 'forget') {
-  return request(`/api/user/logon/sendmail`, {
-    method: 'GET',
-    params: {
+export async function getCaptcha(email: string, type: 'register' | 'forget') {
+  return request(`/api/user/logon/email`, {
+    method: 'POST',
+    data: {
       email,
       type
     }

@@ -72,10 +72,11 @@ class Register extends Component<any> {
               countDown={120}
               getCaptchaButtonText=""
               getCaptchaSecondText="秒"
+              captchaType={'forget'}
             />
             <Password
               name="password"
-              placeholder="请输入密码: ant.design"
+              placeholder="请输入密码"
             />
           </Tab>
           <Submit loading={submitting}>重置密码</Submit>

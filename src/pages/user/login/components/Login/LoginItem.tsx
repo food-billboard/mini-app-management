@@ -2,7 +2,7 @@ import { Button, Col, Input, Row, Form, message } from 'antd';
 import React, { useState, useCallback, useEffect } from 'react';
 import omit from 'omit.js';
 import { FormItemProps } from 'antd/es/form/FormItem';
-import { getFakeCaptcha } from '@/services/login';
+import { getCaptcha } from '@/services/login';
 
 import ItemMap from './map';
 import LoginContext, { LoginContextProps } from './LoginContext';
@@ -13,7 +13,7 @@ export type LoginItemKeyType = keyof typeof ItemMap;
 export interface LoginItemType {
   Username: React.FC<WrappedLoginItemProps>;
   Password: React.FC<WrappedLoginItemProps>;
-  // Mobile: React.FC<WrappedLoginItemProps>;
+  Mobile: React.FC<WrappedLoginItemProps>;
   Captcha: React.FC<WrappedLoginItemProps>;
   Email: React.FC<WrappedLoginItemProps>
 }
@@ -32,6 +32,7 @@ export interface LoginItemProps extends Partial<FormItemProps> {
   customProps?: { [key: string]: unknown };
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   tabUtil?: LoginContextProps['tabUtil'];
+  captchaType?: 'register' | 'forget'
 }
 
 const FormItem = Form.Item;
@@ -50,7 +51,7 @@ const getFormItemOptions = ({
     rules: rules || (customProps.rules as LoginItemProps['rules']),
   };
   if (onChange) {
-    options.onChange = onChange;
+    options.onChange = onChange
   }
   if (defaultValue) {
     options.initialValue = defaultValue;
@@ -76,10 +77,10 @@ const LoginItem: React.FC<LoginItemProps> = (props) => {
     ...restProps
   } = props;
 
-  const onGetCaptcha = useCallback(async (mobile: string) => {
-    const result = await getFakeCaptcha(mobile);
+  const onGetCaptcha = useCallback(async (email: string) => {
+    const result = await getCaptcha(email, props.captchaType || 'register');
     if (result === false) {
-      return;
+      return
     }
     message.success('获取验证码成功！验证码为：1234');
     setTiming(true);
@@ -129,7 +130,8 @@ const LoginItem: React.FC<LoginItemProps> = (props) => {
                 className={styles.getCaptcha}
                 size="large"
                 onClick={() => {
-                  const value = getFieldValue('mobile');
+                  const value = getFieldValue('email')
+                  console.log(value)
                   onGetCaptcha(value);
                 }}
               >

@@ -50,3 +50,14 @@ export const setLocalStorage = (key: string, value: any, timestamp: false | numb
 export const removeLocalStorate = (key: string) => {
   localStorage.removeItem(key)
 }
+
+// 处理query 传参的时候导致的空字符串查询问题（后端不愿意给处理）
+export const formatQuery = (query: any ={})=>{
+  let ret = {}
+  Object.keys(query).map((key)=>{
+    if( query[key] !== null && query[key] !== undefined && query[key]!=='' ){
+      ret[key] = query[key]
+    }
+  })
+  return ret;
+}

@@ -1,5 +1,5 @@
 import { stringify } from 'querystring'
-import { queryCurrent, forgetPassword, register, LoginParamsType, fakeAccountLogin, RegisterParamsType, ResetParamsType } from '@/services'
+import { getUserInfo, forgetPassword, register, LoginParamsType, accountLogin, RegisterParamsType, ResetParamsType, outLogin } from '@/services'
 import { setAuthority } from '@/utils/authority'
 import { getPageQuery, setLocalStorage, removeLocalStorate, getLocalStorage } from '@/utils'
 import { history } from 'umi'
@@ -12,16 +12,17 @@ interface IUserModelState {
 
 interface CurrentUser {
   avatar?: string;
-  name?: string;
-  title?: string;
-  group?: string;
-  signature?: string;
-  tags?: {
-    key: string;
-    label: string;
-  }[];
-  userid?: string;
-  unreadCount?: number;
+  _id?: string
+  // name?: string;
+  // title?: string;
+  // group?: string;
+  // signature?: string;
+  // tags?: {
+  //   key: string;
+  //   label: string;
+  // }[];
+  // userid?: string;
+  // unreadCount?: number;
 }
 
 export {
@@ -41,57 +42,49 @@ export default {
 
     //获取用户信息
     * fetchCurrent(_: any, { call, put }: { call: any, put: any }) {
-      const token = getLocalStorage('token')
-      let data 
-      if(!token) {
-        data = {}
-      }else {
-        data = yield call(queryCurrent)
-      }
+      const response = yield call(getUserInfo)
       yield put({
         type: 'saveCurrentUser',
-        payload: data
+        payload: response
       })
-      return data
+      return response
     },
 
     //登录
     * login({ payload }: { payload: LoginParamsType }, { call, put }: { call: any, put: any }) {
-      const response = yield call(fakeAccountLogin, payload);
-
-      //加入缓存
-      const { currentAuthority } = response
-      setLocalStorage('token', currentAuthority, 24 * 60 * 60 * 1000)
+      const response = yield call(accountLogin, payload)
 
       yield put({
         type: 'changeLoginStatus',
         payload: response,
       });
+
       // Login successfully
-      if (response.status === 'ok') {
-        const urlParams = new URL(window.location.href);
-        const params = getPageQuery();
-        let { redirect } = params as { redirect: string };
-        if (redirect) {
-          const redirectUrlParams = new URL(redirect);
-          if (redirectUrlParams.origin === urlParams.origin) {
-            redirect = redirect.substr(urlParams.origin.length);
-            if (redirect.match(/^\/.*#/)) {
-              redirect = redirect.substr(redirect.indexOf('#') + 1);
-            }
-          } else {
-            window.location.href = '/';
-            return;
+      const urlParams = new URL(window.location.href);
+      const params = getPageQuery();
+      let { redirect } = params as { redirect: string };
+      if (redirect) {
+        const redirectUrlParams = new URL(redirect);
+        if (redirectUrlParams.origin === urlParams.origin) {
+          redirect = redirect.substr(urlParams.origin.length);
+          if (redirect.match(/^\/.*#/)) {
+            redirect = redirect.substr(redirect.indexOf('#') + 1);
           }
+        } else {
+          window.location.href = '/';
+          return;
         }
-        history.replace(redirect || '/');
       }
+      history.replace(redirect || '/home');
     },
 
     //退出登录
-    * logout(_: any, { put }: { put: any }) {
+    * logout(_: any, { call, put }: { call: any, put: any }) {
+      try {
+        yield call(outLogin)
+      }catch(err) {}
+
       const { redirect } = getPageQuery();
-      removeLocalStorate('token')
       yield put({
         type: 'saveCurrentUser',
         payload: {}
@@ -114,7 +107,7 @@ export default {
     //注册
     * register({ payload }: { payload: RegisterParamsType }, { call }: { call: any }) {
       const response = yield call(register, payload)
-
+      console.log(response, '注册')
       //注册成功跳转至登录
       if (response.status === 'ok') {
         message.success({
@@ -130,7 +123,7 @@ export default {
     //重置密码
     * forger({ payload }: { payload: ResetParamsType }, { call }: { call: any }) {
       const response = yield call(forgetPassword, payload)
-
+      console.log(response, '重置密码')
       //重置成功跳转至登录
       if (response.status === 'ok') {
         message.success({
