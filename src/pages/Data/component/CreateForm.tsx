@@ -1,33 +1,35 @@
-import { Form, Input, Modal, Button, message, Rate } from 'antd'
+import { Form, message, Rate } from 'antd'
 import { FormInstance } from 'antd/lib/form'
 import ProForm, {
-  ModalForm,
   DrawerForm,
   ProFormText,
-  ProFormDateRangePicker,
   ProFormDatePicker,
   ProFormSelect,
-  ProFormRadio,
-  ProFormCheckbox,
-  ProFormUploadDragger,
-  ProFormRate,
   ProFormTextArea,
-  ProFromFieldSet,
-  ProFormUploadButton
 } from '@ant-design/pro-form'
-import { PlusOutlined, InfoCircleOutlined } from '@ant-design/icons'
+import { Store } from 'antd/lib/form/interface'
 import React, { Component, createRef } from 'react'
 import SearchForm from './SearchSelect'
 import InputAlias from './InputSearch'
+import Upload from './Upload'
+
+type FormData = API_DATA.IPutMovieParams | API_DATA.IPostMovieParams 
 
 interface IProps {
   onCancel?: () => any
-  onSubmit?: (data: API_DATA.IPutMovieParams | API_DATA.IPostMovieParams) => any
+  onSubmit?: (data: FormData) => any
 }
 
 interface IState {
   visible: boolean
   loading: boolean
+}
+
+const objectIdReg = /^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i
+
+const fileValidator = (length: number) => (_: any, value: Array<string>) => {
+  const valid = Array.isArray(value) && value.length == length && value.every(val => objectIdReg.test(val))
+  return valid ? Promise.resolve() : Promise.reject('请先上传或添加文件')
 }
 
 class CreateForm extends Component<IProps, IState> {
@@ -56,17 +58,6 @@ class CreateForm extends Component<IProps, IState> {
 
   }
 
-  private onOk = () => {
-    this.formRef.current?.validateFields([])
-    .then((data: any) => {
-      console.log(data)
-      this.formRef.current?.resetFields()
-      this.setState({ visible: false })
-      this.props.onSubmit && this.props.onSubmit(data)
-    })
-    .catch(_ => {})
-  }
-
   private onCancel = () => {
 
     this.setState({ visible: false })
@@ -80,20 +71,23 @@ class CreateForm extends Component<IProps, IState> {
     return (
       <DrawerForm
         title="新建表单"
-        trigger={
-          <Button type="primary">
-            <PlusOutlined />
-            新建数据
-          </Button>
-        }
-        onFinish={async (values) => {
+        visible={visible}
+        onFinish={async (values: Store) => {
           console.log(values);
-          message.success('提交成功！');
-          return true;
+          message.success('提交成功！')
+
+          this.props.onSubmit && this.props.onSubmit(values as FormData)
+          return true
+        }}
+        onVisibleChange={(visible: boolean) => {
+          if(!visible) this.onCancel()
+          this.setState(prev => {
+            if(prev.visible === visible) return null
+            return { visible }
+          })
         }}
       >
         <ProFormText 
-          // width="xl" 
           name="name" 
           label="名称" 
           placeholder={"请输入电影名称"} 
@@ -102,7 +96,6 @@ class CreateForm extends Component<IProps, IState> {
           }]}
         />
         <ProFormTextArea 
-          // width="xl" 
           name="description" 
           label="描述" 
           rules={[{
@@ -110,31 +103,41 @@ class CreateForm extends Component<IProps, IState> {
           }]}
         />
         <InputAlias 
-          name="alias" 
-          label="别名" 
-          tooltip={"超出20个字符会自动截断"} 
-          rules={[{
-            required: true
-          }]}
+          wrapper={{
+            name: "alias",
+            label: "别名" ,
+            tooltip: "超出20个字符会自动截断",
+            rules: [{
+              required: true
+            }]
+          }}
         />
         <ProForm.Group>
           <SearchForm 
-            fetchData={() => Promise.resolve([])} 
-            label="演员"
-            name="actor"
-            rules={[{
-              required: true
-            }]}
+            wrapper={{  
+              label: "演员",
+              name: "actor",
+              rules: [{
+                required: true
+              }]
+            }}
+            item={{
+              fetchData: () => Promise.resolve([])
+            }}
           />
         </ProForm.Group>
         <ProForm.Group>
           <SearchForm 
-            fetchData={() => Promise.resolve([])} 
-            label="导演"
-            name="director"
-            rules={[{
-              required: true
-            }]}
+            wrapper={{  
+              label: "导演",
+              name: "director",
+              rules: [{
+                required: true
+              }]
+            }}
+            item={{
+              fetchData: () => Promise.resolve([])
+            }}
           />
         </ProForm.Group>
         <ProForm.Group>
@@ -174,32 +177,62 @@ class CreateForm extends Component<IProps, IState> {
           <ProFormDatePicker 
             name="screen_time" 
             label="上映时间" 
-            // width="m" 
             rules={[{
               required: true
             }]}
           />
         </ProForm.Group>
-        <ProFormUploadButton
-          name="poster"
-          label="海报上传"
-          max={1}
-          action="/upload.do"
+        <Upload 
+          wrapper={{
+            label: '视频',
+            name: 'direcotr',
+            rules: [
+              {
+                required: true,
+                validator: fileValidator(1)
+              }
+            ]
+          }}
+          item={{
+            maxFiles: 1,
+            acceptedFileTypes: ['video/*'],
+            allowMultiple: false
+          }}
         />
-        <ProFormUploadButton
-          name="poster"
-          label="截图上传"
-          max={6}
-          action="/upload.do"
+        <Upload 
+          wrapper={{
+            label: '海报',
+            name: 'poster',
+            rules: [
+              {
+                required: true,
+                validator: fileValidator(1)
+              }
+            ]
+          }}
+          item={{
+            maxFiles: 1,
+            acceptedFileTypes: ['image/*'],
+            allowMultiple: false
+          }}
         />
-        <ProFormUploadDragger 
-          width="xl" 
-          max={1} 
-          label="视频" 
-          name="video" 
+        <Upload 
+          wrapper={{
+            label: '截图',
+            name: 'images',
+            rules: [
+              {
+                required: true,
+                validator: fileValidator(6)
+              }
+            ]
+          }}
+          item={{
+            maxFiles: 6,
+            acceptedFileTypes: [ 'image/*' ]
+          }}
         />
         <ProFormTextArea 
-          // width="xl" 
           name="author_description" 
           label="主观描述" 
           rules={[{
@@ -214,7 +247,6 @@ class CreateForm extends Component<IProps, IState> {
           }]}
         >
           <Rate
-            // width="m" 
             count={10}
           />
         </Form.Item>

@@ -8,11 +8,17 @@ const { Item } = Form
 
 function WrapperItem<T> (Component: React.FC<any>) {
 
-  return function(props: T & FormItemProps) {
+  return function({
+    item,
+    wrapper
+  }: {
+    item?: T
+    wrapper: FormItemProps
+  }) {
 
     return (
-      <Item {...props}>
-        <Component {...props} />
+      <Item {...wrapper}>
+        <Component {...item} />
       </Item>
     )
 

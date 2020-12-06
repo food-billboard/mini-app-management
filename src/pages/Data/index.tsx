@@ -107,7 +107,6 @@ const CardList: React.FC<IProps> = () => {
 
   const handleModalVisible = (id?: string) => {
     modalRef.current?.open(id)
-    console.log(modalRef)
   }
 
   return (
@@ -117,7 +116,7 @@ const CardList: React.FC<IProps> = () => {
         actionRef={actionRef}
         rowKey="key"
         toolBarRender={(action, { selectedRows }) => [
-          <Button icon={<PlusOutlined />} type="primary" onClick={() => handleModalVisible()}>
+          <Button key={'add'} icon={<PlusOutlined />} type="primary" onClick={() => handleModalVisible()}>
             新建
           </Button>,
           selectedRows && selectedRows.length > 0 && (
@@ -136,7 +135,7 @@ const CardList: React.FC<IProps> = () => {
                 </Menu>
               }
             >
-              <Button>
+              <Button key="many">
                 批量操作 <DownOutlined />
               </Button>
             </Dropdown>

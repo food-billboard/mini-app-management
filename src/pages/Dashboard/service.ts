@@ -96,7 +96,7 @@ export const getDataStatisticsList = (params: {
   start_date?: string
   end_date?: string
 }={}) => {
-  return request<IGetDataStatisticsList>('/api/manage/dashboard/movie', {
+  return request<IGetDataStatisticsList>('/api/manage/dashboard/statistics/movie', {
     method: 'GET',
     params: pickBy(params, identity)
   })
@@ -108,7 +108,7 @@ export const getUserStatisticsList = (params: {
   start_date?: string
   end_date?: string
 }={}) => {
-  return request<IGetUserStatisticsList>('/api/manage/dashboard/user', {
+  return request<IGetUserStatisticsList>('/api/manage/dashboard/statistics/user', {
     method: 'GET',
     params: pickBy(params, identity)
   })
@@ -120,7 +120,7 @@ export const getVisitStatisticsList = (params: {
   start_date?: string
   end_date?: string
 }={}) => {
-  return request<IGetVisitStatisticsList>('/api/manage/dashboard/visit', {
+  return request<IGetVisitStatisticsList>('/api/manage/dashboard/statistics/visit', {
     method: 'GET',
     params: pickBy(params, identity)
   })

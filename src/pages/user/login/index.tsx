@@ -1,12 +1,16 @@
 import { Alert } from 'antd';
 import React, { Component } from 'react';
-import { Link, history, History, connect } from 'umi';
+import { Link, history, History } from 'umi';
+import { connect } from 'react-redux'
 import { LoginParamsType } from '@/services/login';
 import LoginFrom from './components/Login';
+import { mapStateToProps, mapDispatchToProps } from './connect'
 import styles from './style.less';
 import { ConnectState } from '@/models/connect';
 
 const { Tab, Username, Password, Submit, Mobile } = LoginFrom;
+
+console.log(11111111)
 
 const LoginMessage: React.FC<{
   content: string;
@@ -45,6 +49,7 @@ class Login extends Component<any> {
   }
 
   public componentDidMount = () => {
+    console.log(11111111)
     if(!!this.props.isLogin) {
       replaceGoto()
     }
@@ -62,13 +67,7 @@ class Login extends Component<any> {
 
   public handleSubmit = async (values: LoginParamsType) => {
     this.setSubmitting(true)
-    const { dispatch } = this.props
-    await dispatch({
-      type: 'user/login',
-      payload: {
-        ...values,
-      }
-    })
+    await this.props.login(values)
     this.setSubmitting(false);
   };
 
@@ -111,6 +110,4 @@ class Login extends Component<any> {
 
 }
 
-export default connect((state: ConnectState) => ({
-  isLogin: !!state.user.currentUser._id
-}))(Login)
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

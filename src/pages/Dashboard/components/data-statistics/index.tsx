@@ -108,6 +108,7 @@ const TopSearch: React.FC<any> = ({
             </Col>
             <Col xl={8} lg={12} md={12} sm={24} xs={24}>
               <RankList 
+                key={'user-rank'}
                 title={'用户人气排行榜'}
                 data={rankData}
               />
@@ -117,6 +118,7 @@ const TopSearch: React.FC<any> = ({
         {/* 电影上传 */}
         <TabPane
           tab="用户上传"
+          key="upload"
         >
           <Row gutter={24}>
             <Col xl={16} lg={12} md={12} sm={24} xs={24}>
@@ -130,6 +132,7 @@ const TopSearch: React.FC<any> = ({
             </Col>
             <Col xl={8} lg={12} md={12} sm={24} xs={24}>
               <RankList 
+                key={'user-upload'}
                 title={'电影排行榜'}
                 data={rankData}
               />

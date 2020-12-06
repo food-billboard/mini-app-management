@@ -86,7 +86,7 @@ const ProportionClassify: React.FC<any> = ({
           '分类'
         }
         total={() => total}
-        data={data.map(d => ({ y: d.value, x: d.name }))}
+        data={(Array.isArray(data) ? data : []).map(d => ({ y: d.value, x: d.name }))}
         valueFormat={(value: number) => `${(value || 0) * total}`}
         height={248}
         lineWidth={4}

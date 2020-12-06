@@ -25,7 +25,7 @@ const Rank: React.FC<any> = ({
         {data.map((item: IRankData, i: number) => {
           const { title, value, index=i+1 } = item
           return (
-            <li key={title}>
+            <li key={title+index}>
               <span className={`${styles.rankingItemNumber} ${index < 3 ? styles.active : ''}`}>
                 {index}
               </span>
