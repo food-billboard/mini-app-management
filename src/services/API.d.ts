@@ -512,3 +512,11 @@ declare namespace API_ADMIN {
   }
 
 }
+
+declare namespace Upload {
+
+  export interface IDeleteParams {
+    _id: string
+  }
+
+}

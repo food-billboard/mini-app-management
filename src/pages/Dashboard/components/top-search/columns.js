@@ -1,3 +1,6 @@
+import React from 'react'
+import { Tag } from 'antd'
+
 const columns = [
   {
     title: '排名',
@@ -8,7 +11,7 @@ const columns = [
     key: 'key_word',
     render: (value) => {
       return (
-        <a href="javascript:;">{value}</a>
+        <Tag color="blue" style={{cursor: 'pointer'}}>{value}</Tag>
       )
     }
   },

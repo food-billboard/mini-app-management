@@ -126,7 +126,7 @@ const CardList: React.FC<IProps> = () => {
                   onClick={async e => {
                     if (e.key === 'remove') {
                       await handleRemove(selectedRows)
-                      action.reload()
+                      action?.reload()
                     }
                   }}
                   selectedKeys={[]}

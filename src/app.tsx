@@ -62,6 +62,15 @@ import 'moment/locale/zh-cn'
 
 moment.locale('zh-cn')
 
+export const dva = {
+  config: {
+    onError(e: any) {
+      // e.preventDefault();
+      console.error(e.message);
+    },
+  },
+}
+
 
 export const locale = {
   default: 'zh-CN'
