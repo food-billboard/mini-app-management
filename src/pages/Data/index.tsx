@@ -1,5 +1,5 @@
 import React, { useRef, createRef } from 'react'
-import { Button, Dropdown, message, Menu } from 'antd'
+import { Button, Dropdown, message, Menu, Space } from 'antd'
 import { PageHeaderWrapper } from '@ant-design/pro-layout'
 import ProTable, { ActionType } from '@ant-design/pro-table'
 import { DownOutlined, PlusOutlined } from '@ant-design/icons'
@@ -83,7 +83,7 @@ const CardList: React.FC<IProps> = () => {
       valueType: 'option',
       render: (_: any, record: API_DATA.IGetMovieData) => {
         return (
-          <>
+          <Space>
             <a
               onClick={() => handleModalVisible(record._id)}
             >
@@ -99,7 +99,7 @@ const CardList: React.FC<IProps> = () => {
             >
               详情
             </a>
-          </>
+          </Space>
         )
       }
     }
@@ -163,7 +163,7 @@ const CardList: React.FC<IProps> = () => {
             ...nextParams,
             start_date: createdAt[0],
             end_date: createdAt[1],
-            currPage: current
+            currPage: current - 1
           }
           newParams = pickBy(newParams, identity)
           return getMovieList(newParams)

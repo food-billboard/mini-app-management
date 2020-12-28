@@ -292,6 +292,26 @@ declare namespace API_DATA {
     _id: string
   }
 
+  export interface IGetMovieInfoParams extends IDeleteMovieParams{}
+
+  export interface IGetMovieInfoRes {
+    _id: string
+    name: string
+    classify: string[]
+    actor: string[]
+    director: stirng[]
+    district: stirng[]
+    language: stirng[]
+    alias: stirng[]
+    screen_time: string
+    description: string
+    images: string[]
+    poster: string
+    video: string
+    author_rate: number
+    author_description: string
+  }
+
   export interface IGetMovieDetailParams {
     _id: string
   }

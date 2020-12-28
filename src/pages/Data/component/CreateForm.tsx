@@ -1,4 +1,4 @@
-import { Form, message, Rate } from 'antd'
+import { Form, Rate, message } from 'antd'
 import { FormInstance } from 'antd/lib/form'
 import ProForm, {
   DrawerForm,
@@ -9,9 +9,11 @@ import ProForm, {
 } from '@ant-design/pro-form'
 import { Store } from 'antd/lib/form/interface'
 import React, { Component, createRef } from 'react'
-import SearchForm from './SearchSelect'
+import SearchForm, { ISelectItem } from './SearchSelect'
 import InputAlias from './InputSearch'
 import Upload from './Upload'
+import { getActorInfo, getDirectorInfo, getDistrictInfo, getLanguageInfo, getClassifyInfo, getMovieInfo } from '@/services'
+import { fileValidator, localFetchData4Array } from './utils'
 
 type FormData = API_DATA.IPutMovieParams | API_DATA.IPostMovieParams 
 
@@ -23,44 +25,57 @@ interface IProps {
 interface IState {
   visible: boolean
   loading: boolean
-}
-
-const objectIdReg = /^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i
-
-const fileValidator = (length: number) => (_: any, value: Array<string>) => {
-  const valid = Array.isArray(value) && value.length == length && value.every(val => objectIdReg.test(val))
-  return valid ? Promise.resolve() : Promise.reject('请先上传或添加文件')
+  editable: boolean
 }
 
 class CreateForm extends Component<IProps, IState> {
 
   public state: IState = {
     visible: false,
-    loading: false
+    loading: false,
+    editable: false
   }
 
   private formRef = createRef<FormInstance>()
 
   public open = async (id?: string) => {
     const isEdit = !!id
-    this.setState({
-      visible: true,
-      loading: isEdit
-    })
 
-    if(isEdit) {
-      //获取修改的数据
-      Promise.resolve()
-      .then(data => {
-        this.formRef.current?.setFieldsValue(data)
+    const show = () => {
+      this.setState({
+        visible: true,
+        loading: isEdit,
+        editable: isEdit
       })
     }
+
+    if(id) {
+      //获取修改的数据
+      return await getMovieInfo({
+        _id: id
+      })
+      .then((data: API_DATA.IGetMovieInfoRes) => {
+        const { poster, video } = data
+        this.formRef.current?.setFieldsValue({
+          ...data,
+          poster: [poster],
+          video: [video]
+        })
+        show()
+      })
+      .catch(err => {
+        console.log(err)
+        message.info('数据获取错误，请重试')
+      })
+    }
+
+    show()
 
   }
 
   private onCancel = () => {
-
     this.setState({ visible: false })
+    this.formRef.current?.resetFields()
     this.props.onCancel && this.props.onCancel()
   }
 
@@ -72,10 +87,8 @@ class CreateForm extends Component<IProps, IState> {
       <DrawerForm
         title="新建表单"
         visible={visible}
+        formRef={this.formRef as any}
         onFinish={async (values: Store) => {
-          console.log(values);
-          message.success('提交成功！')
-
           this.props.onSubmit && this.props.onSubmit(values as FormData)
           return true
         }}
@@ -122,7 +135,7 @@ class CreateForm extends Component<IProps, IState> {
               }]
             }}
             item={{
-              fetchData: () => Promise.resolve([])
+              fetchData: () => localFetchData4Array<API_DATA.IGetActorInfoRes, ISelectItem>(getActorInfo)(['_id', 'key'], ['name', 'title'])
             }}
           />
         </ProForm.Group>
@@ -136,13 +149,13 @@ class CreateForm extends Component<IProps, IState> {
               }]
             }}
             item={{
-              fetchData: () => Promise.resolve([])
+              fetchData: () => localFetchData4Array<API_DATA.IGetDirectorInfoRes, ISelectItem>(getDirectorInfo)(['_id', 'key'], ['name', 'title'])
             }}
           />
         </ProForm.Group>
         <ProForm.Group>
           <ProFormSelect
-            request={() => Promise.resolve([])}
+            request={async () => await localFetchData4Array<API_DATA.IGetClassifyInfoRes>(getClassifyInfo)(['_id', 'value'], [ 'name', 'label' ])}
             name="classify"
             label="分类"
             hasFeedback
@@ -153,7 +166,7 @@ class CreateForm extends Component<IProps, IState> {
             }]}
           />
           <ProFormSelect
-            request={() => Promise.resolve([])}
+            request={() => localFetchData4Array<API_DATA.IGetLanguageInfoRes>(getLanguageInfo)(['_id', 'value'], [ 'name', 'label' ])}
             name="language"
             label="语言"
             hasFeedback
@@ -164,7 +177,7 @@ class CreateForm extends Component<IProps, IState> {
             }]}
           />
           <ProFormSelect
-            request={() => Promise.resolve([])}
+            request={() => localFetchData4Array(getDistrictInfo)()}
             name="district"
             label="地区"
             hasFeedback
@@ -185,11 +198,12 @@ class CreateForm extends Component<IProps, IState> {
         <Upload 
           wrapper={{
             label: '视频',
-            name: 'direcotr',
+            name: 'video',
             rules: [
               {
                 required: true,
-                validator: fileValidator(1)
+                validator: fileValidator(1),
+                validateTrigger: 'onBlur'
               }
             ]
           }}
@@ -206,7 +220,8 @@ class CreateForm extends Component<IProps, IState> {
             rules: [
               {
                 required: true,
-                validator: fileValidator(1)
+                validator: fileValidator(1),
+                validateTrigger: 'onBlur'
               }
             ]
           }}
@@ -223,7 +238,8 @@ class CreateForm extends Component<IProps, IState> {
             rules: [
               {
                 required: true,
-                validator: fileValidator(6)
+                validator: fileValidator(6),
+                validateTrigger: 'onBlur'
               }
             ]
           }}

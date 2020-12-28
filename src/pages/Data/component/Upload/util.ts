@@ -1,5 +1,7 @@
 import SparkMd5 from 'spark-md5'
 
+const objectIdReg = /^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i
+
 export const encryptionFile = (file: File, chunkSize: number=1024 * 1024 * 5) => {
   const { size } = file
 
@@ -46,4 +48,14 @@ export const sleep = (time: number) => {
   return new Promise((resolve) => {
     setTimeout(resolve, time)
   })
+}
+
+export const toBase64 = (str: string): string => {
+  return btoa(str)
+}
+
+export const isObjectId = (str: string) => objectIdReg.test(str)
+
+export const propsValueValid = (value: string[], length: number) => {
+  return Array.isArray(value) && value.length == length && value.every(isObjectId)
 }

@@ -14,9 +14,9 @@ interface IProps {
   value?: string[]
 }
 
-interface ISelectItem extends TransferItem {
+export interface ISelectItem extends TransferItem {
   title: string
-  id: string
+  key: string
 }
 
 const SearchSelect: React.FC<IProps> = ({
@@ -30,9 +30,7 @@ const SearchSelect: React.FC<IProps> = ({
   const [ selected, setSelected ] = useState<Array<string>>([])
 
   const onChange = (newTargetKeys: string[], direction:TransferDirection, moveKeys: string[]) => {
-    console.log(newTargetKeys, direction, moveKeys)
     setSelected(newTargetKeys)
-    console.log(newTargetKeys)
     propsChange && propsChange(newTargetKeys)
   }
 

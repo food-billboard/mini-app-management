@@ -62,12 +62,14 @@ export const formatQuery = (query: any ={})=>{
   return ret;
 }
 
-export const withTry = (func: Function) => async (...args: any[]) => {
-  try {
-    const data = await func(...args)
-    return [null, data]
-  }catch(err) {
-    return [err, null]
+export function withTry<T=any> (func: Function) {
+  return async function(...args: any[]): Promise<[any, T | null]> {
+    try {
+      const data = await func(...args)
+      return [null, data]
+    }catch(err) {
+      return [err, null]
+    }
   }
 }
 

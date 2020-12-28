@@ -31,6 +31,16 @@ export const putMovie = (data: API_DATA.IPutMovieParams) => {
 
 }
 
+//编辑电影信息
+export const getMovieInfo = (params: API_DATA.IGetMovieInfoParams) => {
+
+  return request<any>('/api/manage/movie/edit', {
+    method: 'GET',
+    params
+  })
+
+}
+
 //删除电影
 export const deleteMovie = (params: API_DATA.IDeleteMovieParams) => {
   return request('/api/manage/movie', {
