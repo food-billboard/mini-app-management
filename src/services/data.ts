@@ -61,7 +61,7 @@ export const movieDetail = (params: API_DATA.IGetMovieDetailParams) => {
 
 //评论列表
 export const getMovieCommentList = (params: API_DATA.IGetMovieCommentParams) => {
-  return request<API_DATA.IGetMovieCommentRes>('/api/manage/movie/detail/comment', {
+  return request<API_DATA.IGetMovieCommentRes[]>('/api/manage/movie/detail/comment', {
     method: 'GET',
     params
   })
@@ -69,16 +69,16 @@ export const getMovieCommentList = (params: API_DATA.IGetMovieCommentParams) => 
 
 //收藏用户列表
 export const getStoreUserList = (params: API_DATA.IGetStoreUserListParams) => {
-  return request<API_DATA.IGetStoreUserListRes>('/api/manage/movie/detail/user', {
+  return request<API_DATA.IGetStoreUserListRes[]>('/api/manage/movie/detail/user', {
     method: 'GET',
     params
   })
 }
 
 //演员信息
-export const getActorInfo = (params: API_DATA.IGetActorInfoParams) => {
+export const getActorInfo = (params?: API_DATA.IGetActorInfoParams) => {
 
-  return request<API_DATA.IGetActorInfoRes>('/api/manage/movie/detail/info/actor', {
+  return request<API_DATA.IGetActorInfoRes[]>('/api/manage/movie/detail/info/actor', {
     method: 'GET',
     params
   })
@@ -86,7 +86,7 @@ export const getActorInfo = (params: API_DATA.IGetActorInfoParams) => {
 }
 
 //修改演员信息
-export const putActotInfo = (data: API_DATA.IPutActorInfoParams) => {
+export const putActorInfo = (data: API_DATA.IPutActorInfoParams) => {
   return request('/api/manage/movie/detail/info/actor', {
     method: 'PUT',
     data
@@ -110,8 +110,8 @@ export const deleteActorInfo = (params: API_DATA.IDeleteActorParams) => {
 }
 
 //导演信息
-export const getDirectorInfo = (params: API_DATA.IGetDirectorInfoParams) => {
-  return request<API_DATA.IGetDirectorInfoRes>('/api/manage/movie/detail/info/director', {
+export const getDirectorInfo = (params?: API_DATA.IGetDirectorInfoParams) => {
+  return request<API_DATA.IGetDirectorInfoRes[]>('/api/manage/movie/detail/info/director', {
     method: 'GET',
     params
   })
@@ -142,8 +142,8 @@ export const deleteDirectorInfo = (params: API_DATA.IDeleteDirectorParams) => {
 }
 
 //地区信息
-export const getDistrictInfo = (params: API_DATA.IGetDistrictInfoParams) => {
-  return request<API_DATA.IGetDistrictInfoRes>('/api/manage/movie/detail/info/district', {
+export const getDistrictInfo = (params?: API_DATA.IGetDistrictInfoParams) => {
+  return request<API_DATA.IGetDistrictInfoRes[]>('/api/manage/movie/detail/info/district', {
     method: 'GET',
     params
   })
@@ -174,8 +174,8 @@ export const deleteDistrictInfo = (params: API_DATA.IDeleteDistrictParams) => {
 }
 
 //语言信息
-export const getLanguageInfo = (params: API_DATA.IGetLanguageInfoParams) => {
-  return request('/api/manage/movie/detail/info/language', {
+export const getLanguageInfo = (params?: API_DATA.IGetLanguageInfoParams) => {
+  return request<API_DATA.IGetLanguageInfoRes[]>('/api/manage/movie/detail/info/language', {
     method: 'GET',
     params
   })
@@ -206,8 +206,8 @@ export const deleteLanguageInfo = (params: API_DATA.IDeleteLanguageParams) => {
 }
 
 //分类信息
-export const getClassifyInfo = (params: API_DATA.IGetClassifyInfoParams) => {
-  return request<API_DATA.IGetClassifyInfoRes>('/api/manage/movie/detail/info/classify', {
+export const getClassifyInfo = (params?: API_DATA.IGetClassifyInfoParams) => {
+  return request<API_DATA.IGetClassifyInfoRes[]>('/api/manage/movie/detail/info/classify', {
     method: 'GET',
     params
   })

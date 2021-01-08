@@ -7,11 +7,7 @@ import noop from 'lodash/noop'
 import { IVisitStatisticsData } from '../../service'
 import styles from './index.less'
 
-const UserVisit: React.FC<any> = ({
-  loading,
-  data=[],
-  fetchData=noop
-}: {
+interface IProps {
   loading: boolean
   data: Array<IVisitStatisticsData>
   fetchData: (params?: {
@@ -19,6 +15,12 @@ const UserVisit: React.FC<any> = ({
     start_date?: string
     end_date?: string
   }) => any
+}
+
+const UserVisit: React.FC<IProps> = ({
+  loading,
+  data=[],
+  fetchData=noop
 }) => {
 
   useEffect(() => {

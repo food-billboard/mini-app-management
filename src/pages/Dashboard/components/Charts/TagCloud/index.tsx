@@ -33,6 +33,7 @@ interface IProps {
   data: Array<ICloudData>
   className?: string
   height?: number
+  onClick?: (...args: any[]) => any
 }
 
 interface IState {
@@ -192,6 +193,7 @@ class TagCloud extends Component<IProps, IState> {
           height,
         }}
         ref={this.saveRootRef}
+        onClick={this.props?.onClick}
       >
         {dv && (
           <Chart
@@ -208,7 +210,6 @@ class TagCloud extends Component<IProps, IState> {
               },
             }}
           >
-
 						<Tooltip showTitle={false} />
 						<Coordinate reflect="y" />
 						<Axis name='x' visible={false} />

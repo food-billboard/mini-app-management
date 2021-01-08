@@ -53,6 +53,7 @@
     "@antv/data-set": "^0.11.7",
     "@types/numeral": "0.0.28",
     "@types/spark-md5": "^3.0.2",
+    "@types/video.js": "^7.3.11",
     "@umijs/route-utils": "^1.0.33",
     "antd": "^4.7.0",
     "bizcharts": "^4.0.15",
@@ -78,7 +79,8 @@
     "tus-js-client": "^2.2.0",
     "umi": "^3.2.14",
     "umi-request": "^1.0.8",
-    "use-merge-value": "^1.0.1"
+    "use-merge-value": "^1.0.1",
+    "video.js": "^7.10.2"
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^2.0.2",

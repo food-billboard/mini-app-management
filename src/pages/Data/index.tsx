@@ -16,8 +16,6 @@ interface IProps {
   role: any
 }
 
-interface IState {}
-
 /**
  * 添加节点
  * @param fields

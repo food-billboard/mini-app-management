@@ -8,7 +8,7 @@ import React, { useEffect, Fragment, useRef, useState, useMemo } from 'react'
 import { PlusOutlined, InfoCircleOutlined } from '@ant-design/icons'
 import isEqual from 'lodash/isEqual'
 import noop from 'lodash/noop'
-import WrapperItem from './WrapperItem'
+import WrapperItem from '@/components/WrapperItem'
 
 const COLOR_LIST = [ "magenta", "red", "volcano", "orange", "gold", "lime", "green", "cyan", "blue", "geekblue", "purple" ]
 

@@ -4,7 +4,7 @@ import {
 import { Transfer } from 'antd'
 import { TransferDirection, TransferItem } from 'antd/es/transfer'
 import React, { useState, useEffect } from 'react'
-import WrapperItem from './WrapperItem'
+import WrapperItem from '@/components/WrapperItem'
 
 interface IProps {
   placeholder?: string

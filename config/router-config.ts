@@ -69,7 +69,18 @@ export default [
                 path: 'data/:id',
                 component: '@/pages/DataDetail',
                 title: '数据详情'
-              }
+              },
+              {
+                path: 'about',
+                component: '@/pages/DataAbout',
+                title: '数据相关'
+              },
+              {
+                path: 'about/:name',
+                component: '@/pages/DataAboutDetail',
+                title: '数据相关详情',
+                hideInMenu: true
+              },
             ]
           },
           {

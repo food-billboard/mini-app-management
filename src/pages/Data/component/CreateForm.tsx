@@ -11,7 +11,7 @@ import { Store } from 'antd/lib/form/interface'
 import React, { Component, createRef } from 'react'
 import SearchForm, { ISelectItem } from './SearchSelect'
 import InputAlias from './InputSearch'
-import Upload from './Upload'
+import Upload from '@/components/Upload'
 import { getActorInfo, getDirectorInfo, getDistrictInfo, getLanguageInfo, getClassifyInfo, getMovieInfo } from '@/services'
 import { fileValidator, localFetchData4Array } from './utils'
 
