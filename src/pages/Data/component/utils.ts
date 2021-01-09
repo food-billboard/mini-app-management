@@ -1,6 +1,6 @@
 import pick from 'lodash/pick'
 import { withTry } from '@/utils'
-import { Upload } from './Upload'
+import { Upload } from '@/components/Upload'
 
 export const fileValidator = (length: number) => (_: any, value: Array<string>) => {
   return Upload.valid(value, length) ? Promise.resolve() : Promise.reject('请先上传或添加文件')

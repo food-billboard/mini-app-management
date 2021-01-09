@@ -10,8 +10,6 @@ import { ConnectState } from '@/models/connect';
 
 const { Tab, Username, Password, Submit, Mobile } = LoginFrom;
 
-console.log(11111111)
-
 const LoginMessage: React.FC<{
   content: string;
 }> = ({ content }) => (
@@ -49,7 +47,6 @@ class Login extends Component<any> {
   }
 
   public componentDidMount = () => {
-    console.log(11111111)
     if(!!this.props.isLogin) {
       replaceGoto()
     }

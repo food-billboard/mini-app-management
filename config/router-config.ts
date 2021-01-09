@@ -52,7 +52,7 @@ export default [
             title: '用户管理',
             routes: [
               {
-                path: 'member/:id',
+                path: '/member/:id',
                 component: '@/pages/MemberDetail',
                 title: '用户详情'
               }
@@ -60,27 +60,52 @@ export default [
           },
           {
             path: '/data',
-            component: '@/pages/Data',
             name: 'data',
             title: '数据管理',
             icon: 'database',
             routes: [
               {
-                path: 'data/:id',
-                component: '@/pages/DataDetail',
-                title: '数据详情'
+                path: '/data/main',
+                title: '数据信息管理',
+                name: 'datainfo',
+                routes: [
+                  {
+                    path: '/data/main',
+                    component: '@/pages/Data',
+                  },
+                  {
+                    path: '/data/main/:id',
+                    component: '@/pages/DataDetail',
+                    title: '数据详情',
+                    name: 'datainfodetail',
+                    hideInMenu: true
+                  }
+                ]
               },
               {
-                path: 'about',
-                component: '@/pages/DataAbout',
-                title: '数据相关'
+                path: '/data/about',
+                title: '数据相关管理',
+                name: 'dataabout',
+                routes: [
+                  {
+                    path: '/data/about',
+                    component: '@/pages/DataAbout',
+                  },
+                  {
+                    path: '/data/about/:name',
+                    component: '@/pages/DataAboutDetail',
+                    title: '数据相关详情',
+                    name: 'dataaboutdetail',
+                    hideInMenu: true
+                  }
+                ]
               },
               {
-                path: 'about/:name',
-                component: '@/pages/DataAboutDetail',
-                title: '数据相关详情',
+                path: '/data/video/:id',
+                component: '@/pages/Video',
+                title: '视频预览',
                 hideInMenu: true
-              },
+              }
             ]
           },
           {

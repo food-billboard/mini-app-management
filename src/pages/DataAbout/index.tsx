@@ -5,14 +5,14 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout'
 import { history } from 'umi'
 import TagCloud, { ICloudData } from '../Dashboard/components/Charts/TagCloud'
 import { getActorInfo, getDirectorInfo, getDistrictInfo, getLanguageInfo, getClassifyInfo } from '@/services'
-import { withTry } from '@/utils/utils'
+import { localFetchData4Array } from '../Data/component/utils'
 import styles from './style.less'
 
 interface IProps {}
 
 interface IList {
   title: string
-  data: ICloudData
+  data: ICloudData[]
   action: () => void
 }
 
@@ -40,42 +40,51 @@ const DataAbout: FC<IProps> = () => {
 
   const routerAction = useCallback((path) => {
     return function() {
-      history.push(path)
+      history.push(`/data/about/${path}`)
     }
+  }, [])
+
+  const wrapperRandomData: (list?: any[]) => ICloudData[] = useCallback((list) => {
+    return (list ?? []).map(item => {
+      const value = (Math.random() * 100).toFixed(0) + 20
+      return { ...item, text: item.name, value }
+    })
+
   }, [])
 
   const internalFetchData = useCallback(async () => {
     setLoading(true)
-    const [ , actor ] = await withTry(getActorInfo)()
-    const [ , director ] = await withTry(getDirectorInfo)()
-    const [ , classify ] = await withTry(getClassifyInfo)()
-    const [ , language ] = await withTry(getLanguageInfo)()
-    const [ , district ] = await withTry(getDistrictInfo)()
+    const actor = await localFetchData4Array<API_DATA.IGetActorInfoRes, ICloudData>(getActorInfo)(['name', 'name'])
+    const director = await localFetchData4Array<API_DATA.IGetDirectorInfoRes, ICloudData>(getDirectorInfo)(['name', 'name'])
+    const classify = await localFetchData4Array<API_DATA.IGetClassifyInfoRes, ICloudData>(getClassifyInfo)(['name', 'name'])
+    const language = await localFetchData4Array<API_DATA.IGetLanguageInfoRes, ICloudData>(getLanguageInfo)(['name', 'name'])
+    const district = await localFetchData4Array<API_DATA.IGetDistrictInfoRes, ICloudData>(getDistrictInfo)(['name', 'name'])
+
     unstable_batchedUpdates(() => {
       setList([
         {
           title: '演员信息',
-          data: actor ?? [],
+          data: wrapperRandomData(actor),
           action: routerAction('actor')
         },
         {
           title: '导演信息',
-          data: director ?? [],
+          data: wrapperRandomData(director),
           action: routerAction('director')
         },
         {
           title: '分类信息',
-          data: classify ?? [],
+          data: wrapperRandomData(classify),
           action: routerAction('classify')
         },
         {
           title: '语言信息',
-          data: language ?? [],
+          data: wrapperRandomData(language),
           action: routerAction('language')
         },
         {
           title: '地区信息',
-          data: district ?? [],
+          data: wrapperRandomData(district),
           action: routerAction('district')
         }
       ])
@@ -85,7 +94,7 @@ const DataAbout: FC<IProps> = () => {
 
   useEffect(() => {
     internalFetchData()
-  })
+  }, [])
 
   return (
     <PageHeaderWrapper 
@@ -109,11 +118,14 @@ const DataAbout: FC<IProps> = () => {
                   md={24} 
                   sm={24} 
                   xs={24}
+                  style={{marginBottom: 20}}
+                  key={title}
                 >
                   <Card
                     title={title}
                   >
                     <TagCloud
+                      height={250}
                       onClick={action}
                       data={data}
                     />

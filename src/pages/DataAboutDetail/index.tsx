@@ -1,4 +1,4 @@
-import React, { FC, Fragment, memo, useCallback, useRef, useState } from 'react'
+import React, { FC, Fragment, memo, useCallback, useRef, useState, useMemo } from 'react'
 import { Button, message, Result, Modal } from 'antd'
 import { history } from 'umi'
 import { DataAbout } from './component/List'
@@ -7,7 +7,10 @@ import { Edit, IEditRef } from './component/Edit'
 
 const CardList: FC<any> = () => {
 
-  const path: TPath = history.location.path.split('/').slice(-1)
+  const [ path ]: [ TPath ] = useMemo(() => {
+    const { location: { pathname } } = history
+    return pathname.split('/').slice(-1) as [ TPath ]
+  }, [])
 
   const [ formState, setFormState ] = useState<'add' | 'edit'>('add')
 
@@ -54,7 +57,7 @@ const CardList: FC<any> = () => {
 
   }, [formState])
 
-  if(!Object.keys(AboutInfo).every(key => key === path)) return <Result
+  if(!Object.keys(AboutInfo).some(key => key === path)) return <Result
     status="404"
     title="404"
     subTitle="没有找到对应的页面"
