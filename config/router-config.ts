@@ -105,6 +105,12 @@ export default [
                 component: '@/pages/Video',
                 title: '视频预览',
                 hideInMenu: true
+              },
+              {
+                path: '/data/image',
+                component: '@/pages/Image',
+                title: '图片预览',
+                hideInMenu: true
               }
             ]
           },

@@ -1,32 +1,37 @@
 import React, { FC, memo, useMemo, useCallback } from 'react'
 import { Result, Button } from 'antd'
 import { history } from 'umi'
-import Video from '@/components/Video'
+import ImageViewer, { TSrc } from '@/components/Image'
+
 
 const VideoPreview: FC<any> = () => {
 
-  const videoId: string | undefined = useMemo(() => {
+  const urls: TSrc[] | undefined = useMemo(() => {
     const { location: { state } } = history
-    const { url } = state as { url: string | undefined }
-    return url
+    const { urls } = state as { urls: string[] | undefined } || {}
+    return urls?.map(url => {
+      return {
+        src: url
+      }
+    })
   }, [])
 
   const goback = useCallback(() => {
     history.goBack()
   }, [])
 
-  if(!videoId) return <Result
+  if(!urls) return <Result
     status="404"
     title="404"
-    subTitle="对不起，未找到对应视频资源"
+    subTitle="对不起，当前无图片资源"
     extra={
       <Button onClick={goback} type="primary">回到上一页</Button>
     }
   />
 
   return (
-    <Video
-      src={`/api/static/video/${videoId}.mp4`}
+    <ImageViewer
+      srcs={urls}
     />
   )
 
