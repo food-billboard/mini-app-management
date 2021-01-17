@@ -1,4 +1,4 @@
-import React, { memo, forwardRef, useImperativeHandle, useState, useRef, useEffect, useCallback } from 'react'
+import React, { memo, forwardRef, useImperativeHandle, useState, useRef, useEffect, useCallback, Fragment } from 'react'
 import { unstable_batchedUpdates } from 'react-dom'
 import { message } from 'antd'
 import { ModalProps } from 'antd/es/modal'
@@ -9,7 +9,7 @@ import { Store } from 'antd/lib/form/interface'
 interface IProps extends ModalProps {
   onConfirm?: (values: Store) => Promise<any>
   renderForm: (form: FormInstance) => React.ReactNode
-  fetchData?(): Promise<any>
+  fetchData?(...args: any[]): Promise<any>
 }
 
 export interface IEditRef {
@@ -40,32 +40,39 @@ const EditModal = forwardRef<IEditRef, IProps>((props, ref) => {
   const internalFetchData = useCallback(async () => {
     if(!id) return 
     if(fetchData) {
-      const data = await fetchData()
-      formRef.current?.setFieldsValue(data)
+      const data = await fetchData({
+        _id: id
+      })
+      let form 
+      if(Array.isArray(data)) {
+        [ form ] = data
+      }else {
+        form = data
+      }
+      formRef.current?.setFieldsValue(form)
     }
   }, [id])
 
   const onFinish = useCallback(async (values: Store) => {
-    console.log(values)
-    message.success('提交成功')
     onConfirm && await onConfirm(values)
+    message.success('提交成功')
+    setVisible(false)
     return true
   }, [id])
 
   const onCancel = useCallback((e) => {
     setVisible(false)
     nextProps.onCancel && nextProps.onCancel(e)
-  }, [])
+  }, [id, visible])
+
+  const visibleChange = useCallback((visible: boolean) => {
+    if(!visible) onCancel(null)
+  }, [onCancel])
 
   useEffect(() => {
     if(!id) return 
     internalFetchData()
-  }, [id])
-
-  useEffect(() => {
-    if(visible) return 
-    formRef.current?.resetFields()
-  }, [visible])
+  }, [id, visible])
 
   return (
     <ModalForm
@@ -73,9 +80,10 @@ const EditModal = forwardRef<IEditRef, IProps>((props, ref) => {
       visible={visible}
       formRef={formRef}
       onFinish={onFinish}
+      onVisibleChange={visibleChange}
       modalProps={{
         ...nextProps,
-        onCancel
+        onCancel,
       }}
     >
       {

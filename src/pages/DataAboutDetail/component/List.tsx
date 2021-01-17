@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react'
+import React, { memo, useCallback, useEffect, useState, useImperativeHandle, forwardRef } from 'react'
 import { List, Pagination } from 'antd'
 import { PageHeaderWrapper } from '@ant-design/pro-layout'
 import { PaginationProps } from 'antd/es/pagination'
@@ -12,27 +12,30 @@ export interface IList {
   source_type: 'ORIGIN' | 'USER'
 }
 
-export interface IProps<T> {
+export interface IProps<T=any> {
   loading?: boolean
   headerContent?: React.ReactNode | null
   headerExtra?: React.ReactNode | null
   renderItem(item: T): React.ReactNode
-  fetchData(...args: any[]): Promise<T[]>
+  fetchData(...args: any[]): Promise<T | T[]>
   // pagination?: PaginationProps
 }
 
-function Data<T>({
-  loading: propsLoading,
-  headerContent,
-  headerExtra,
-  renderItem,
-  fetchData,
-  // pagination
-}: IProps<T>) {
+export interface DataAboutRef {
+  fetchData: () => Promise<void>
+}
+
+const Data = forwardRef<DataAboutRef, IProps>((props, ref) => {
+
+  const { loading: propsLoading, headerContent, headerExtra, renderItem, fetchData, } = props
 
   const [ loading, setLoading ] = useState<boolean>(true)
-  const [ list, setList ] = useState<T[]>([])
+  const [ list, setList ] = useState<any[]>([])
   // const [ currPage, setCurrpage ] = useState<number>(0)
+
+  useImperativeHandle(ref, () => ({
+    fetchData: internalFetchData
+  }))
 
   const content = headerContent === undefined ? (
     <div className={styles.pageHeaderContent}>
@@ -67,8 +70,11 @@ function Data<T>({
 
   const internalFetchData = useCallback(async () => {
     setLoading(true)
-    const data: T[] = await fetchData()
-    setList(data)
+    const data: any[] = await fetchData()
+    setList([
+      {},
+      ...data,
+    ])
     setLoading(false)
   }, [])
 
@@ -95,6 +101,8 @@ function Data<T>({
             md: 2,
             sm: 1,
             xs: 1,
+            xl: 4,
+            xxl: 4
           }}
           dataSource={list}
           renderItem={renderItem}
@@ -112,6 +120,6 @@ function Data<T>({
     </PageHeaderWrapper>
   )
 
-}
+})
 
 export const DataAbout = memo(Data)

@@ -73,3 +73,11 @@ export function withTry<T=any> (func: Function) {
   }
 }
 
+// const NEETWORK = 'http://47.111.229.250:4000'
+const NEETWORK = 'http://localhost:4000'
+
+export function formatUrl(url: string) {
+  if(typeof url !== 'string') return url
+  return url.startsWith('http') ? url : (url.startsWith('/') ? `${NEETWORK}${url}` : `${NEETWORK}/${url}`)
+}
+

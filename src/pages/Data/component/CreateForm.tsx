@@ -177,7 +177,7 @@ class CreateForm extends Component<IProps, IState> {
             }]}
           />
           <ProFormSelect
-            request={() => localFetchData4Array(getDistrictInfo)()}
+            request={() => localFetchData4Array<API_DATA.IGetDistrictInfoRes>(getDistrictInfo)(['_id', 'value'], ['name', 'label'])}
             name="district"
             label="地区"
             hasFeedback

@@ -1,7 +1,7 @@
 import React, { FC, Fragment, memo, useCallback, useRef, useState, useMemo } from 'react'
 import { Button, message, Result, Modal } from 'antd'
 import { history } from 'umi'
-import { DataAbout } from './component/List'
+import { DataAbout, DataAboutRef } from './component/List'
 import { AboutInfo, TPath, TEditActionType, TDeleteActionType, TAddActionType } from './component/Item'
 import { Edit, IEditRef } from './component/Edit' 
 
@@ -15,6 +15,8 @@ const CardList: FC<any> = () => {
   const [ formState, setFormState ] = useState<'add' | 'edit'>('add')
 
   const editRef = useRef<IEditRef>(null)
+
+  const listRef = useRef<DataAboutRef>(null)
 
   const goBack = useCallback(() => {
     history.go(-1)
@@ -35,6 +37,10 @@ const CardList: FC<any> = () => {
         return AboutInfo[path].delete({
           _id: id
         })
+        .then(_ => {
+          message.info('删除成功')
+          return listRef.current?.fetchData()
+        })
       }
     })
   }, [])
@@ -46,10 +52,11 @@ const CardList: FC<any> = () => {
     setFormState('edit')
   }, [])
 
-  const confirm = useCallback(async () => {
+  const confirm = useCallback(async (values) => {
 
     try {
-      await AboutInfo[path][formState]
+      await AboutInfo[path][formState](values)
+      await listRef.current?.fetchData()
     }catch(err) {
       console.log(err)
       message.error('操作失败，请重试')
@@ -67,6 +74,7 @@ const CardList: FC<any> = () => {
   return (
     <Fragment>
       <DataAbout
+        ref={listRef}
         fetchData={AboutInfo[path].fetchData}
         headerContent={null}
         headerExtra={null}

@@ -380,6 +380,12 @@ declare namespace API_DATA {
     _id: string
   }
 
+  interface ICountryData {
+    _id: string
+    name: string
+    updatedAt: string
+  }
+
   export interface IGetActorInfoRes {
     _id: string
     another_name: string
@@ -388,6 +394,7 @@ declare namespace API_DATA {
     updatedAt: string
     avatar: string
     source_type: IDataSourceType
+    country: ICountryData
   }
 
   export interface IPutActorInfoParams extends IPostActorInfoParams {

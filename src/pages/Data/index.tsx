@@ -24,8 +24,19 @@ const handleAdd = async (fields: any) => {
   const hide = message.loading('正在添加')
   const method = !!fields._id ? putMovie : postMovie
 
+  const { video, poster, district, classify, language, ...nextFields } = fields
+
+  const params = {
+    ...nextFields,
+    classify: Array.isArray(classify) ? classify : [classify],
+    district: Array.isArray(district) ? district : [district],
+    language: Array.isArray(language) ? language : [language],
+    video: Array.isArray(video) ? video[0] : video,
+    poster: Array.isArray(poster) ? poster[0] : poster
+  }
+
   try {
-    await method(fields)
+    await method(params)
     hide()
     message.success('操作成功')
     return true

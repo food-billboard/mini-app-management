@@ -3,6 +3,7 @@ import { Button, Card, List, Typography, Space, Input, Form } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { FormInstance } from 'antd/es/form'
 import { ProFormText, ProFormSelect } from '@ant-design/pro-form'
+import moment from 'moment'
 import Upload from '@/components/Upload'
 import { 
   getLanguageInfo, 
@@ -27,10 +28,11 @@ import {
   postClassifyInfo
 } from '@/services'
 import { SOURCE_TYPE } from '@/utils/constants'
+import { formatUrl } from '@/utils'
 import { localFetchData4Array } from '../../Data/component/utils'
 import styles from '../style.less'
 
-const { Text } = Typography
+const { Text, Paragraph } = Typography
 
 export type TPath = keyof typeof AboutInfo
 
@@ -38,12 +40,39 @@ export type TDeleteActionType = (id: string) => void
 export type TEditActionType = TDeleteActionType
 export type TAddActionType = () => void
 
+const format = (date: string) => moment(date).format('YYY-MM-DD')
+
 export const AboutInfo = {
   actor: {
-    fetchData: getActorInfo,
+    fetchData: async (values: API_DATA.IGetActorInfoParams) => {
+      const data = await getActorInfo(values)
+      if(!values || !values._id) return data
+      const form: API_DATA.IGetActorInfoRes = Array.isArray(data) ? data[0] : data
+      if(!form) return {}
+      const { country, another_name, avatar, ...nextForm } = form
+      return {
+        ...nextForm,
+        alias: another_name,
+        avatar: Array.isArray(avatar) ? avatar : [avatar],
+        country: country?._id
+      }
+    },
     delete: deleteActorInfo,
-    edit: putActorInfo,
-    add: postActorInfo,
+    edit: (values: API_DATA.IPutActorInfoParams) => {
+      const { avatar, ...nextValues } = values
+      return putActorInfo({
+        ...nextValues,
+        avatar: Array.isArray(avatar) ? avatar[0] : avatar
+      })
+
+    },
+    add: (values: API_DATA.IPostActorInfoParams) => {
+      const { avatar, ...nextValues } = values
+      return postActorInfo({
+        ...nextValues,
+        avatar: Array.isArray(avatar) ? avatar[0] : avatar
+      })
+    },
     renderItem(operation: {
       deleteItem: TDeleteActionType
       editItem: TEditActionType
@@ -63,31 +92,30 @@ export const AboutInfo = {
                 actions={[<a onClick={() => deleteItem(_id)} key="option1">删除</a>, <a onClick={() => editItem(_id)} key="option2">编辑</a>]}
               >
                 <Card.Meta
-                  avatar={<img alt="" className={styles.cardAvatar} src={avatar} />}
+                  avatar={<img alt="" className={styles.cardAvatar} src={formatUrl(avatar)} />}
                   title={<a>{name}</a>}
                   description={
-                    // <Paragraph
-                    //   className={styles.item}
-                    //   ellipsis={{
-                    //     rows: 3,
-                    //   }}
-                    // >
-                    //   {item.description}
-                    // </Paragraph>
-                    <Space direction="vertical">
-                      <Fragment>
-                        别名: {' '}
-                        <Text>{another_name}</Text>
-                      </Fragment>
-                      <Fragment>
-                        来源类型: {' '}
-                        <Text strong>{SOURCE_TYPE[source_type]}</Text>
-                      </Fragment>
-                      <Fragment>
-                        创建时间: {' '}
-                        <Text code>{createdAt}</Text>
-                      </Fragment>
-                    </Space>
+                    <Paragraph
+                      className={styles.item}
+                      ellipsis={{
+                        rows: 3,
+                      }}
+                    >
+                      <Space direction="vertical">
+                        <div>
+                          别名: {' '}
+                          <Text>{another_name}</Text>
+                        </div>
+                        <div>
+                          来源类型: {' '}
+                          <Text strong>{SOURCE_TYPE[source_type]}</Text>
+                        </div>
+                        <div>
+                          创建时间: {' '}
+                          <Text code>{createdAt}</Text>
+                        </div>
+                      </Space>
+                    </Paragraph>
                   }
                 />
               </Card>
@@ -124,8 +152,8 @@ export const AboutInfo = {
             }}
           />
           <ProFormSelect
-            request={() => localFetchData4Array(getDistrictInfo)()}
-            name="district"
+            request={() => localFetchData4Array<API_DATA.IGetDistrictInfoRes>(getDistrictInfo)(['_id', 'value'], ['name', 'label'])}
+            name="country"
             label="地区"
             hasFeedback
             showSearch
@@ -135,11 +163,6 @@ export const AboutInfo = {
             }]}
           />
           <Form.Item
-            rules={[
-              {
-                required: true
-              }
-            ]}
             name="_id"
           >
             <Input
@@ -151,10 +174,35 @@ export const AboutInfo = {
     }
   },
   director: {
-    fetchData: getDirectorInfo,
+    fetchData: async (values: API_DATA.IGetDirectorInfoRes) => {
+      const data = await getDirectorInfo(values)
+      if(!values || !values._id) return data
+      const form: API_DATA.IGetDirectorInfoRes = Array.isArray(data) ? data[0] : data
+      if(!form) return {}
+      const { country, another_name, avatar, ...nextForm } = form
+      return {
+        ...nextForm,
+        alias: another_name,
+        avatar: Array.isArray(avatar) ? avatar : [avatar],
+        country: country?._id
+      }
+    },
     delete: deleteDirectorInfo,
-    edit: putDirectorInfo,
-    add: postDirectorInfo,
+    edit: (values: API_DATA.IPutDirectorInfoParams) => {
+      const { avatar, ...nextValues } = values
+      return putDirectorInfo({
+        ...nextValues,
+        avatar: Array.isArray(avatar) ? avatar[0] : avatar
+      })
+
+    },
+    add: (values: API_DATA.IPostDirectorInfoParams) => {
+      const { avatar, ...nextValues } = values
+      return postDirectorInfo({
+        ...nextValues,
+        avatar: Array.isArray(avatar) ? avatar[0] : avatar
+      })
+    },
     renderItem(operation: {
       deleteItem: TDeleteActionType
       editItem: TEditActionType
@@ -174,23 +222,30 @@ export const AboutInfo = {
                 actions={[<a onClick={() => deleteItem(_id)} key="option1">删除</a>, <a onClick={() => editItem( _id)} key="option2">编辑</a>]}
               >
                 <Card.Meta
-                  avatar={<img alt="" className={styles.cardAvatar} src={avatar} />}
+                  avatar={<img alt="" className={styles.cardAvatar} src={formatUrl(avatar)} />}
                   title={<a>{name}</a>}
                   description={
-                    <Space direction="vertical">
-                      <Fragment>
-                        别名: {' '}
-                        <Text>{another_name}</Text>
-                      </Fragment>
-                      <Fragment>
-                        来源类型: {' '}
-                        <Text strong>{SOURCE_TYPE[source_type]}</Text>
-                      </Fragment>
-                      <Fragment>
-                        创建时间: {' '}
-                        <Text code>{createdAt}</Text>
-                      </Fragment>
-                    </Space>
+                    <Paragraph
+                      className={styles.item}
+                      ellipsis={{
+                        rows: 3,
+                      }}
+                    >
+                      <Space direction="vertical">
+                        <div>
+                          别名: {' '}
+                          <Text>{another_name}</Text>
+                        </div>
+                        <div>
+                          来源类型: {' '}
+                          <Text strong>{SOURCE_TYPE[source_type]}</Text>
+                        </div>
+                        <div>
+                          创建时间: {' '}
+                          <Text code>{format(createdAt)}</Text>
+                        </div>
+                      </Space>
+                    </Paragraph>
                   }
                 />
               </Card>
@@ -227,8 +282,8 @@ export const AboutInfo = {
             }}
           />
           <ProFormSelect
-            request={() => localFetchData4Array(getDistrictInfo)()}
-            name="district"
+            request={() => localFetchData4Array<API_DATA.IGetDistrictInfoRes>(getDistrictInfo)(['_id', 'value'], ['name', 'label'])}
+            name="country"
             label="地区"
             hasFeedback
             showSearch
@@ -238,11 +293,6 @@ export const AboutInfo = {
             }]}
           />
           <Form.Item
-            rules={[
-              {
-                required: true
-              }
-            ]}
             name="_id"
           >
             <Input
@@ -256,8 +306,21 @@ export const AboutInfo = {
   classify: {
     fetchData: getClassifyInfo,
     delete: deleteClassifyInfo,
-    edit: putClassifyInfo,
-    add: postClassifyInfo,
+    edit: (values: API_DATA.IPutClassifyInfoParams) => {
+      const { icon, ...nextValues } = values
+      return putClassifyInfo({
+        ...nextValues,
+        icon: Array.isArray(icon) ? icon[0] : icon
+      })
+
+    },
+    add: (values: API_DATA.IPostClassifyInfoParams) => {
+      const { icon, ...nextValues } = values
+      return postClassifyInfo({
+        ...nextValues,
+        icon: Array.isArray(icon) ? icon[0] : icon
+      })
+    },
     renderItem(operation: {
       deleteItem: TDeleteActionType
       editItem: TEditActionType
@@ -277,24 +340,31 @@ export const AboutInfo = {
                 actions={[<a onClick={() => deleteItem(_id)} key="option1">删除</a>, <a onClick={() => editItem(_id)} key="option2">编辑</a>]}
               >
                 <Card.Meta
-                  avatar={<img alt="" className={styles.cardAvatar} src={icon} />}
+                  avatar={<img alt="" className={styles.cardAvatar} src={formatUrl(icon)} />}
                   title={<a>{name}</a>}
                   description={
-                    <Space direction="vertical">
-                      <Fragment>
-                        浏览人数: {' '}
-                        <Text>{glance || 0}</Text>
-                      </Fragment>
-                      <Fragment>
-                        来源类型: {' '}
-                        <Text strong>{SOURCE_TYPE[source_type]}</Text>
-                      </Fragment>
-                      <Fragment>
-                        创建时间: {' '}
-                        <Text code>{createdAt}</Text>
-                      </Fragment>
-                    </Space>
-                  }
+                    <Paragraph
+                      className={styles.item}
+                      ellipsis={{
+                        rows: 3,
+                      }}
+                    >
+                      <Space direction="vertical">
+                        <div>
+                          浏览人数: {' '}
+                          <Text>{glance || 0}</Text>
+                        </div>
+                        <div>
+                          来源类型: {' '}
+                          <Text strong>{SOURCE_TYPE[source_type]}</Text>
+                        </div>
+                        <div>
+                          创建时间: {' '}
+                          <Text code>{format(createdAt)}</Text>
+                        </div>
+                      </Space>
+                    </Paragraph>
+                  } 
                 />
               </Card>
             </List.Item>
@@ -329,11 +399,6 @@ export const AboutInfo = {
             }}
           />
           <Form.Item
-            rules={[
-              {
-                required: true
-              }
-            ]}
             name="_id"
           >
             <Input
@@ -370,16 +435,23 @@ export const AboutInfo = {
                 <Card.Meta
                   title={<a>{name}</a>}
                   description={
-                    <Space direction="vertical">
-                      <Fragment>
-                        来源类型: {' '}
-                        <Text strong>{SOURCE_TYPE[source_type]}</Text>
-                      </Fragment>
-                      <Fragment>
-                        创建时间: {' '}
-                        <Text code>{createdAt}</Text>
-                      </Fragment>
-                    </Space>
+                    <Paragraph
+                      className={styles.item}
+                      ellipsis={{
+                        rows: 3,
+                      }}
+                    >
+                      <Space direction="vertical">
+                        <div>
+                          来源类型: {' '}
+                          <Text strong>{SOURCE_TYPE[source_type]}</Text>
+                        </div>
+                        <div>
+                          创建时间: {' '}
+                          <Text code>{format(createdAt)}</Text>
+                        </div>
+                      </Space>
+                    </Paragraph>
                   }
                 />
               </Card>
@@ -409,11 +481,6 @@ export const AboutInfo = {
             ]}
           />
           <Form.Item
-            rules={[
-              {
-                required: true
-              }
-            ]}
             name="_id"
           >
             <Input
@@ -450,16 +517,25 @@ export const AboutInfo = {
                 <Card.Meta
                   title={<a>{name}</a>}
                   description={
-                    <Space direction="vertical">
-                      <Fragment>
-                        来源类型: {' '}
-                        <Text strong>{SOURCE_TYPE[source_type]}</Text>
-                      </Fragment>
-                      <Fragment>
-                        创建时间: {' '}
-                        <Text code>{createdAt}</Text>
-                      </Fragment>
-                    </Space>
+                      <Paragraph
+                        className={styles.item}
+                        ellipsis={{
+                          rows: 3,
+                        }}
+                      >
+                        <Space
+                          direction="vertical"
+                        >
+                          <div>
+                            来源类型: {' '}
+                            <Text strong>{SOURCE_TYPE[source_type]}</Text>
+                          </div>   
+                          <div>
+                            创建时间: {' '}
+                            <Text code>{format(createdAt)}</Text>
+                          </div>                     
+                        </Space>
+                      </Paragraph>
                   }
                 />
               </Card>
@@ -489,11 +565,6 @@ export const AboutInfo = {
             ]}
           />
           <Form.Item
-            rules={[
-              {
-                required: true
-              }
-            ]}
             name="_id"
           >
             <Input
