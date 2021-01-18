@@ -19,7 +19,7 @@ export default [
     renderText: (value: {
       username: string
       _id: string
-    }) => <a onClick={() => history.push(`/user/${value._id}`)}>{value.username}</a>
+    }) => <a onClick={() => history.push(`/member/${value._id}`)}>{value.username}</a>
   },
   {
     title: '创建时间',
@@ -29,14 +29,14 @@ export default [
     renderFormItem: (_: any, { type, defaultRender, ...rest }: any, form: any) => {
       return <RangePicker {...rest} />
     },
-    renderText: (val: string) => moment(val).format('YYYY-MM-DD')
+    renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
   },
   {
     title: '更新时间',
     dataIndex: 'updatedAt',
     sorter: true,
     valueType: 'option',
-    renderText: (val: string) => moment(val).format('YYYY-MM-DD')
+    renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
   },
   {
     title: '来源',
@@ -64,12 +64,12 @@ export default [
       return acc
     }, {})
   },
-  {
-    hideInTable: false,
-    dataIndex: 'content',
-    title: '名字',
-    renderFormItem: (_: any, { type, defaultRender, ...rest }: any, form: any) => {
-      return <Input {...rest} />
-    }
-  },
+  // {
+  //   hideInTable: false,
+  //   dataIndex: 'content',
+  //   title: '名字',
+  //   renderFormItem: (_: any, { type, defaultRender, ...rest }: any, form: any) => {
+  //     return <Input {...rest} />
+  //   }
+  // },
 ]

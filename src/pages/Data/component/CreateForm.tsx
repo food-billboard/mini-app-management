@@ -1,4 +1,4 @@
-import { Form, Rate, message } from 'antd'
+import { Form, Rate, message, Input } from 'antd'
 import { FormInstance } from 'antd/lib/form'
 import ProForm, {
   DrawerForm,
@@ -59,7 +59,8 @@ class CreateForm extends Component<IProps, IState> {
         this.formRef.current?.setFieldsValue({
           ...data,
           poster: [poster],
-          video: [video]
+          video: [video],
+          _id: id
         })
         show()
       })
@@ -264,6 +265,13 @@ class CreateForm extends Component<IProps, IState> {
         >
           <Rate
             count={10}
+          />
+        </Form.Item>
+        <Form.Item
+          name="_id" 
+        >
+          <Input
+            type="hidden"
           />
         </Form.Item>
       </DrawerForm>

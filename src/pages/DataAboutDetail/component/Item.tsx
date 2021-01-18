@@ -49,28 +49,29 @@ export const AboutInfo = {
       if(!values || !values._id) return data
       const form: API_DATA.IGetActorInfoRes = Array.isArray(data) ? data[0] : data
       if(!form) return {}
-      const { country, another_name, avatar, ...nextForm } = form
+      const { country, another_name, avatar, avatar_id, ...nextForm } = form
       return {
         ...nextForm,
         alias: another_name,
         avatar: Array.isArray(avatar) ? avatar : [avatar],
+        avatar_id: Array.isArray(avatar_id) ? avatar_id : [avatar_id],
         country: country?._id
       }
     },
     delete: deleteActorInfo,
-    edit: (values: API_DATA.IPutActorInfoParams) => {
-      const { avatar, ...nextValues } = values
+    edit: (values: API_DATA.IPutActorInfoParams & { avatar_id: string }) => {
+      const { avatar_id, ...nextValues } = values
       return putActorInfo({
         ...nextValues,
-        avatar: Array.isArray(avatar) ? avatar[0] : avatar
+        avatar: Array.isArray(avatar_id) ? avatar_id[0] : avatar_id
       })
 
     },
-    add: (values: API_DATA.IPostActorInfoParams) => {
-      const { avatar, ...nextValues } = values
+    add: (values: API_DATA.IPostActorInfoParams & { avatar_id: string }) => {
+      const { avatar_id, ...nextValues } = values
       return postActorInfo({
         ...nextValues,
-        avatar: Array.isArray(avatar) ? avatar[0] : avatar
+        avatar: Array.isArray(avatar_id) ? avatar_id[0] : avatar_id
       })
     },
     renderItem(operation: {
@@ -147,8 +148,13 @@ export const AboutInfo = {
           <ProFormText name="alias" label="别名" />
           <Upload
             wrapper={{
-              name: "avatar",
+              name: "avatar_id",
               label: '海报'
+            }}
+            item={{
+              maxFiles: 1,
+              acceptedFileTypes: ['image/*'],
+              allowMultiple: false
             }}
           />
           <ProFormSelect
@@ -179,28 +185,29 @@ export const AboutInfo = {
       if(!values || !values._id) return data
       const form: API_DATA.IGetDirectorInfoRes = Array.isArray(data) ? data[0] : data
       if(!form) return {}
-      const { country, another_name, avatar, ...nextForm } = form
+      const { country, another_name, avatar, avatar_id, ...nextForm } = form
       return {
         ...nextForm,
         alias: another_name,
         avatar: Array.isArray(avatar) ? avatar : [avatar],
+        avatar_id: Array.isArray(avatar_id) ? avatar_id : [avatar_id],
         country: country?._id
       }
     },
     delete: deleteDirectorInfo,
-    edit: (values: API_DATA.IPutDirectorInfoParams) => {
-      const { avatar, ...nextValues } = values
+    edit: (values: API_DATA.IPutDirectorInfoParams & { avatar_id: string }) => {
+      const { avatar_id, ...nextValues } = values
       return putDirectorInfo({
         ...nextValues,
-        avatar: Array.isArray(avatar) ? avatar[0] : avatar
+        avatar: Array.isArray(avatar_id) ? avatar_id[0] : avatar_id
       })
 
     },
-    add: (values: API_DATA.IPostDirectorInfoParams) => {
-      const { avatar, ...nextValues } = values
+    add: (values: API_DATA.IPostDirectorInfoParams & { avatar_id: string }) => {
+      const { avatar_id, ...nextValues } = values
       return postDirectorInfo({
         ...nextValues,
-        avatar: Array.isArray(avatar) ? avatar[0] : avatar
+        avatar: Array.isArray(avatar_id) ? avatar_id[0] : avatar_id
       })
     },
     renderItem(operation: {
@@ -277,8 +284,13 @@ export const AboutInfo = {
           <ProFormText name="alias" label="别名" />
           <Upload
             wrapper={{
-              name: "avatar",
+              name: "avatar_id",
               label: '海报'
+            }}
+            item={{
+              maxFiles: 1,
+              acceptedFileTypes: ['image/*'],
+              allowMultiple: false
             }}
           />
           <ProFormSelect
@@ -304,21 +316,32 @@ export const AboutInfo = {
     }
   },
   classify: {
-    fetchData: getClassifyInfo,
+    fetchData: async (values: API_DATA.IGetClassifyInfoParams) => {
+      const data = await getClassifyInfo(values)
+      if(!values || !values._id) return data
+      const form: API_DATA.IGetClassifyInfoRes = Array.isArray(data) ? data[0] : data
+      if(!form) return {}
+      const { icon, icon_id, ...nextForm } = form
+      return {
+        ...nextForm,
+        icon: Array.isArray(icon) ? icon : [icon],
+        icon_id: Array.isArray(icon_id) ? icon_id : [icon_id],
+      }
+    },
     delete: deleteClassifyInfo,
-    edit: (values: API_DATA.IPutClassifyInfoParams) => {
-      const { icon, ...nextValues } = values
+    edit: (values: API_DATA.IPutClassifyInfoParams & { icon_id: string }) => {
+      const { icon, icon_id, ...nextValues } = values
       return putClassifyInfo({
         ...nextValues,
-        icon: Array.isArray(icon) ? icon[0] : icon
+        icon: Array.isArray(icon_id) ? icon_id[0] : icon_id
       })
 
     },
-    add: (values: API_DATA.IPostClassifyInfoParams) => {
-      const { icon, ...nextValues } = values
+    add: (values: API_DATA.IPostClassifyInfoParams & { icon_id: string }) => {
+      const { icon, icon_id, ...nextValues } = values
       return postClassifyInfo({
         ...nextValues,
-        icon: Array.isArray(icon) ? icon[0] : icon
+        icon: Array.isArray(icon_id) ? icon_id[0] : icon_id
       })
     },
     renderItem(operation: {
@@ -394,8 +417,13 @@ export const AboutInfo = {
           />
           <Upload
             wrapper={{
-              name: "icon",
+              name: "icon_id",
               label: '图标'
+            }}
+            item={{
+              maxFiles: 1,
+              acceptedFileTypes: ['image/*'],
+              allowMultiple: false
             }}
           />
           <Form.Item

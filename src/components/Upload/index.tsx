@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, useCallback } from 'react'
 import { message } from 'antd'
 import { Upload as TusUpload, isSupported, PreviousUpload, HttpRequest } from 'tus-js-client'
 import { supported, FilePondFile, FilePondErrorDescription, RevertServerConfigFunction, ProcessServerConfigFunction, FilePondInitialFile as IInitFileType } from 'filepond'
@@ -12,7 +12,7 @@ import pick from 'lodash/pick'
 import { withTry } from '@/utils'
 import Wrapper from '@/components/WrapperItem'
 import china from './locale'
-import { encryptionFile, sleep, toBase64, propsValueValid, isObjectId } from './util'
+import { encryptionFile, sleep, toBase64, propsValueValid } from './util'
 import 'filepond/dist/filepond.min.css'
 import 'filepond-plugin-file-poster/dist/filepond-plugin-file-poster.css'
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
@@ -60,8 +60,7 @@ const Upload: ReactFC<IProps> = ({
 
   const uploadRef = useRef<FilePond | null>(null)
 
-  const initFiles: IValue[] = (Array.isArray(propsValue) ? [] : [propsValue]).filter(isObjectId).map(file => ({ source: file, options: { type: 'local' }, local: { _id: file } }))
-  const [ value, setValue ] = useState<IValue[]>(initFiles)
+  const [ value, setValue ] = useState<IValue[]>([])
   
   //文件添加时对其进行加密
   const onAddFile = async (error: FilePondErrorDescription | null, fileObj: FilePondFile) => {
@@ -207,16 +206,32 @@ const Upload: ReactFC<IProps> = ({
     }
   }
 
-  useEffect(() => {
-    if(Array.isArray(propsValue) && propsValue.length) {
-      propsValue.forEach(file => {
-        if(!value.some(internalFile => internalFile.local?._id === file)) {
-          uploadRef.current?.addFile(file, {
-            type: 'local'
-          })
-        }
-      })
+  const onremovefile = useCallback((error: FilePondErrorDescription | null, file: FilePondFile) => {
+    if(error) return 
+    console.log(file)
+    const source = file.source
+    let newValue
+    if(typeof source === 'string') {
+      newValue = value.filter(val => val.source !== source)
+    }else {
+      const { md5 } = file.getMetadata()
+      newValue = value.filter(val => val.local?.md5 !== md5)
     }
+    setValue(newValue)
+  }, [value])
+
+  useEffect(() => {
+    let _value = Array.isArray(propsValue) ? propsValue : [ propsValue ]
+    let internalList: IValue[] = value
+    _value.forEach(file => {
+      if(!value.some(internalFile => internalFile.local?._id === file)) {
+        uploadRef.current?.addFile(file, {
+          type: 'local'
+        })
+        internalList.push({ source: file, options: { type: 'local' }, local: { _id: file } })
+      }
+    })
+    setValue(internalList)
   }, [ propsValue ])
 
   useEffect(() => {
@@ -238,7 +253,7 @@ const Upload: ReactFC<IProps> = ({
         server={{
           url: '/api/customer/upload',
           process,
-          revert
+          revert,
         }}
         //@ts-ignore
         maxFileSize={'100MB'}
@@ -248,6 +263,7 @@ const Upload: ReactFC<IProps> = ({
         chunkSize={CHUNK_SIZE}
         itemInsertInterval={200}
         onaddfile={onAddFile}
+        onremovefile={onremovefile}
         {...china}
         {...props}
       />

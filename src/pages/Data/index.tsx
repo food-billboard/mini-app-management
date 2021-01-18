@@ -1,5 +1,5 @@
 import React, { useRef, createRef } from 'react'
-import { Button, Dropdown, message, Menu, Space } from 'antd'
+import { Button, Dropdown, message, Menu, Space, Modal } from 'antd'
 import { PageHeaderWrapper } from '@ant-design/pro-layout'
 import ProTable, { ActionType } from '@ant-design/pro-table'
 import { DownOutlined, PlusOutlined } from '@ant-design/icons'
@@ -53,6 +53,29 @@ const handleAdd = async (fields: any) => {
  */
 
 const handleRemove = async (selectedRows: API_DATA.IGetMovieData[]) => {
+
+  const res = await new Promise((resolve) => {
+
+    Modal.confirm({
+      cancelText: '取消',
+      centered: true,
+      content: '是否确定删除',
+      okText: '确定',
+      title: '提示',
+      onCancel: function(close) {
+        close()
+        resolve(false)
+      },
+      onOk: function(close) {
+        close()
+        resolve(true)
+      }
+    })
+
+  })
+
+  if(!res) return
+
   const hide = message.loading('正在删除')
   if (!selectedRows) return true
 
@@ -123,7 +146,7 @@ const CardList: React.FC<IProps> = () => {
       <ProTable
         headerTitle="数据列表"
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="_id"
         toolBarRender={(action, { selectedRows }) => [
           <Button key={'add'} icon={<PlusOutlined />} type="primary" onClick={() => handleModalVisible()}>
             新建
@@ -166,7 +189,7 @@ const CardList: React.FC<IProps> = () => {
             </span>
           </div>
         )}
-        request={(params: any) => {
+        request={async (params: any) => {
           const { createdAt=[], current, ...nextParams } = params
           let newParams = {
             ...nextParams,

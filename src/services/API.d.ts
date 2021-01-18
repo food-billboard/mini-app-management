@@ -393,6 +393,7 @@ declare namespace API_DATA {
     createdAt: string
     updatedAt: string
     avatar: string
+    avatar_id
     source_type: IDataSourceType
     country: ICountryData
   }
@@ -454,6 +455,7 @@ declare namespace API_DATA {
     createdAt: string
     updatedAt: string
     icon: string
+    icon_id: string
     source_type: IDataSourceType
   }
 
@@ -544,6 +546,10 @@ declare namespace Upload {
 
   export interface IDeleteParams {
     _id: string
+  }
+
+  export interface ILooadParams {
+    load: string
   }
 
 }
