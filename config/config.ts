@@ -12,6 +12,9 @@ export default defineConfig({
   dva: {
     hmr: true,
   },
+  history: {
+    type: "hash"
+  },
   // layout: {
   //   name: 'Ant Design Pro',
   //   locale: true,
@@ -43,5 +46,7 @@ export default defineConfig({
   proxy: proxy[REACT_APP_ENV || 'dev'],
   manifest: {
     basePath: '/',
-  }
+  },
+  publicPath: "/api/backend/",
+  base: "/api/backend/"
 });
