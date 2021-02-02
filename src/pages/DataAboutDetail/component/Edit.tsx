@@ -66,12 +66,16 @@ const EditModal = forwardRef<IEditRef, IProps>((props, ref) => {
   }, [id, visible])
 
   const visibleChange = useCallback((visible: boolean) => {
-    if(!visible) onCancel(null)
-  }, [onCancel])
+    if(!visible) {
+      onCancel(null)
+      setId(false)
+      formRef.current?.resetFields()
+    }
+  }, [onCancel, id, visible, formRef])
 
   useEffect(() => {
     if(!id) return 
-    internalFetchData()
+    if(visible) internalFetchData()
   }, [id, visible])
 
   return (
