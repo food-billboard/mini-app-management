@@ -1,4 +1,5 @@
-import { parse } from 'querystring';
+import { parse } from 'querystring'
+import { API_DOMAIN } from '../../config/proxy'
 
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
@@ -73,11 +74,8 @@ export function withTry<T=any> (func: Function) {
   }
 }
 
-const NEETWORK = 'http://47.111.229.250:4000'
-// const NEETWORK = 'http://localhost:4000'
-
 export function formatUrl(url: string) {
   if(typeof url !== 'string') return url
-  return url.startsWith('http') ? url : (url.startsWith('/') ? `${NEETWORK}${url}` : `${NEETWORK}/${url}`)
+  return url.startsWith('http') ? url : (url.startsWith('/') ? `${API_DOMAIN}${url}` : `${API_DOMAIN}/${url}`)
 }
 
