@@ -1,8 +1,8 @@
 export const mapStateToProps = (state: any) => {
-  const data = state.dashboardAndanalysis.typeList || []
+  const { data=[], total=0 } = state.dashboardAndanalysis.typeList || {} 
   return {
     data,
-    total: data.length,
+    total,
     loading: !!state.loading.effects['dashboardAndanalysis/getDataTypeStatisticsList']
   }
 }

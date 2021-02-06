@@ -1,8 +1,9 @@
 import React, { memo, FC } from 'react'
 import {  } from 'antd'
 import {  } from 'fabric'
+import { IBaseProps } from '../types'
 
-interface IProps {
+interface IProps extends IBaseProps {
 
 }
 

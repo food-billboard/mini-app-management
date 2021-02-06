@@ -10,7 +10,10 @@ export default {
     userlist: {},
     visitList: [],
     keywordData: {},
-    typeList: []
+    typeList: {
+      data: [],
+      total: {}
+    }
   },
 
   effects: {
@@ -112,13 +115,14 @@ export default {
     
     * getDataTypeStatisticsList(_: any, { call, put }: { call: any, put: any }) {
       const typeList = yield call(getDataTypeStatisticsList)
-
       yield put({
         type: 'save',
         payload: {
           typeList
         }
       })
+      
+      return typeList
     },
 
   },

@@ -3,10 +3,12 @@ export const mapStateToProps = (state: any) => {
   return {
     data,
     rank,
-    loading: !!state.loading.effects['dashboardAndanalysis/getDataStatisticsList']
+    dataLoading: !!state.loading.effects['dashboardAndanalysis/getDataStatisticsList'],
+    userLoading: !!state.loading.effects['dashboardAndanalysis/getUserStatisticsList']
   }
 }
 
 export const mapDispatchToProps = (dispatch: any) => ({
-  fetchData: (params: any) => dispatch({ type: 'dashboardAndanalysis/getDataStatisticsList', ...params })
+  getDataStatisticsList: (params: any) => dispatch({ type: 'dashboardAndanalysis/getDataStatisticsList', ...params }),
+  getUserStatisticsList: (params: any) => dispatch({ type: 'dashboardAndanalysis/getUserStatisticsList', ...params })
 })

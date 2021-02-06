@@ -1,7 +1,7 @@
-import { List, Typography, Button, Checkbox } from 'antd'
+import { List, Typography, Button, Checkbox, Tooltip } from 'antd'
 import React, { FC, useMemo, Fragment, useState, useCallback, useEffect, memo } from 'react'
 import { fabric } from 'fabric'
-import { EditOutlined } from '@ant-design/icons'
+import { EditOutlined, FormOutlined, CloseSquareOutlined } from '@ant-design/icons'
 
 interface IProps {
   getInstance: () => fabric.Canvas
@@ -12,6 +12,7 @@ const Layers: FC<IProps> = ({
 }) => {
 
   const [ disabled, setDisabled ] = useState<boolean>(true)
+  const [ editable, setEditable ] = useState<boolean>(false)
 
   const list = useMemo(() => {
     const instance = getInstance()
@@ -39,6 +40,11 @@ const Layers: FC<IProps> = ({
     })
   }, [selectedList])
 
+  //设置编辑状态
+  const setEditableStatus = useCallback((status: boolean) => {
+    setEditable(status)
+  }, [])
+
   //选中
   const onSelectChange = useCallback((isSelect: boolean, item: fabric.Object) => {
     const instance = getInstance()
@@ -57,10 +63,26 @@ const Layers: FC<IProps> = ({
   return (
     <Fragment>
       <List
+        header={
+            <div
+              style={{textAlign: 'right'}}
+            >
+              <Tooltip
+                title="选择图层"
+              >
+                {
+                  editable ? 
+                  <CloseSquareOutlined style={{cursor: 'pointer'}} onClick={setEditableStatus.bind(this, false)} />
+                  :
+                  <FormOutlined style={{cursor: 'pointer'}} onClick={setEditableStatus.bind(this, true)} />
+                }
+              </Tooltip>
+            </div>
+        }
         dataSource={list}
         footer={
           <div
-            style={{display: 'flex', justifyContent: 'space-evenly', flexWrap: 'wrap'}}
+            style={{display: editable ? 'flex' : 'none', justifyContent: 'space-evenly', flexWrap: 'wrap'}}
           >
             <Button danger disabled={disabled} onClick={onRemove} style={{marginBottom: 10}}>删除</Button>
             <Button type="primary" disabled={disabled} onClick={onClone}>复制</Button>

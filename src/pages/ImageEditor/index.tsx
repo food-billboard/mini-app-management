@@ -1,6 +1,7 @@
 import React, { FC, useRef, memo, useMemo, useCallback, useEffect } from 'react'
 import { Button } from 'antd'
 import ProCard from '@ant-design/pro-card'
+import { FundViewOutlined } from '@ant-design/icons'
 import { history } from 'umi'
 import classnames from 'classnames'
 import ImageEditor, { Config as EditorConfig, Layers as EditroLayers, IEditorRef } from '@/components/ImageEditor'
@@ -32,6 +33,11 @@ const Editor: FC<any> = () => {
     console.log(values, '获取当前的保存配置并作出保存操作')
   }, [storeModalRef, editorRef])
 
+  //回到背景
+  const backToBackground = useCallback(() => {
+    console.log('回到背景')
+  }, [editorRef])
+
   useEffect(() => {
     const dom = document.querySelector('.image-editor-container .ant-pro-card-body')
     setTimeout(() => {  
@@ -47,7 +53,7 @@ const Editor: FC<any> = () => {
     } split="vertical" bordered headerBordered>
       <ProCard 
         title="图层" 
-        colSpan={6}
+        colSpan={4}
         style={{overflowY: 'auto', overflowX: 'hidden'}}
       >
         <EditroLayers
@@ -63,7 +69,16 @@ const Editor: FC<any> = () => {
           ref={editorRef}
         />
       </ProCard>
-      <ProCard title="配置" colSpan={6}>
+      <ProCard 
+        title={
+          <div style={{display: 'flex', alignItems: 'center'}}>
+            配置
+            <FundViewOutlined style={{cursor: 'pointer', marginLeft: 5}} onClick={backToBackground} />
+          </div>
+        } 
+        colSpan={8}
+        style={{overflowY: 'auto', overflowX: 'hidden'}}
+      >
         <EditorConfig
           getInstance={getInstance}
         />

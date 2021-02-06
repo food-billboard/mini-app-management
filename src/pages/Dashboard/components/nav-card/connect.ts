@@ -1,9 +1,9 @@
 import { ConnectState } from '@/models/connect'
 
 export const mapStateToProps = (state: any) => {
-  const { use_count, visit_day, data_count, feedback_count } = state.dashboardAndanalysis.navCard
+  const { user_count, visit_day, data_count, feedback_count } = state.dashboardAndanalysis.navCard
   return {
-    use_count,
+    user_count,
     visit_day,
     data_count,
     feedback_count,
