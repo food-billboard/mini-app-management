@@ -1,4 +1,7 @@
 import { request } from '@/utils';
+import { merge } from 'lodash'
+
+const { REACT_APP_ENV  } = process.env
 
 export interface LoginParamsType {
   username: string;
@@ -18,7 +21,7 @@ export interface ResetParamsType extends Pick<RegisterParamsType, 'email' | 'pas
 export async function accountLogin(params: Pick<LoginParamsType, 'mobile' | 'password'>) {
   return request<API.LoginStateType>('/api/user/logon/account', {
     method: 'POST',
-    data: params,
+    data: merge(params, { env: REACT_APP_ENV }),
   });
 }
 
