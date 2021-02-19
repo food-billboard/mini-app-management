@@ -94,7 +94,7 @@ const request = async <ResBody>(url: string, setting: RequestOptions = {} as Req
 
   // 返回真正的response body res 内容
   if( !error ){
-    return (body.res.data || {}) as ResBody
+    return (body?.res?.data || {}) as ResBody
   }
   error.mis = mis
   mis && misManage(error);

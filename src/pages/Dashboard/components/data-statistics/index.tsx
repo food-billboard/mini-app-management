@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Tabs, DatePicker, Card, Row, Col } from 'antd'
 import moment, { Moment } from 'moment'
 import noop from 'lodash/noop'
-import { connect } from 'react-redux'
+import { connect } from 'umi'
 import RankList, { IRankData } from './rank'
 import { Bar } from '../Charts'
 import { mapStateToProps, mapDispatchToProps } from './connect'
@@ -20,25 +20,46 @@ type TDateType = 'day' | 'week' | 'month' | 'year'
 
 const TopSearch: React.FC<any> = ({
   data=[],
-  loading,
+  dataLoading,
+  userLoading,
   rank=[],
-  fetchData=noop
+  getDataStatisticsList=noop,
+  getUserStatisticsList=noop
 }: {
-  data: Array<IDataStatisticsChartData>,
-  rank: Array<IRankData>,
-  loading: boolean,
-  fetchData: (params: { start_date: string, end_date: string } | { date_type: TDateType }) => any
+  data: Array<IDataStatisticsChartData>
+  rank: Array<IRankData>
+  dataLoading: boolean
+  userLoading: boolean
+  getDataStatisticsList: (params: { start_date: string, end_date: string } | { date_type: TDateType }) => any
+  getUserStatisticsList: (params: { start_date: string, end_date: string } | { date_type: TDateType }) => any
 }) => {
 
   const [ dateType, setDateType ] = useState<TDateType | undefined>('day')
   const [ date, setDate ] = useState<[Moment, Moment]>([ moment(), moment() ])
+  const [ activeKey, setActiveKey ] = useState<'user' | 'upload'>('user')
 
   useEffect(() => {
+    let method 
+    let params
+    if(activeKey === 'user') {
+      method = getUserStatisticsList
+    }else if(activeKey === 'upload'){
+      method = getDataStatisticsList
+    }else {
+      return 
+    }
     const [ startDate, endDate ] = date
-    !!dateType ? fetchData({ date_type: dateType }) : fetchData({ start_date: startDate.format('YYYY-MM-DD'), end_date: endDate.format('YYYY-MM-DD') })
-  }, [date])
+    if(!!dateType) {
+      params = { date_type: dateType }
+    }else {
+      params = { start_date: startDate.format('YYYY-MM-DD'), end_date: endDate.format('YYYY-MM-DD') }
+    }
+    method(params)
+  }, [date, activeKey])
 
-  const isActive = (type: TDateType) => type === dateType ? styles.currentDate : ''
+  const isActive = useCallback((type: TDateType) => {
+    return type === dateType ? styles.currentDate : ''
+  }, [ dateType ])
 
   const setData = (type: TDateType | undefined, startDate: Moment, endDate: Moment) => {
     setDateType(type)
@@ -51,7 +72,7 @@ const TopSearch: React.FC<any> = ({
   return (
     <Card
       bordered
-      loading={loading}
+      loading={activeKey == 'user' ? userLoading : dataLoading}
       bodyStyle={{
         padding: '10px 20px',
       }}
@@ -90,6 +111,8 @@ const TopSearch: React.FC<any> = ({
         tabBarStyle={{
           marginBottom: 24,
         }}
+        activeKey={activeKey}
+        onChange={setActiveKey as any}
       >
         {/* 用户注册 */}
         <TabPane

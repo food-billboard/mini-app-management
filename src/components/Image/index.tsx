@@ -5,6 +5,8 @@ import { ImageConfig, IImageConfigRef } from './components/Config'
 import 'viewerjs/dist/viewer.css'
 import styles from './index.less'
 
+export { default as Preview } from './components/Click2Preview'
+
 interface IViewerRef {}
 
 export type TSrc = {
@@ -59,9 +61,10 @@ const ImageViewer: React.FC<IProps> = forwardRef<IViewerRef, IProps & Viewer.Opt
     <div className={styles["image-viewer-wrapper"]}>
       <div id="image-viewer">
         {
-          list.map((item: TSrc) => {
+          list.map((item: TSrc, index: number) => {
             return (
               <img
+                key={item?.src || index}
                 {...item}
               />
             )

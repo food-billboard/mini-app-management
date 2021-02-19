@@ -2,14 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { Card, Radio } from 'antd'
 import { Pie } from '../Charts'
 import noop from 'lodash/noop'
-import { connect } from 'react-redux'
+import { connect } from 'umi'
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import styles from './index.less'
 
 export interface IClassifyData {
-  _id: string | null
-  name: string
-  value: number
+  count: string
+  classify: {
+    name: string
+    _id: string | null
+  }
 }
 
 enum EType {
@@ -21,17 +23,13 @@ export type IType = 'classify' | 'movie'
 
 const ProportionClassify: React.FC<any> = ({
   loading,
-  data=[{
-    name: '其他',
-    _id: null,
-    value: 1
-  }],
-  total=0,
-  fetchData=noop
+  fetchData=noop,
+  data=[],
+  total=0
 }: {
+  data: IClassifyData[]
+  total: number
   loading: boolean,
-  total: number,
-  data: Array<IClassifyData>
   fetchData: () => any
 }) => {
 
@@ -43,7 +41,7 @@ const ProportionClassify: React.FC<any> = ({
 
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [classifyType])
 
   return (
     <Card
@@ -85,8 +83,15 @@ const ProportionClassify: React.FC<any> = ({
         subTitle={
           '分类'
         }
-        total={() => total}
-        data={(Array.isArray(data) ? data : []).map(d => ({ y: d.value, x: d.name }))}
+        total={() => (total || 0).toString()}
+        data={(Array.isArray(data) ? data : []).map(d => {
+          const { count, classify: { name, _id }={} } = d
+          const value = parseFloat(count)
+          return {
+            x: name,
+            y: Number.isNaN(value) ? 0 : value
+          }
+        })}
         valueFormat={(value: number) => `${(value || 0) * total}`}
         height={248}
         lineWidth={4}

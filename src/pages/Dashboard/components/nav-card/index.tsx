@@ -5,7 +5,7 @@ import { ChartCard, MiniArea, MiniBar, MiniProgress, Field } from '../Charts';
 import Trend from '../Trend'
 import { INavUserCount, INavVisitDay, INavDataCount, INavFeedbackCount, IDataStatisticsData } from '../../service'
 import noop from 'lodash/noop'
-import { connect } from 'react-redux'
+import { connect } from 'umi'
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import styles from './index.less'
 

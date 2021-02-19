@@ -111,6 +111,12 @@ export default [
                 component: '@/pages/Image',
                 title: '图片预览',
                 hideInMenu: true
+              },
+              {
+                path: '/data/image/edit',
+                component: '@/pages/ImageEditor',
+                title: '图片编辑',
+                hideInMenu: true
               }
             ]
           },

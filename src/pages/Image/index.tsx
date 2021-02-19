@@ -7,9 +7,9 @@ import ImageViewer, { TSrc } from '@/components/Image'
 const VideoPreview: FC<any> = () => {
 
   const urls: TSrc[] | undefined = useMemo(() => {
-    const { location: { state } } = history
-    const { urls } = state as { urls: string[] | undefined } || {}
-    return urls?.map(url => {
+    const { location: { query } } = history
+    const { urls=[] } = query as { urls: string[] | undefined } || {}
+    return (Array.isArray(urls) ? urls : [urls])?.map(url => {
       return {
         src: url
       }
