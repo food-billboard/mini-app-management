@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Card } from 'antd'
 import { TimelineChart } from '../Charts'
-import { connect } from 'react-redux'
+import { connect } from 'umi'
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import noop from 'lodash/noop'
 import { IVisitStatisticsData } from '../../service'

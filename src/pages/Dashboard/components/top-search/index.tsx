@@ -4,7 +4,7 @@ import { InfoCircleOutlined, CaretUpOutlined, CaretDownOutlined } from '@ant-des
 import numeral from 'numeral'
 import NumberInfo from '../NumberInfo'
 import { MiniArea, TagCloud } from '../Charts'
-import { connect } from 'react-redux'
+import { connect } from 'umi'
 import noop from 'lodash/noop'
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import { IKyewordStatisticsTotalChart, IKyewordStatisticsAverageChart, IKyewordStatisticsData } from '../../service'

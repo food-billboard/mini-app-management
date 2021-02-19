@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Card, Radio } from 'antd'
 import { Pie } from '../Charts'
 import noop from 'lodash/noop'
-import { connect } from 'react-redux'
+import { connect } from 'umi'
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import styles from './index.less'
 
@@ -83,7 +83,7 @@ const ProportionClassify: React.FC<any> = ({
         subTitle={
           '分类'
         }
-        total={() => total}
+        total={() => (total || 0).toString()}
         data={(Array.isArray(data) ? data : []).map(d => {
           const { count, classify: { name, _id }={} } = d
           const value = parseFloat(count)

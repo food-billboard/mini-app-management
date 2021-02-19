@@ -29,6 +29,7 @@ import {
 } from '@/services'
 import { SOURCE_TYPE } from '@/utils/constants'
 import { formatUrl } from '@/utils'
+import { Preview } from '@/components/Image'
 import { localFetchData4Array } from '../../Data/component/utils'
 import styles from '../style.less'
 
@@ -40,7 +41,7 @@ export type TDeleteActionType = (id: string) => void
 export type TEditActionType = TDeleteActionType
 export type TAddActionType = () => void
 
-const format = (date: string) => moment(date).format('YYY-MM-DD')
+const format = (date: string) => moment(date).format('YYYY-MM-DD hh:mm:ss')
 
 export const AboutInfo = {
   actor: {
@@ -93,7 +94,7 @@ export const AboutInfo = {
                 actions={[<a onClick={() => deleteItem(_id)} key="option1">删除</a>, <a onClick={() => editItem(_id)} key="option2">编辑</a>]}
               >
                 <Card.Meta
-                  avatar={<img alt="" className={styles.cardAvatar} src={formatUrl(avatar)} />}
+                  avatar={<img alt="" className={styles.cardAvatar} src={formatUrl(avatar)} onClick={Preview.bind(null, formatUrl(avatar))} />}
                   title={<a>{name}</a>}
                   description={
                     <Paragraph
@@ -113,7 +114,7 @@ export const AboutInfo = {
                         </div>
                         <div>
                           创建时间: {' '}
-                          <Text code>{createdAt}</Text>
+                          <Text>{format(createdAt)}</Text>
                         </div>
                       </Space>
                     </Paragraph>
@@ -229,7 +230,7 @@ export const AboutInfo = {
                 actions={[<a onClick={() => deleteItem(_id)} key="option1">删除</a>, <a onClick={() => editItem( _id)} key="option2">编辑</a>]}
               >
                 <Card.Meta
-                  avatar={<img alt="" className={styles.cardAvatar} src={formatUrl(avatar)} />}
+                  avatar={<img alt="" className={styles.cardAvatar} src={formatUrl(avatar)} onClick={Preview.bind(null, formatUrl(avatar))} />}
                   title={<a>{name}</a>}
                   description={
                     <Paragraph
@@ -363,7 +364,7 @@ export const AboutInfo = {
                 actions={[<a onClick={() => deleteItem(_id)} key="option1">删除</a>, <a onClick={() => editItem(_id)} key="option2">编辑</a>]}
               >
                 <Card.Meta
-                  avatar={<img alt="" className={styles.cardAvatar} src={formatUrl(icon)} />}
+                  avatar={<img alt="" className={styles.cardAvatar} src={formatUrl(icon)} onClick={Preview.bind(null, formatUrl(icon))} />}
                   title={<a>{name}</a>}
                   description={
                     <Paragraph

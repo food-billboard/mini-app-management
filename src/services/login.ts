@@ -21,7 +21,7 @@ export interface ResetParamsType extends Pick<RegisterParamsType, 'email' | 'pas
 export async function accountLogin(params: Pick<LoginParamsType, 'mobile' | 'password'>) {
   return request<API.LoginStateType>('/api/user/logon/account', {
     method: 'POST',
-    data: merge(params, { env: REACT_APP_ENV }),
+    data: merge(params, { env: REACT_APP_ENV || 'dev' }),
   });
 }
 

@@ -17,6 +17,13 @@ export default {
       pathRewrite: { '^': '' },
     },
   },
+  prod: {
+    '/api/': {
+      target: API_DOMAIN,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
+  },
   // dev: {
   //   '/api/': {
   //     target: 'https://preview.pro.ant.design',
