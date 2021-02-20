@@ -10,7 +10,8 @@ export default [
   {
     title: '电影名称',
     dataIndex: 'name',
-    valueType: 'option'
+    valueType: 'option',
+    render: (value: string, record: API_DATA.IGetMovieData) => <a onClick={() => history.push(`/data/main/${record._id}`)}>{value}</a>
   },
   {
     title: '作者名称',

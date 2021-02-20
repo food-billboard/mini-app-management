@@ -88,7 +88,7 @@ const Upload: ReactFC<IProps> = ({
 
   //上传
   const process:ProcessServerConfigFunction = async (fieldName, file, metadata, load, error, progress, abort) => {
-    
+
     const { md5 } = metadata
     const uploadMetadata: { [key: string]: string | number } = {
       md5,
@@ -138,25 +138,29 @@ const Upload: ReactFC<IProps> = ({
         //查询请求保存id
         if(method === 'head') {
           const id = res.getHeader('Upload-Id')
-          setValue([
-            ...value.filter(val => {
-              return typeof val === 'object' && val.local?._id !== id
-            }),
-            {
-              source: id,
-              local: {
-                _id: id,
-                md5,
-              },
-              options: {
-                type: 'input',
-                file: {
-                  name: file.name,
-                  size: file.size,
-                  type: file.type,
-                }
+
+          const restValue = value.filter(val => {
+            return typeof val === 'object' && val.local?._id !== id
+          })
+          const newValue = new Array(value.length - restValue.length + 1).fill({
+            source: id,
+            local: {
+              _id: id,
+              md5,
+            },
+            options: {
+              type: 'input',
+              file: {
+                name: file.name,
+                size: file.size,
+                type: file.type,
               }
             }
+          })
+
+          setValue([
+            ...restValue,
+            ...newValue
           ])
         }
       },
@@ -208,7 +212,6 @@ const Upload: ReactFC<IProps> = ({
 
   const onremovefile = useCallback((error: FilePondErrorDescription | null, file: FilePondFile) => {
     if(error) return 
-    console.log(file)
     const source = file.source
     let newValue
     if(typeof source === 'string') {
@@ -220,11 +223,17 @@ const Upload: ReactFC<IProps> = ({
     setValue(newValue)
   }, [value])
 
+  const isExists: (props: string[], state: IValue[], target: string) => boolean = useCallback((props, state, target) => {
+    const stateLen = state.filter(item => item.local?._id === target).length
+    const propsLen = props.filter(item => item === target).length
+    return stateLen === propsLen
+  }, [])
+
   useEffect(() => {
     let _value = Array.isArray(propsValue) ? propsValue : [ propsValue ]
     let internalList: IValue[] = value
     _value.forEach(file => {
-      if(!value.some(internalFile => internalFile.local?._id === file)) {
+      if(!isExists(_value, value, file)) {
         uploadRef.current?.addFile(file, {
           type: 'local'
         })

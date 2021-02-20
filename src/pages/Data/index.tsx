@@ -1,8 +1,8 @@
-import React, { useRef, createRef } from 'react'
+import React, { useRef, createRef, useCallback } from 'react'
 import { Button, Dropdown, message, Menu, Space, Modal } from 'antd'
 import { PageHeaderWrapper } from '@ant-design/pro-layout'
 import ProTable, { ActionType } from '@ant-design/pro-table'
-import { DownOutlined, PlusOutlined } from '@ant-design/icons'
+import { DownOutlined, PlusOutlined, EllipsisOutlined } from '@ant-design/icons'
 import { connect } from 'umi'
 import pickBy from 'lodash/pickBy'
 import identity from 'lodash/identity'
@@ -10,7 +10,7 @@ import { history } from 'umi'
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import CreateForm from './component/CreateForm'
 import column from './columns'
-import { deleteMovie, getMovieList, postMovie, putMovie } from '@/services'
+import { deleteMovie, getMovieList, postMovie, putMovie, putMovieStatus, deleteMovieStatus } from '@/services'
 
 interface IProps {
   role: any
@@ -106,6 +106,20 @@ const CardList: React.FC<IProps> = () => {
 
   const modalRef = createRef<CreateForm>()
 
+  const putStatus = useCallback(async (id: string, e) => {
+    e?.preventDefault()
+    await putMovieStatus({ _id: id })
+    message.info('修改成功')
+    actionRef.current?.reload()
+  }, [])
+
+  const deleteStatus = useCallback(async (id: string, e) => {
+    e?.preventDefault()
+    await deleteMovieStatus({ _id: id })
+    message.info('修改成功')
+    actionRef.current?.reload()
+  }, [])
+
   const columns: any[] = [
     ...column ,
     {
@@ -122,15 +136,42 @@ const CardList: React.FC<IProps> = () => {
               编辑
             </a>
             <a
+              style={{color: 'red'}}
               onClick={() => handleRemove([record])}
             >
               删除
             </a>
-            <a
-              onClick={() => history.push(`/data/${record._id}`)}
-            >
-              详情
-            </a>
+            <Dropdown overlay={
+              <Menu>
+                <Menu.Item>
+                  <a style={{color: '#1890ff'}} onClick={() => history.push(`/data/main/${record._id}`)}>
+                  详情
+                  </a>
+                </Menu.Item>
+                {
+                  (record.status === 'COMPLETE' || record.status === 'VERIFY') && (
+                    <Menu.Item>
+                      <a onClick={deleteStatus.bind(null, record._id)} style={{color: 'red'}}>
+                        禁用
+                      </a>
+                    </Menu.Item>
+                  )
+                }
+                {
+                  (record.status === 'NOT_VERIFY' || record.status === 'VERIFY') && (
+                    <Menu.Item>
+                      <a style={{color: '#1890ff'}} onClick={putStatus.bind(null, record._id)}>
+                        启用
+                      </a>
+                    </Menu.Item>
+                  )
+                }
+              </Menu>
+            }>
+              <a onClick={e => e.preventDefault()}>
+                <EllipsisOutlined />
+              </a>
+            </Dropdown>
           </Space>
         )
       }

@@ -2,6 +2,7 @@ import {
   
 } from '@ant-design/pro-form'
 import { Transfer } from 'antd'
+import { unstable_batchedUpdates } from 'react-dom'
 import { TransferDirection, TransferItem } from 'antd/es/transfer'
 import React, { useState, useEffect } from 'react'
 import WrapperItem from '@/components/WrapperItem'
@@ -38,8 +39,10 @@ const SearchSelect: React.FC<IProps> = ({
     const data = await fetchData()
     let selected = propsValue
     if(fetchSelectData) selected = await fetchSelectData()
-    setList(data)
-    setSelected(selected)
+    unstable_batchedUpdates(() => {
+      setList(data)
+      setSelected(selected)
+    })
   }
 
   useEffect(() => {

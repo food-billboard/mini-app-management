@@ -79,7 +79,14 @@ export default [
                     title: '数据详情',
                     name: 'datainfodetail',
                     hideInMenu: true
-                  }
+                  },
+                  {
+                    path: '/data/main/:id/tag',
+                    component: '@/pages/DataTag',
+                    title: '数据标签管理',
+                    name: 'datainfotagmanage',
+                    hideInMenu: true
+                  },
                 ]
               },
               {
@@ -101,7 +108,7 @@ export default [
                 ]
               },
               {
-                path: '/data/video/:id',
+                path: '/data/video',
                 component: '@/pages/Video',
                 title: '视频预览',
                 hideInMenu: true

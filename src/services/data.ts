@@ -237,3 +237,19 @@ export const deleteClassifyInfo = (params: API_DATA.IDeleteClassifyParams) => {
   })
 }
 
+//通过审核
+export const putMovieStatus = (params: API_DATA.IPutMovieStatusParams) => {
+  return request('/api/manage/movie/detail/valid', {
+    method: 'PUT',
+    data: params
+  })
+}
+
+//不通过审核
+export const deleteMovieStatus = (params: API_DATA.IDeleteMovieStatusParams) => {
+  return request('/api/manage/movie/detail/valid', {
+    method: 'DELETE',
+    params
+  })
+}
+

@@ -257,7 +257,7 @@ declare namespace API_DATA {
     rate_person: number
     total_rate: number
     source_type: IDataSourceType
-    stauts: IDataStatus
+    status: IDataStatus
     comment_count: number
     tag_count: number
     barrage_count: number
@@ -469,6 +469,10 @@ declare namespace API_DATA {
   }
 
   export interface IDeleteClassifyParams extends IGetDirectorInfoParams {}
+
+  export interface IPutMovieStatusParams extends IGetActorInfoParams {}
+
+  export interface IDeleteMovieStatusParams extends IGetActorInfoParams {}
 
 }
 
