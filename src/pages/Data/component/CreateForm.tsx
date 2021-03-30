@@ -88,10 +88,10 @@ class CreateForm extends Component<IProps, IState> {
       <DrawerForm
         title="新建表单"
         visible={visible}
+        //@ts-ignore
         formRef={this.formRef as any}
         onFinish={async (values: Store) => {
           this.props.onSubmit && this.props.onSubmit(values as FormData)
-          return true
         }}
         onVisibleChange={(visible: boolean) => {
           if(!visible) this.onCancel()

@@ -59,6 +59,13 @@ export default [
             ]
           },
           {
+            path: '/instance',
+            component: '@/pages/instance',
+            title: '实例管理',
+            name: 'instance',
+            icon: 'global'
+          },
+          {
             path: '/data',
             name: 'data',
             title: '数据管理',

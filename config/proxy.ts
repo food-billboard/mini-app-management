@@ -7,7 +7,7 @@
  */
 
 //  export const API_DOMAIN = "http://localhost:4000"
- export const API_DOMAIN = "http://47.111.229.250:4000"
+ export const API_DOMAIN = "http://47.111.229.250"
 
 export default {
   dev: {

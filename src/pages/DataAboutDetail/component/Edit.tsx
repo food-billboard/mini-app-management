@@ -56,8 +56,8 @@ const EditModal = forwardRef<IEditRef, IProps>((props, ref) => {
   const onFinish = useCallback(async (values: Store) => {
     onConfirm && await onConfirm(values)
     message.success('提交成功')
+    formRef.current?.resetFields()
     setVisible(false)
-    return true
   }, [id])
 
   const onCancel = useCallback((e) => {
@@ -82,6 +82,7 @@ const EditModal = forwardRef<IEditRef, IProps>((props, ref) => {
     <ModalForm
       title={`${id ? '编辑' : '新增'}信息`}
       visible={visible}
+      //@ts-ignore
       formRef={formRef}
       onFinish={onFinish}
       onVisibleChange={visibleChange}

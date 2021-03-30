@@ -116,7 +116,7 @@ const CardList: React.FC<IProps> = () => {
   const deleteStatus = useCallback(async (id: string, e) => {
     e?.preventDefault()
     await deleteMovieStatus({ _id: id })
-    message.info('修改成功')
+    message.info('删除成功')
     actionRef.current?.reload()
   }, [])
 

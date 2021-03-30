@@ -476,6 +476,35 @@ declare namespace API_DATA {
 
 }
 
+declare namespace API_INSTANCE {
+
+  export interface IGetInstanceInfoRes {
+    total: number
+    list: IGetInstanceInfoData[]
+  }
+
+  export interface IGetInstanceInfoData {
+    _id: string 
+    info: string 
+    notice: string 
+    valid: boolean 
+    visit_count: number 
+    createdAt: string 
+    updatedAt: string 
+  }
+
+  export interface IPostInstanceInfoParams extends Pick<IGetInstanceInfoRes, 'info' | 'notice' | 'valid'> {}
+
+  export interface IPutInstanceInfoParams extends Partial<IPostInstanceInfoParams>  {
+    _id: string 
+  }
+
+  export interface IDeleteInstanceInfoParams {
+    _id: string
+  }
+
+}
+
 declare namespace API_ADMIN {
   export interface IGetAdminInfoRes {
     _id: string

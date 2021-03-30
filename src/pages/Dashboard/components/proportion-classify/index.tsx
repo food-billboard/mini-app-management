@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Card, Radio } from 'antd'
 import { Pie } from '../Charts'
 import noop from 'lodash/noop'
@@ -35,9 +35,9 @@ const ProportionClassify: React.FC<any> = ({
 
   const [ classifyType, setClassifyType ] =  useState<keyof typeof EType>(EType.classify)
 
-  const onClassifyChange = (value: any) => {
-    setClassifyType(value)
-  }
+  const onClassifyChange = useCallback((e: any) => {
+    setClassifyType(e.target.value)
+  }, [])
 
   useEffect(() => {
     fetchData()
