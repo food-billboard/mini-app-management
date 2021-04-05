@@ -97,6 +97,24 @@ export default [
                 ]
               },
               {
+                path: '/data/special',
+                title: '数据专题管理',
+                name: 'special',
+                routes: [
+                  {
+                    path: '/data/special',
+                    component: '@/pages/DataSpecial',
+                  },
+                  {
+                    path: '/data/special/:name',
+                    component: '@/pages/DataSpecialDetail',
+                    title: '数据专题详情',
+                    name: 'specialdetail',
+                    hideInMenu: true
+                  }
+                ]
+              },
+              {
                 path: '/data/about',
                 title: '数据相关管理',
                 name: 'dataabout',

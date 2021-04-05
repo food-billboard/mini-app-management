@@ -54,6 +54,8 @@ export default {
   'menu.data': '数据管理',
   'menu.member': '用户管理',
   'menu.data.dataabout': '数据相关管理',
+  'menu.data.special': '数据专题管理',
+  'menu.data.special.specialdetail': '数据专题详情',
   'menu.data.dataabout.dataaboutdetail': '数据相关详情',
   'menu.data.datainfo': '数据信息管理',
   'menu.data.datainfo.datainfodetail': '数据信息详情',

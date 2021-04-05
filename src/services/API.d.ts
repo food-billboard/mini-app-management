@@ -241,6 +241,7 @@ declare namespace API_DATA {
     source_type?: 'ORIGIN' | 'USER'
     start_date?: string
     end_date?: string
+    _id?: string
   }
 
   export interface IGetMovieData {
@@ -501,6 +502,54 @@ declare namespace API_INSTANCE {
 
   export interface IDeleteInstanceInfoParams {
     _id: string
+  }
+
+  export interface IGetInstanceSpecialParams {
+    name?: string 
+    sort?: string 
+    valid?: boolean 
+    currPage?: number 
+    pageSize?: number
+    _id?: string
+  }
+
+  export interface IGetInstanceSpecialRes {
+    total: number 
+    list: IGetInstanceSpecialData[]
+  }
+
+  export interface SpecialMovieData {
+    name: string 
+    _id: string 
+    poster: string 
+  }
+
+  export interface IGetInstanceSpecialData {
+    name: string 
+    description: string 
+    glance: number 
+    valid: boolean 
+    poster: string
+    movie: SpecialMovieData[]
+    _id: string 
+    createdAt: string 
+    updatedAt: string 
+  } 
+
+  export interface IPostInstanceSpecialParams {
+    name: string 
+    description?: string 
+    movie: string[]
+    poster: string 
+    valid?: boolean 
+  }
+
+  export interface IPutInstanceSpecialParams extends Partial<IPostInstanceSpecialParams> {
+    _id: string 
+  }
+
+  export interface IDeleteInstanceSpecialParams {
+    _id: string 
   }
 
 }

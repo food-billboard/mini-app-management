@@ -2,13 +2,13 @@ import React, { useRef, useCallback, memo } from 'react'
 import { Button, Dropdown, message, Menu, Space, Modal } from 'antd'
 import { PageHeaderWrapper } from '@ant-design/pro-layout'
 import ProTable, { ActionType } from '@ant-design/pro-table'
-import { DownOutlined, PlusOutlined } from '@ant-design/icons'
-import { connect } from 'umi'
+import { DownOutlined, PlusOutlined, EllipsisOutlined } from '@ant-design/icons'
+import { connect, history } from 'umi'
 import pick from 'lodash/pick'
 import Form, { IFormRef } from './components/form'
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import column from './columns'
-import { getInstanceInfoList, deleteInstanceInfo, postInstanceInfo, putInstanceInfo } from '@/services'
+import { getInstanceSpecialList, deleteInstanceSpecial, postInstanceSpecial, putInstanceSpecial } from '@/services'
 
 const InstanceManage: React.FC<any> = () => {
 
@@ -16,12 +16,12 @@ const InstanceManage: React.FC<any> = () => {
 
   const modalRef = useRef<IFormRef>(null)
 
-  const handleAdd = useCallback(async (values: API_INSTANCE.IPostInstanceInfoParams | API_INSTANCE.IPutInstanceInfoParams) => {
+  const handleAdd = useCallback(async (values: API_INSTANCE.IPostInstanceSpecialParams | API_INSTANCE.IPutInstanceSpecialParams) => {
     try {
       if((values as API_INSTANCE.IPutInstanceInfoParams)._id) {
-        await putInstanceInfo(values as API_INSTANCE.IPutInstanceInfoParams)
+        await putInstanceSpecial(values as API_INSTANCE.IPutInstanceSpecialParams)
       }else {
-        await postInstanceInfo(values as API_INSTANCE.IPostInstanceInfoParams)
+        await postInstanceSpecial(values as API_INSTANCE.IPostInstanceSpecialParams)
       }
       message.success('操作成功')
       return true 
@@ -32,18 +32,19 @@ const InstanceManage: React.FC<any> = () => {
     }
   }, [])
 
-  const putInfo = useCallback(async (value: boolean, record: API_INSTANCE.IGetInstanceInfoData) => {
+  const putInfo = useCallback(async (value: boolean, record: API_INSTANCE.IGetInstanceSpecialData) => {
     await handleAdd({
-      ...pick(record, ['info', 'notice', '_id']),
+      ...pick(record, ['name', '_id', 'description', 'poster']),
+      movie: record.movie.map(item => item._id),
       valid: value
     })
   }, [])
 
-  const handleModalVisible = useCallback((values?: API_INSTANCE.IGetInstanceInfoData) => {
+  const handleModalVisible = useCallback((values?: API_INSTANCE.IGetInstanceSpecialData) => {
     modalRef.current?.open(values)
   }, [modalRef])
 
-  const handleRemove = useCallback(async (selectedRows: API_INSTANCE.IGetInstanceInfoData[]) => {
+  const handleRemove = useCallback(async (selectedRows: API_INSTANCE.IGetInstanceSpecialData[]) => {
 
     const res = await new Promise((resolve) => {
   
@@ -70,9 +71,9 @@ const InstanceManage: React.FC<any> = () => {
     const hide = message.loading('正在删除')
     if (!selectedRows) return true
   
-    const response = await Promise.all(selectedRows.map((row: API_INSTANCE.IGetInstanceInfoData) => {
+    const response = await Promise.all(selectedRows.map((row: API_INSTANCE.IGetInstanceSpecialData) => {
       const { _id } = row
-      return deleteInstanceInfo({
+      return deleteInstanceSpecial({
         _id
       })
     }))
@@ -98,7 +99,7 @@ const InstanceManage: React.FC<any> = () => {
       key: 'option',
       dataIndex: 'option',
       valueType: 'option',
-      render: (_: any, record: API_INSTANCE.IGetInstanceInfoData) => {
+      render: (_: any, record: API_INSTANCE.IGetInstanceSpecialData) => {
         const { valid } = record
         return (
           <Space>
@@ -113,24 +114,37 @@ const InstanceManage: React.FC<any> = () => {
             >
               删除
             </a>
-            {
-              (valid) && (
+            <Dropdown overlay={
+              <Menu>
                 <Menu.Item>
-                  <a onClick={putInfo.bind(this, false, record)} style={{color: 'red'}}>
-                    禁用
+                  <a style={{color: '#1890ff'}} onClick={() => history.push(`/data/special/${record._id}`)}>
+                  详情
                   </a>
                 </Menu.Item>
-              )
-            }
-            {
-              (!valid) && (
-                <Menu.Item>
-                  <a style={{color: '#1890ff'}} onClick={putInfo.bind(this, true, record)}>
-                    启用
-                  </a>
-                </Menu.Item>
-              )
-            }
+                {
+                  (valid) && (
+                    <Menu.Item>
+                      <a onClick={putInfo.bind(this, false, record)} style={{color: 'red'}}>
+                        禁用
+                      </a>
+                    </Menu.Item>
+                  )
+                }
+                {
+                  (!valid) && (
+                    <Menu.Item>
+                      <a style={{color: '#1890ff'}} onClick={putInfo.bind(this, true, record)}>
+                        启用
+                      </a>
+                    </Menu.Item>
+                  )
+                }
+              </Menu>
+            }>
+              <a onClick={e => e.preventDefault()}>
+                <EllipsisOutlined />
+              </a>
+            </Dropdown>
           </Space>
         )
       }
@@ -187,7 +201,7 @@ const InstanceManage: React.FC<any> = () => {
           </div>
         )}
         request={async (params: any) => {
-          return getInstanceInfoList()
+          return getInstanceSpecialList(params)
           .then(({ list }) => ({ data: list }) )
           .catch(_ => ({ data: [] }))
         }}
