@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
 import { message } from 'antd'
 import { Upload as TusUpload, isSupported, PreviousUpload, HttpRequest } from 'tus-js-client'
-import { supported, FilePondFile, FilePondErrorDescription, RevertServerConfigFunction, ProcessServerConfigFunction, FilePondInitialFile as IInitFileType } from 'filepond'
+import { supported, FilePondFile, FilePondErrorDescription, RevertServerConfigFunction, ProcessServerConfigFunction, LoadServerConfigFunction, FilePondInitialFile as IInitFileType } from 'filepond'
 import { FilePond, registerPlugin, FilePondProps } from 'react-filepond'
 import FilePondPluginFileRename from 'filepond-plugin-file-rename'
 import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size'
@@ -9,10 +9,12 @@ import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type'
 import FilePondPluginFilePoster from 'filepond-plugin-file-poster'
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
 import pick from 'lodash/pick'
+import useDeepCompareEffect from 'use-deep-compare-effect'
 import { withTry } from '@/utils'
 import Wrapper from '@/components/WrapperItem'
+import { loadFile } from '@/services'
 import china from './locale'
-import { encryptionFile, sleep, toBase64, propsValueValid } from './util'
+import { encryptionFile, sleep, toBase64, propsValueValid, isObjectId } from './util'
 import 'filepond/dist/filepond.min.css'
 import 'filepond-plugin-file-poster/dist/filepond-plugin-file-poster.css'
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
@@ -78,7 +80,6 @@ const Upload: ReactFC<IProps> = ({
       message.info('文件解析错误，请重试')
       return
     }
-
     fileObj.setMetadata('md5', md5)
 
   }
@@ -87,7 +88,7 @@ const Upload: ReactFC<IProps> = ({
   const revert: RevertServerConfigFunction = async (__, load, _) => load()
 
   //上传
-  const process:ProcessServerConfigFunction = async (fieldName, file, metadata, load, error, progress, abort) => {
+  const process: ProcessServerConfigFunction = async (fieldName, file, metadata, load, error, progress, abort) => {
 
     const { md5 } = metadata
     const uploadMetadata: { [key: string]: string | number } = {
@@ -139,29 +140,30 @@ const Upload: ReactFC<IProps> = ({
         if(method === 'head') {
           const id = res.getHeader('Upload-Id')
 
-          const restValue = value.filter(val => {
-            return typeof val === 'object' && val.local?._id !== id
-          })
-          const newValue = new Array(value.length - restValue.length + 1).fill({
-            source: id,
-            local: {
-              _id: id,
-              md5,
-            },
-            options: {
-              type: 'input',
-              file: {
-                name: file.name,
-                size: file.size,
-                type: file.type,
+          setValue(prevValue => {
+            const restValue = prevValue.filter(val => {
+              return typeof val === 'object' && val.local?._id !== id
+            })
+            const newValue = new Array(prevValue.length - restValue.length + 1).fill({
+              source: id,
+              local: {
+                _id: id,
+                md5,
+              },
+              options: {
+                type: 'input',
+                file: {
+                  name: file.name,
+                  size: file.size,
+                  type: file.type,
+                }
               }
-            }
+            })
+            return [
+              ...restValue,
+              ...newValue
+            ]
           })
-
-          setValue([
-            ...restValue,
-            ...newValue
-          ])
         }
       },
       //自定义文件id
@@ -180,16 +182,18 @@ const Upload: ReactFC<IProps> = ({
       onShouldRetry: () => false,
       onError: function(err: Error) {
         error(err.message)
-        setValue(value.map(val => {
-          if(val.local?.md5 != md5) return val
-          return {
-            ...val,
-            local: {
-              ...val.local as { md5: string },
-              _id: undefined
+        setValue(prevValue => {
+          return prevValue.map(val => {
+            if(val.local?.md5 != md5) return val
+            return {
+              ...val,
+              local: {
+                ...val.local as { md5: string },
+                _id: undefined
+              }
             }
-          }
-        }))
+          })
+        })
       },
       //上传进度 不用onProgress 因为这个更准确
       onChunkComplete: function(bytesUploaded:number, bytesTotal:number) {
@@ -229,23 +233,49 @@ const Upload: ReactFC<IProps> = ({
     return stateLen === propsLen
   }, [])
 
-  useEffect(() => {
-    let _value = Array.isArray(propsValue) ? propsValue : [ propsValue ]
-    let internalList: IValue[] = value
-    _value.forEach(file => {
-      if(!isExists(_value, value, file)) {
-        uploadRef.current?.addFile(file, {
-          type: 'local'
-        })
-        internalList.push({ source: file, options: { type: 'local' }, local: { _id: file } })
+  //获取文件id
+  const fetchFileId = useCallback(async (file: string) => {
+    if(isObjectId(file)) return file 
+    const [ err, data ] = await withTry(loadFile)({ load: encodeURIComponent(file) })
+    if(err) return file 
+    return data
+  }, [])
+
+  //路径转id
+  const formatValue = useCallback(async (value: string[] | string):Promise<string[]> => {
+    let _value = Array.isArray(value) ? value : [ value ]
+    let newValues:string[] = []
+    for(let i = 0; i < _value.length; i ++) {
+      let targetValue = _value[i]
+      if(!isObjectId(targetValue)) {
+        targetValue = await fetchFileId(targetValue)
       }
-    })
-    setValue(internalList)
-  }, [ propsValue ])
+      newValues.push(targetValue)
+    }
+    return newValues
+  }, [])
 
   useEffect(() => {
+    formatValue(propsValue)
+    .then(propsValue => {
+      setValue(prevValue => {
+        let internalList: IValue[] = [ ...prevValue ]
+        propsValue.forEach(file => {
+          if(!isExists(propsValue, prevValue, file)) {
+            uploadRef.current?.addFile(file, {
+              type: 'local'
+            })
+            internalList.push({ source: file, options: { type: 'local' }, local: { _id: file } })
+          }
+        })
+        return internalList
+      })
+    })
+  }, [ propsValue, uploadRef ])
+
+  useDeepCompareEffect(() => {
     let validFiles: string[] = []
-    value.forEach(file => {
+    value.forEach((file) => {
       const id = file.local?._id
       if(!!id) validFiles.push(id)
     })

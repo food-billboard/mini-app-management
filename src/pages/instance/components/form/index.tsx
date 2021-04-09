@@ -58,6 +58,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
 
   const onFinish = useCallback(async (values: Store) => {
     onSubmit && onSubmit(values as FormData)
+    setVisible(false)
   }, [onSubmit])
 
   useImperativeHandle(ref, () => ({

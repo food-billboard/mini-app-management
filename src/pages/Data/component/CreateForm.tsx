@@ -93,6 +93,7 @@ class CreateForm extends Component<IProps, IState> {
         formRef={this.formRef as any}
         onFinish={async (values: Store) => {
           this.props.onSubmit && this.props.onSubmit(values as FormData)
+          this.setState({ visible: false })
         }}
         onVisibleChange={(visible: boolean) => {
           if(!visible) this.onCancel()

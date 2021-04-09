@@ -38,6 +38,7 @@ const InstanceManage: React.FC<any> = () => {
       movie: record.movie.map(item => item._id),
       valid: value
     })
+    actionRef.current?.reload()
   }, [])
 
   const handleModalVisible = useCallback((values?: API_INSTANCE.IGetInstanceSpecialData) => {
@@ -80,6 +81,7 @@ const InstanceManage: React.FC<any> = () => {
     .then(_ => {
       hide()
       message.success('删除成功，即将刷新')
+      actionRef.current?.reload()
       return true
     })
     .catch(err => {
@@ -210,7 +212,9 @@ const InstanceManage: React.FC<any> = () => {
       />
       <Form
         onSubmit={async value => {
+          console.log(value)
           const success = await handleAdd(value)
+          console.log(success)
           if (success) {
             actionRef.current?.reload()
           }

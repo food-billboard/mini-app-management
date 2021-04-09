@@ -8,28 +8,13 @@ export default [
   {
     title: '名称',
     dataIndex: 'name',
-    render: (value: string, record: API_INSTANCE.IGetInstanceInfoRes) => {
-      return (
-        <Paragraph ellipsis>
-          {value}
-        </Paragraph>
-      )
-    }
+    ellipsis: true,
   },
   {
     title: '描述',
     dataIndex: 'description',
     valueType: 'option',
-    render: (value: {
-      username: string
-      _id: string
-    }) => {
-      return (
-        <Paragraph ellipsis>
-          {value}
-        </Paragraph>
-      )
-    }
+    ellipsis: true,
   },
   {
     title: '创建时间',
@@ -46,8 +31,8 @@ export default [
   {
     title: '是否启用',
     dataIndex: 'valid',
-    render: (val: string) => {
-      <Badge status={val ? 'success' : 'error'} text={val ? '启用' : '禁用'} />
+    renderText: (val: string) => {
+      return <Badge status={val ? 'success' : 'error'} text={val ? '启用' : '禁用'} />
     }
   },
   {
@@ -59,7 +44,7 @@ export default [
     title: '数据数量',
     dataIndex: 'movie',
     valueType: 'option',
-    render: (value: any) => {
+    renderText: (value: any) => {
       return Array.isArray(value) ? value.length : 0
     }
   },

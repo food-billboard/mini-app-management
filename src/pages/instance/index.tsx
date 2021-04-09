@@ -37,6 +37,7 @@ const InstanceManage: React.FC<any> = () => {
       ...pick(record, ['info', 'notice', '_id']),
       valid: value
     })
+    actionRef.current?.reload()
   }, [])
 
   const handleModalVisible = useCallback((values?: API_INSTANCE.IGetInstanceInfoData) => {
@@ -79,6 +80,7 @@ const InstanceManage: React.FC<any> = () => {
     .then(_ => {
       hide()
       message.success('删除成功，即将刷新')
+      actionRef.current?.reload()
       return true
     })
     .catch(err => {
@@ -95,8 +97,8 @@ const InstanceManage: React.FC<any> = () => {
     ...column,
     {
       title: '操作',
-      key: 'option',
-      dataIndex: 'option',
+      key: 'opera',
+      dataIndex: 'opera',
       valueType: 'option',
       render: (_: any, record: API_INSTANCE.IGetInstanceInfoData) => {
         const { valid } = record
@@ -115,20 +117,16 @@ const InstanceManage: React.FC<any> = () => {
             </a>
             {
               (valid) && (
-                <Menu.Item>
-                  <a onClick={putInfo.bind(this, false, record)} style={{color: 'red'}}>
-                    禁用
-                  </a>
-                </Menu.Item>
+                <a onClick={putInfo.bind(this, false, record)} style={{color: 'red'}}>
+                  禁用
+                </a>
               )
             }
             {
               (!valid) && (
-                <Menu.Item>
-                  <a style={{color: '#1890ff'}} onClick={putInfo.bind(this, true, record)}>
-                    启用
-                  </a>
-                </Menu.Item>
+                <a style={{color: '#1890ff'}} onClick={putInfo.bind(this, true, record)}>
+                  启用
+                </a>
               )
             }
           </Space>
@@ -186,7 +184,7 @@ const InstanceManage: React.FC<any> = () => {
             </span>
           </div>
         )}
-        request={async (params: any) => {
+        request={async (_: any) => {
           return getInstanceInfoList()
           .then(({ list }) => ({ data: list }) )
           .catch(_ => ({ data: [] }))

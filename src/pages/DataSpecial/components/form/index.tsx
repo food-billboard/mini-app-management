@@ -40,12 +40,13 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
     const show = () => {
       setVisible(true)
     }
-
     if(isEdit) {
+      const { poster, movie, ...nextValues } = values!
       //获取修改的数据
       formRef.current?.setFieldsValue({
-        ...values,
-        poster: Array.isArray(values?.poster) ? values?.poster : [ values?.poster ]
+        ...nextValues,
+        poster: Array.isArray(poster) ? poster : [ poster ],
+        movie: movie.map(item => item._id)
       })
       show()
     }
@@ -65,8 +66,9 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   }, [onCancel, visible])
 
   const onFinish = useCallback(async (values: Store) => {
-    const [ poster ] = values.poster
-    onSubmit && onSubmit(({ ...omit(values, ['poster']), poster }) as FormData)
+    const [ poster ] = values.poster || []
+    await (onSubmit && onSubmit(({ ...omit(values, ['poster']), poster }) as FormData))
+    setVisible(false)
   }, [onSubmit])
 
   useImperativeHandle(ref, () => ({
@@ -107,7 +109,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       <Upload 
         wrapper={{
           label: '海报',
-          name: 'video',
+          name: 'poster',
           rules: [
             {
               required: true,
@@ -132,31 +134,25 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
                 required: true,
                 message: '请选择电影',
                 validator: (_: any, value: string[]) => {
-                  return Array.isArray(value) && value.length > 3 ? Promise.resolve() : Promise.reject('请选择电影')
+                  return Array.isArray(value) && value.length >= 3 ? Promise.resolve() : Promise.reject('请选择电影')
                 }
               }
             ]
           }}
           item={{
-            fetchData: () => localFetchData4Array<API_DATA.IGetMovieData, ISelectItem>(getMovieList)(['_id', 'key'], ['name', 'title'])
+            fetchData: async () => {
+              const data = await getMovieList()
+              return data.list?.map(item => {
+                const { _id, name } = item
+                return {
+                  key: _id,
+                  title: name 
+                } 
+              }) || []
+            }
           }}
         />
       </ProForm.Group>
-      <MovieSelect
-        wrapper={{
-          label: '电影',
-          name: 'movie',
-          rules: [
-            {
-              required: true,
-              message: '请选择电影',
-              validator: (_: any, value: string[]) => {
-                return Array.isArray(value) && value.length > 3 ? Promise.resolve() : Promise.reject('请选择电影')
-              }
-            }
-          ]
-        }}
-      />
       <Form.Item
         name="_id"
       >

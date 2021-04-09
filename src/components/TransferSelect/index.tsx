@@ -1,6 +1,6 @@
 import React, { memo, forwardRef, useEffect, useCallback, useState, useMemo } from 'react'
 import { Transfer } from 'antd'
-import { TransferItem, TransferProps } from 'antd/es/transfer'
+import { TransferItem, TransferProps, RenderResult } from 'antd/es/transfer'
 import { omit } from 'lodash'
 import Wrapper from '../WrapperItem'
 
@@ -25,7 +25,6 @@ interface IProps extends Partial<TransferProps> {
 export default Wrapper<IProps>(memo(forwardRef<IMovieSelectRef, IProps>((props, ref) => {
 
   const [ originData, setOriginData ] = useState<ISelectItem[]>([])
-  const [ targetKeys, setTargetKeys ] = useState<string[]>([])
 
   const { 
     value=[], 
@@ -39,7 +38,6 @@ export default Wrapper<IProps>(memo(forwardRef<IMovieSelectRef, IProps>((props, 
     return {
       ...nextProps,
     }
-
   }, [props])
 
   const internalFetchOriginData = useCallback(async (value?: string) => {
@@ -48,9 +46,10 @@ export default Wrapper<IProps>(memo(forwardRef<IMovieSelectRef, IProps>((props, 
   }, [fetchOriginData])
 
   const internalFetchTargetKeysData = useCallback(async () => {
-    let selected = value
-    if(fetchSelectData) selected = await fetchSelectData()
-    setTargetKeys(selected)
+    if(fetchSelectData) {
+      const data = await fetchSelectData()
+      propsChange && propsChange(data)
+    }
   }, [value, fetchSelectData])
 
   const fetchData = useCallback(async () => {
@@ -59,7 +58,6 @@ export default Wrapper<IProps>(memo(forwardRef<IMovieSelectRef, IProps>((props, 
   }, [internalFetchOriginData, internalFetchTargetKeysData])
 
   const onChange = useCallback((newTargetKeys: string[], direction: string, moveKeys: string[]) => {
-    setTargetKeys(newTargetKeys)
     propsChange && propsChange(newTargetKeys)
   }, [propsChange])
 
@@ -70,6 +68,12 @@ export default Wrapper<IProps>(memo(forwardRef<IMovieSelectRef, IProps>((props, 
     }
   }, [])
 
+  const renderItem = useMemo(() => {
+    return (item: TransferItem) => {
+      return item.title as RenderResult
+    }
+  }, [])
+
   useEffect(() => {
     fetchData()
   }, [])
@@ -77,12 +81,13 @@ export default Wrapper<IProps>(memo(forwardRef<IMovieSelectRef, IProps>((props, 
   return (
     <Transfer
       dataSource={originData}
-      targetKeys={targetKeys}
+      targetKeys={value}
       onChange={onChange}
       oneWay
       pagination
       operations={['添加', '删除']}
       showSearch
+      render={renderItem}
       {...omit(comProps, ['dataSource'])}
     />
   )
