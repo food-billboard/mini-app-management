@@ -295,7 +295,7 @@ const Upload: ReactFC<IProps> = ({
           revert,
         }}
         //@ts-ignore
-        maxFileSize={'100MB'}
+        maxFileSize={'300MB'}
         instantUpload={false}
         chunkRetryDelays={[1000]}
         chunkUploads

@@ -7,7 +7,6 @@ export default {
   state: {
     navCard: {},
     dataList: {},
-    userlist: {},
     visitList: [],
     keywordData: {},
     typeList: {
@@ -21,7 +20,7 @@ export default {
     * initData(_: any, { call, put }: { call: any, put: any }) {
       const navCard = yield call(getNavCardList)
       const dataList = yield call(getDataStatisticsList)
-      const userlist = yield call (getUserStatisticsList)
+      const userList = yield call (getUserStatisticsList)
       const visitList = yield call (getVisitStatisticsList)
       const keywordData = yield call(getKeywordStatisticsList)
       const typeList = yield call(getDataTypeStatisticsList)
@@ -31,7 +30,7 @@ export default {
         payload: {
           navCard,
           dataList,
-          userlist,
+          userList,
           visitList,
           keywordData,
           typeList
@@ -57,7 +56,6 @@ export default {
       end_date?: string
     }, { call, put }: { call: any, put: any }) {
       const dataList = yield call(getDataStatisticsList, params)
-
       yield put({
         type: 'save',
         payload: {
@@ -71,12 +69,12 @@ export default {
       start_date?: string
       end_date?: string
     }, { call, put }: { call: any, put: any }) {
-      const userlist = yield call(getUserStatisticsList, params)
+      const dataList = yield call(getUserStatisticsList, params)
 
       yield put({
         type: 'save',
         payload: {
-          userlist
+          dataList
         }
       })
     },

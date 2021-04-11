@@ -1,10 +1,10 @@
-import { Chart, Geom, Tooltip } from 'bizcharts';
+import { Chart, Geom, Tooltip, Interval } from 'bizcharts';
 import React from 'react';
 import autoHeight from '../autoHeight';
 import styles from '../index.less';
 
 const MiniBar = props => {
-  const { height = 0, forceFit = true, color = '#1890FF', data = [] } = props;
+  const { height = 40, forceFit = true, color = '#1890FF', data = [] } = props;
   const scale = {
     x: {
       type: 'cat',
@@ -23,6 +23,7 @@ const MiniBar = props => {
   ]; // for tooltip not to be hide
 
   const chartHeight = height + 54;
+
   return (
     <div
       className={styles.miniChart}
@@ -31,13 +32,13 @@ const MiniBar = props => {
       }}
     >
       <div className={styles.chartContent}>
-        <Chart scale={scale} height={chartHeight} forceFit={forceFit} data={data} padding={padding}>
-          <Tooltip showTitle={false} crosshairs={false} />
-          <Geom type="interval" position="x*y" color={color} tooltip={tooltip} />
+        <Chart scale={scale} height={chartHeight} autoFit={forceFit} data={data} interactions={['active-region']} padding={padding}>
+          <Interval position="x*y" />
+          <Tooltip shared />
         </Chart>
       </div>
     </div>
-  );
+  )
 };
 
 export default autoHeight()(MiniBar);

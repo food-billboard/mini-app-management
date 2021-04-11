@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { Tabs, DatePicker, Card, Row, Col } from 'antd'
 import moment, { Moment } from 'moment'
 import noop from 'lodash/noop'
@@ -16,6 +16,13 @@ export interface IDataStatisticsChartData {
   count: number
 }
 
+type TOriginRankData = {
+  name: string 
+  count: number 
+  _id: string 
+  hot: number 
+}
+
 type TDateType = 'day' | 'week' | 'month' | 'year'
 
 const TopSearch: React.FC<any> = ({
@@ -27,7 +34,7 @@ const TopSearch: React.FC<any> = ({
   getUserStatisticsList=noop
 }: {
   data: Array<IDataStatisticsChartData>
-  rank: Array<IRankData>
+  rank: TOriginRankData[]
   dataLoading: boolean
   userLoading: boolean
   getDataStatisticsList: (params: { start_date: string, end_date: string } | { date_type: TDateType }) => any
@@ -38,7 +45,7 @@ const TopSearch: React.FC<any> = ({
   const [ date, setDate ] = useState<[Moment, Moment]>([ moment(), moment() ])
   const [ activeKey, setActiveKey ] = useState<'user' | 'upload'>('user')
 
-  useEffect(() => {
+  const fetchData = useCallback(async () => {
     let method 
     let params
     if(activeKey === 'user') {
@@ -54,8 +61,12 @@ const TopSearch: React.FC<any> = ({
     }else {
       params = { start_date: startDate.format('YYYY-MM-DD'), end_date: endDate.format('YYYY-MM-DD') }
     }
-    method(params)
+    await method(params)
   }, [date, activeKey])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
 
   const isActive = useCallback((type: TDateType) => {
     return type === dateType ? styles.currentDate : ''
@@ -66,8 +77,13 @@ const TopSearch: React.FC<any> = ({
     setDate([startDate, endDate])
   }
 
-  const chartData = data.map((item: IDataStatisticsChartData) => ({ x: item.day, y: item.count }))
-  const rankData = rank
+  const chartData = useMemo(() => {
+    return data.map((item: IDataStatisticsChartData) => ({ x: item.day, y: item.count }))
+  }, [data])
+
+  const rankData = useMemo(() => {
+    return rank.map((item: TOriginRankData) => ({ title: item.name, value: item.count, _id: item._id }))
+  }, [rank])
 
   return (
     <Card
@@ -123,7 +139,7 @@ const TopSearch: React.FC<any> = ({
             <Col xl={16} lg={12} md={12} sm={24} xs={24}>
               <div className={styles.salesBar}>
                 <Bar
-                  height={295}
+                  height={400}
                   title={"注册用户数量"}
                   data={chartData}
                 />
@@ -147,7 +163,7 @@ const TopSearch: React.FC<any> = ({
             <Col xl={16} lg={12} md={12} sm={24} xs={24}>
               <div className={styles.salesBar}>
                 <Bar
-                  height={295}
+                  height={400}
                   title={"用户上传电影量"}
                   data={chartData}
                 />

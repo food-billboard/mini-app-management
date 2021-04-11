@@ -42,7 +42,7 @@ const TimelineChart = (props: {
           height={height} 
           padding={padding} 
           data={data}
-          forceFit
+          autoFit
         >
           <Line position="x*y" />
           <Point position="x*y" />

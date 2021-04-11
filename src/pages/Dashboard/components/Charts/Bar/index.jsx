@@ -105,7 +105,7 @@ class Bar extends Component {
           <Chart
             scale={scale}
             height={title ? height - 41 : height}
-            forceFit={forceFit}
+            autoFit={forceFit}
             data={data}
             padding={padding || 'auto'}
           >
