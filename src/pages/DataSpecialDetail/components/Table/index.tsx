@@ -36,7 +36,7 @@ export default memo((props: IProps) => {
   }, [])
 
   const edit = useCallback((id: string) => {
-    return history.go(`/data/main/${id}`)
+    return history.push(`/data/main/${id}`)
   }, [])
 
   const handleRemove = useCallback((id: string) => {
@@ -101,6 +101,7 @@ export default memo((props: IProps) => {
       pagination={{ total, pageSize: 10 }}
       rowKey={record => record._id}
       onChange={onTableChange}
+      scroll={{x: 'max-content'}}
     />
   )
 

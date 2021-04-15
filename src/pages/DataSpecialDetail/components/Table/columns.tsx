@@ -1,7 +1,8 @@
 import React from 'react'
 import { Image, Tooltip } from 'antd'
+import { EyeOutlined } from '@ant-design/icons'
 import moment from 'moment'
-import { IMAGE_FALLBACK } from '@/utils'
+import { IMAGE_FALLBACK, formatUrl } from '@/utils'
 
 export default [
   {
@@ -32,11 +33,11 @@ export default [
             fallback={IMAGE_FALLBACK}
             placeholder
             preview
-            src={value}
+            src={formatUrl(value)}
           />
           }
         >
-          点击查看大图
+          <EyeOutlined style={{cursor: 'pointer'}} />
         </Tooltip>
       )
     }

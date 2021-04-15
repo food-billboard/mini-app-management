@@ -76,7 +76,6 @@ const CardList: FC<any> = () => {
       <DataAbout
         ref={listRef}
         fetchData={AboutInfo[path].fetchData}
-        headerContent={null}
         headerExtra={null}
         renderItem={AboutInfo[path].renderItem({
           addItem,

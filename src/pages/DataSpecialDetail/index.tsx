@@ -13,7 +13,7 @@ export default memo(() => {
 
   const [ detail, setDetail ] = useState<API_INSTANCE.IGetInstanceSpecialData>()
   const [ loading, setLoading ] = useState<boolean>(true)
-  const [ activeKey, setActiveKey ] = useState<string>()
+  const [ activeKey, setActiveKey ] = useState<string>('base')
 
   const modalRef = useRef<IFormRef>(null)
 
@@ -77,7 +77,7 @@ export default memo(() => {
 
   useEffect(() => {
     const { location: { pathname } } = history
-    const specialId = pathname.split('/').slice(-1)
+    const [specialId] = pathname.split('/').slice(-1) || []
     fetchData(specialId)
   }, [])
 
@@ -87,10 +87,10 @@ export default memo(() => {
         title: detail?.name || '专题详情',
         ghost: true,
         extra: [
-          <Button onClick={edit} key="1">编辑</Button>,
-          <Button onClick={deleteSpecial} key="2">删除</Button>,
-          detail?.valid === false && <Button onClick={editSpecial.bind(this, { valid: true })} key="3">启用</Button>,
-          detail?.valid === true && <Button key="4" onClick={editSpecial.bind(this, { valid: false })}>禁用</Button>,
+          <Button onClick={edit} key="1" type="primary">编辑</Button>,
+          <Button onClick={deleteSpecial} key="2" danger>删除</Button>,
+          detail?.valid === false && <Button type="primary" onClick={editSpecial.bind(this, { valid: true })} key="3">启用</Button>,
+          detail?.valid === true && <Button danger key="4" onClick={editSpecial.bind(this, { valid: false })}>禁用</Button>,
         ],
       }}
       tabList={[
@@ -115,6 +115,7 @@ export default memo(() => {
           <Descriptions
             loading={loading}
             onChange={editSpecial}
+            value={detail}
           />
         )
       }

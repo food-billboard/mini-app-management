@@ -54,11 +54,11 @@ const DataAbout: FC<IProps> = () => {
 
   const internalFetchData = useCallback(async () => {
     setLoading(true)
-    const actor = await localFetchData4Array<API_DATA.IGetActorInfoRes, ICloudData>(getActorInfo)(['name', 'name'])
-    const director = await localFetchData4Array<API_DATA.IGetDirectorInfoRes, ICloudData>(getDirectorInfo)(['name', 'name'])
-    const classify = await localFetchData4Array<API_DATA.IGetClassifyInfoRes, ICloudData>(getClassifyInfo)(['name', 'name'])
-    const language = await localFetchData4Array<API_DATA.IGetLanguageInfoRes, ICloudData>(getLanguageInfo)(['name', 'name'])
-    const district = await localFetchData4Array<API_DATA.IGetDistrictInfoRes, ICloudData>(getDistrictInfo)(['name', 'name'])
+    const actor = await localFetchData4Array<API_DATA.IGetActorInfoResData, API_DATA.IGetActorInfoRes, ICloudData>(getActorInfo)(['name', 'name'], data => data.list)
+    const director = await localFetchData4Array<API_DATA.IGetDirectorInfoResData, API_DATA.IGetDirectorInfoRes, ICloudData>(getDirectorInfo)(['name', 'name'], data => data.list)
+    const classify = await localFetchData4Array<API_DATA.IGetClassifyInfoResData, API_DATA.IGetClassifyInfoRes, ICloudData>(getClassifyInfo)(['name', 'name'], data => data.list)
+    const language = await localFetchData4Array<API_DATA.IGetLanguageInfoResData, API_DATA.IGetLanguageInfoRes, ICloudData>(getLanguageInfo)(['name', 'name'], data => data.list)
+    const district = await localFetchData4Array<API_DATA.IGetDistrictInfoResData, API_DATA.IGetDistrictInfoRes, ICloudData>(getDistrictInfo)(['name', 'name'], data => data.list)
 
     unstable_batchedUpdates(() => {
       setList([

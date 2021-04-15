@@ -65,9 +65,9 @@ const Upload: ReactFC<IProps> = ({
   const [ value, setValue ] = useState<IValue[]>([])
   
   //文件添加时对其进行加密
-  const onAddFile = async (error: FilePondErrorDescription | null, fileObj: FilePondFile) => {
-
-    if(!!error || Object.prototype.toString.call(fileObj.file) !== '[object File]') return
+  const onAddFile = async (fileObj: FilePondFile) => {
+    message.info('文件解析中...')
+    if(Object.prototype.toString.call(fileObj.file) !== '[object File]') return true
 
     const chunkSize = props.chunkSize || CHUNK_SIZE
 
@@ -78,9 +78,11 @@ const Upload: ReactFC<IProps> = ({
     if(!md5) {
       uploadRef.current?.removeFile(fileObj)
       message.info('文件解析错误，请重试')
-      return
+      return false
     }
     fileObj.setMetadata('md5', md5)
+
+    return true
 
   }
 
@@ -301,7 +303,8 @@ const Upload: ReactFC<IProps> = ({
         chunkUploads
         chunkSize={CHUNK_SIZE}
         itemInsertInterval={200}
-        onaddfile={onAddFile}
+        // onaddfile={onAddFile}
+        beforeAddFile={onAddFile}
         onremovefile={onremovefile}
         {...china}
         {...props}

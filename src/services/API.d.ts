@@ -378,7 +378,11 @@ declare namespace API_DATA {
   }
 
   export interface IGetActorInfoParams {
-    _id: string
+    _id?: string
+    content?: string 
+    currPage?: number 
+    pageSize?: number
+    all?: 1 | -1
   }
 
   interface ICountryData {
@@ -388,6 +392,11 @@ declare namespace API_DATA {
   }
 
   export interface IGetActorInfoRes {
+    total: number 
+    list: IGetActorInfoResData[]
+  }
+
+  export interface IGetActorInfoResData {
     _id: string
     another_name: string
     name: string
@@ -398,6 +407,8 @@ declare namespace API_DATA {
     source_type: IDataSourceType
     country: ICountryData
   }
+
+  export interface IGetDirectorInfoResData extends IGetActorInfoResData {}
 
   export interface IPutActorInfoParams extends IPostActorInfoParams {
     _id: string
@@ -413,7 +424,9 @@ declare namespace API_DATA {
 
   export interface IGetDirectorInfoParams extends IGetActorInfoParams {}
 
-  export interface IGetDirectorInfoRes extends IGetActorInfoRes {}
+  export interface IGetDirectorInfoRes extends IGetActorInfoRes {
+    list: IGetDirectorInfoResData[]
+  }
 
   export interface IPutDirectorInfoParams extends IPostDirectorInfoParams {
     _id: string
@@ -425,7 +438,11 @@ declare namespace API_DATA {
 
   export interface IGetDistrictInfoParams extends IGetActorInfoParams {}
 
-  export interface IGetDistrictInfoRes extends Exclude<IGetActorInfoRes, 'avatar' | 'another_name'> {}
+  export interface IGetDistrictInfoResData extends Exclude<IGetActorInfoResData, 'avatar' | 'another_name'> {}
+
+  export interface IGetDistrictInfoRes extends IGetActorInfoRes {
+    list: IGetDistrictInfoResData[]
+  }
 
   export interface IPutDistrictInfoParams extends IPostDistrictInfoParams {
     _id: string
@@ -439,7 +456,11 @@ declare namespace API_DATA {
 
   export interface IGetLanguageInfoParams extends IGetActorInfoParams {}
 
-  export interface IGetLanguageInfoRes extends IGetDistrictInfoRes {}
+  export interface IGetLanguageInfoResData extends IGetDistrictInfoResData {}
+
+  export interface IGetLanguageInfoRes extends IGetDistrictInfoRes {
+    data: IGetLanguageInfoResData[]
+  }
 
   export interface IPutLanguageInfoParams extends IPutDistrictInfoParams {}
 
@@ -449,7 +470,7 @@ declare namespace API_DATA {
 
   export interface IGetClassifyInfoParams extends IGetActorInfoParams {}
 
-  export interface IGetClassifyInfoRes {
+  export interface IGetClassifyInfoResData {
     _id: string
     glance: number
     name: string
@@ -458,6 +479,10 @@ declare namespace API_DATA {
     icon: string
     icon_id: string
     source_type: IDataSourceType
+  }
+
+  export interface IGetClassifyInfoRes extends IGetActorInfoRes {
+    list: IGetClassifyInfoResData[]
   }
 
   export interface IPutClassifyInfoParams extends IPostClassifyInfoParams {
@@ -632,6 +657,67 @@ declare namespace Upload {
 
   export interface ILooadParams {
     load: string
+  }
+
+}
+
+declare namespace API_Media {
+
+  type TStatus = "ERROR" | "COMPLETE" | "UPLOADING"
+  type TAuth = "PRIVATE" | "PUBLIC"
+
+  export interface IGetMediaListParams {
+    currPage?: number 
+    pageSize?: number 
+    content?: string 
+    type: 0 | 1 | 2
+    _id?: string 
+    origin_type?:  API_DATA.IDataSourceType
+    auth?: TAuth
+    status?: TStatus
+    size?: number | string 
+  } 
+
+  export interface IGetMediaListRes {
+    total: number 
+    list: IGetMediaListData[]
+  }
+
+  export interface IGetMediaListData {
+    _id: string 
+    src: string 
+    name: string 
+    createdAt: string 
+    updatedAt: string 
+    origin_type: API_DATA.IDataSourceType
+    origin: {
+      name: string 
+      _id: string 
+    }
+    auth: TAuth
+    info: {
+      md5: string 
+      status: TStatus
+      size: number 
+      mime: string 
+    }
+  }
+
+  export interface IPutMediaParams extends Pick<IGetMediaListParams, 'auth' | 'status' | 'auth'> {
+    _id: string 
+    type: 0 | 1 | 2
+    name?: string 
+  }
+
+  export interface IDeleteMediaParams extends Pick<IPutMediaParams, '_id' | 'type'> {}
+
+  export interface IGetMediaValidParams extends Pick<IPutMediaParams, '_id' | 'type'> {
+    isdelete?: boolean
+  }
+
+  export interface IGetMediaValidRes {
+    complete: boolean 
+    error: boolean 
   }
 
 }

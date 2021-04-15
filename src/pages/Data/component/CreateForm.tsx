@@ -138,7 +138,7 @@ class CreateForm extends Component<IProps, IState> {
               }]
             }}
             item={{
-              fetchData: () => localFetchData4Array<API_DATA.IGetActorInfoRes, ISelectItem>(getActorInfo)(['_id', 'key'], ['name', 'title'])
+              fetchData: () => localFetchData4Array<API_DATA.IGetActorInfoResData, API_DATA.IGetActorInfoRes, ISelectItem>(getActorInfo, { all: 1 })(['_id', 'key'], ['name', 'title'], (data) => data.list)
             }}
           />
         </ProForm.Group>
@@ -152,13 +152,13 @@ class CreateForm extends Component<IProps, IState> {
               }]
             }}
             item={{
-              fetchData: () => localFetchData4Array<API_DATA.IGetDirectorInfoRes, ISelectItem>(getDirectorInfo)(['_id', 'key'], ['name', 'title'])
+              fetchData: () => localFetchData4Array<API_DATA.IGetDirectorInfoResData, API_DATA.IGetDirectorInfoRes, ISelectItem>(getDirectorInfo, { all: 1 })(['_id', 'key'], ['name', 'title'], data => data.list)
             }}
           />
         </ProForm.Group>
         <ProForm.Group>
           <ProFormSelect
-            request={async () => await localFetchData4Array<API_DATA.IGetClassifyInfoRes>(getClassifyInfo)(['_id', 'value'], [ 'name', 'label' ])}
+            request={async () => await localFetchData4Array<API_DATA.IGetClassifyInfoResData, API_DATA.IGetClassifyInfoRes>(getClassifyInfo, { all: 1 })(['_id', 'value'], [ 'name', 'label' ], data => data.list)}
             name="classify"
             label="分类"
             hasFeedback
@@ -169,7 +169,7 @@ class CreateForm extends Component<IProps, IState> {
             }]}
           />
           <ProFormSelect
-            request={() => localFetchData4Array<API_DATA.IGetLanguageInfoRes>(getLanguageInfo)(['_id', 'value'], [ 'name', 'label' ])}
+            request={() => localFetchData4Array<API_DATA.IGetLanguageInfoResData, API_DATA.IGetLanguageInfoRes>(getLanguageInfo, { all: 1 })(['_id', 'value'], [ 'name', 'label' ], data => data.data)}
             name="language"
             label="语言"
             hasFeedback
@@ -180,7 +180,7 @@ class CreateForm extends Component<IProps, IState> {
             }]}
           />
           <ProFormSelect
-            request={() => localFetchData4Array<API_DATA.IGetDistrictInfoRes>(getDistrictInfo)(['_id', 'value'], ['name', 'label'])}
+            request={() => localFetchData4Array<API_DATA.IGetDistrictInfoResData, API_DATA.IGetDistrictInfoRes>(getDistrictInfo, { all: 1 })(['_id', 'value'], ['name', 'label'], data => data.list)}
             name="district"
             label="地区"
             hasFeedback
@@ -247,7 +247,7 @@ class CreateForm extends Component<IProps, IState> {
             ]
           }}
           item={{
-            maxFiles: 6,
+            // maxFiles: 6,
             acceptedFileTypes: [ 'image/*' ]
           }}
         />
