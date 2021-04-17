@@ -13,24 +13,35 @@ export default [
   {
     title: '描述',
     dataIndex: 'description',
-    valueType: 'option',
+    hideInSearch: true,
     ellipsis: true,
   },
   {
     title: '创建时间',
     dataIndex: 'createdAt',
-    valueType: 'option',
+    hideInSearch: true,
     renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
   },
   {
     title: '更新时间',
     dataIndex: 'updatedAt',
-    valueType: 'option',
+    hideInSearch: true,
     renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
   },
   {
     title: '是否启用',
     dataIndex: 'valid',
+    valueType: '',
+    valueEnum: [
+      {
+        text: '启用',
+        valid: true,
+      },
+      {
+        text: '禁用',
+        valid: false
+      }
+    ],
     renderText: (val: string) => {
       return <Badge status={val ? 'success' : 'error'} text={val ? '启用' : '禁用'} />
     }
@@ -38,12 +49,12 @@ export default [
   {
     title: '访问次数',
     dataIndex: 'glance',
-    valueType: 'option',
+    hideInSearch: true,
   },
   {
     title: '数据数量',
     dataIndex: 'movie',
-    valueType: 'option',
+    hideInSearch: true,
     renderText: (value: any) => {
       return Array.isArray(value) ? value.length : 0
     }

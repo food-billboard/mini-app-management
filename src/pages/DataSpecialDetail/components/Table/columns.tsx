@@ -19,6 +19,8 @@ export default [
     dataIndex: 'description',
     title: '描述',  
     key: 'description',
+    width: 100,
+    ellipsis: true,
   },
   {
     dataIndex: 'poster',

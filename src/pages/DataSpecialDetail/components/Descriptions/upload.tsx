@@ -4,7 +4,6 @@ import { Upload } from '@/components/Upload'
 import { isObjectId } from '@/components/Upload/util'
 import { IMAGE_FALLBACK, formatUrl } from '@/utils'
 import { getMediaList } from '@/services'
-import { fileValidator } from '../../../Data/component/utils'
 
 export const PreImage = (value: string) => {
 
@@ -45,6 +44,7 @@ export const PreImage = (value: string) => {
     <Image  
       // width={200}
       // height={200}
+      style={{maxWidth: 400, maxHeight: 300}}
       onError={error}
       preview={false}
       src={src}
@@ -60,13 +60,17 @@ export default ({ value, props }: {value: string, props: any}) => {
     return (Array.isArray(value) ? value : [value]).filter(item => typeof item === 'string')
   }, [value])
 
-  const {  } = useMemo(() => {
-    return props
+  const { onChange } = useMemo(() => {
+    const { fieldProps: { onChange } } = props 
+    return {
+      onChange
+    }
   }, [props])
 
   const onSelectChange = useCallback((value) => {
-    console.log(value)
-  }, [])
+    const [ newValue ] = value
+    onChange(newValue) 
+  }, [onChange])
 
   return (
     <Upload 

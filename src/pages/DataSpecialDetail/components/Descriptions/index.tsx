@@ -1,5 +1,5 @@
 import React, { useMemo, memo, useCallback, useRef, useContext } from 'react'
-import { Card, Tag, Input } from 'antd'
+import { Card, Tag } from 'antd'
 import { pick } from 'lodash' 
 import ProDescriptions from '@ant-design/pro-descriptions'
 import ProProvider from '@ant-design/pro-provider'
@@ -53,29 +53,7 @@ export default memo((props: IProps) => {
         title: '海报',
         dataIndex: 'poster',
         key: 'poster',
-        // valueType: 'poster',
-        render: PreImage as any,
-        renderFormItem: (value: any, props: any) => {
-          console.log(value, props.fieldProps)
-
-          return (
-            <Input />
-          )
-          return (
-            <div
-              style={{
-                width: 400,
-                height: 285,
-                overflow: 'auto',
-              }}
-            >
-              <Upload
-                value={value}
-                props={props}
-              />
-            </div>
-          )
-        },
+        valueType: 'poster',
         span: 3
       }
     ]
@@ -92,8 +70,23 @@ export default memo((props: IProps) => {
         valueTypeMap: {
           poster: {
             render: PreImage,
-            renderFormItem: Upload,
-          },
+            renderFormItem: (value: any, props: any) => {
+              return (
+                <div
+                  style={{
+                    width: 400,
+                    height: 285,
+                    overflow: 'auto',
+                  }}
+                >
+                  <Upload
+                    value={value}
+                    props={props}
+                  />
+                </div>
+              )
+            },
+          }
         },
       }}
     >

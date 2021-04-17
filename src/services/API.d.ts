@@ -690,6 +690,7 @@ declare namespace API_Media {
     createdAt: string 
     updatedAt: string 
     origin_type: API_DATA.IDataSourceType
+    white_list_count: number 
     origin: {
       name: string 
       _id: string 
@@ -718,6 +719,7 @@ declare namespace API_Media {
   export interface IGetMediaValidRes {
     complete: boolean 
     error: boolean 
+    exists: boolean
   }
 
 }

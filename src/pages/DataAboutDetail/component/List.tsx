@@ -2,7 +2,7 @@ import React, { memo, useCallback, useEffect, useState, useImperativeHandle, for
 import { List, Pagination } from 'antd'
 import { unstable_batchedUpdates } from 'react-dom'
 import { PageHeaderWrapper } from '@ant-design/pro-layout'
-import { ProFormText, ProFormSelect, LightFilter } from '@ant-design/pro-form'
+import { ProFormText, LightFilter } from '@ant-design/pro-form'
 import styles from '../style.less'
 
 export interface IList {
@@ -99,7 +99,6 @@ const Data = forwardRef<DataAboutRef, IProps>((props, ref) => {
 
   const internalFetchData = useCallback(async (params?) => {
     setLoading(true)
-    console.log(currPage, 233)
     const data = await fetchData({
       currPage: currPage - 1,
       pageSize: DEFAULT_PAGE_SIZE,
