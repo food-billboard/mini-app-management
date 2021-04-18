@@ -13,13 +13,13 @@ export default [
         name: 'register',
         path: '/user/register',
         component: './User/register',
-        title: '注册'
+        title: '注册',
       },
       {
         name: 'forget',
         path: '/user/forget',
         component: './User/forget',
-        title: '忘记密码'
+        title: '忘记密码',
       },
     ],
   },
@@ -34,7 +34,7 @@ export default [
         routes: [
           {
             path: '/',
-            redirect: '/home'
+            redirect: '/home',
           },
           {
             path: '/home',
@@ -54,9 +54,16 @@ export default [
               {
                 path: '/member/:id',
                 component: '@/pages/MemberDetail',
-                title: '用户详情'
-              }
-            ]
+                title: '用户详情',
+              },
+            ],
+          },
+          {
+            path: '/instance',
+            component: '@/pages/instance',
+            title: '实例管理',
+            name: 'instance',
+            icon: 'global',
           },
           {
             path: '/data',
@@ -78,9 +85,34 @@ export default [
                     component: '@/pages/DataDetail',
                     title: '数据详情',
                     name: 'datainfodetail',
-                    hideInMenu: true
-                  }
-                ]
+                    hideInMenu: true,
+                  },
+                  {
+                    path: '/data/main/:id/tag',
+                    component: '@/pages/DataTag',
+                    title: '数据标签管理',
+                    name: 'datainfotagmanage',
+                    hideInMenu: true,
+                  },
+                ],
+              },
+              {
+                path: '/data/special',
+                title: '数据专题管理',
+                name: 'special',
+                routes: [
+                  {
+                    path: '/data/special',
+                    component: '@/pages/DataSpecial',
+                  },
+                  {
+                    path: '/data/special/:name',
+                    component: '@/pages/DataSpecialDetail',
+                    title: '数据专题详情',
+                    name: 'specialdetail',
+                    hideInMenu: true,
+                  },
+                ],
               },
               {
                 path: '/data/about',
@@ -96,29 +128,29 @@ export default [
                     component: '@/pages/DataAboutDetail',
                     title: '数据相关详情',
                     name: 'dataaboutdetail',
-                    hideInMenu: true
-                  }
-                ]
+                    hideInMenu: true,
+                  },
+                ],
               },
               {
-                path: '/data/video/:id',
+                path: '/data/video',
                 component: '@/pages/Video',
                 title: '视频预览',
-                hideInMenu: true
+                hideInMenu: true,
               },
               {
                 path: '/data/image',
                 component: '@/pages/Image',
                 title: '图片预览',
-                hideInMenu: true
+                hideInMenu: true,
               },
-              {
-                path: '/data/image/edit',
-                component: '@/pages/ImageEditor',
-                title: '图片编辑',
-                hideInMenu: true
-              }
-            ]
+              // {
+              //   path: '/data/image/edit',
+              //   component: '@/pages/ImageEditor',
+              //   title: '图片编辑',
+              //   hideInMenu: true
+              // }
+            ],
           },
           {
             path: '/error',
@@ -137,15 +169,15 @@ export default [
               {
                 path: '/admin/setting',
                 component: '@/pages/Setting',
-                title: '个人设置'
-              }
-            ]
-          }
-        ]
-      }
-    ]
+                title: '个人设置',
+              },
+            ],
+          },
+        ],
+      },
+    ],
   },
   {
     component: './404',
   },
-]
+];

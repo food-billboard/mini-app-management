@@ -57,5 +57,5 @@ export const toBase64 = (str: string): string => {
 export const isObjectId = (str: string) => objectIdReg.test(str)
 
 export const propsValueValid = (value: string[], length: number) => {
-  return Array.isArray(value) && value.length == length && value.every(isObjectId)
+  return Array.isArray(value) && value.length >= length && value.every(isObjectId)
 }

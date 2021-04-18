@@ -53,7 +53,7 @@ const MiniArea = props => {
             animate={animate}
             scale={scaleProps}
             height={chartHeight}
-            forceFit={forceFit}
+            autoFit={forceFit}
             data={data}
             padding={padding}
           >

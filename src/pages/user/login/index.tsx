@@ -9,8 +9,6 @@ import { ConnectState } from '@/models/connect';
 
 const { Tab, Username, Password, Submit, Mobile } = LoginFrom;
 
-console.log(33333)
-
 const LoginMessage: React.FC<{
   content: string;
 }> = ({ content }) => (

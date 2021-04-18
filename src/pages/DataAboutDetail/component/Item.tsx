@@ -48,7 +48,7 @@ export const AboutInfo = {
     fetchData: async (values: API_DATA.IGetActorInfoParams) => {
       const data = await getActorInfo(values)
       if(!values || !values._id) return data
-      const form: API_DATA.IGetActorInfoRes = Array.isArray(data) ? data[0] : data
+      const form: API_DATA.IGetActorInfoResData = Array.isArray(data) ? data[0] : data
       if(!form) return {}
       const { country, another_name, avatar, avatar_id, ...nextForm } = form
       return {
@@ -83,7 +83,7 @@ export const AboutInfo = {
 
       const { deleteItem, editItem, addItem } = operation
 
-      return function<T>(item: API_DATA.IGetActorInfoRes): React.ReactNode  {
+      return function<T>(item: API_DATA.IGetActorInfoResData): React.ReactNode  {
         const { _id, another_name, name, createdAt, updatedAt, avatar, source_type } = item
         if (_id) {
           return (
@@ -159,7 +159,7 @@ export const AboutInfo = {
             }}
           />
           <ProFormSelect
-            request={() => localFetchData4Array<API_DATA.IGetDistrictInfoRes>(getDistrictInfo)(['_id', 'value'], ['name', 'label'])}
+            request={() => localFetchData4Array<API_DATA.IGetDistrictInfoResData, API_DATA.IGetDistrictInfoRes>(getDistrictInfo, { all: 1 })(['_id', 'value'], ['name', 'label'], data => data.list)}
             name="country"
             label="地区"
             hasFeedback
@@ -181,10 +181,10 @@ export const AboutInfo = {
     }
   },
   director: {
-    fetchData: async (values: API_DATA.IGetDirectorInfoRes) => {
+    fetchData: async (values: API_DATA.IGetDirectorInfoResData) => {
       const data = await getDirectorInfo(values)
       if(!values || !values._id) return data
-      const form: API_DATA.IGetDirectorInfoRes = Array.isArray(data) ? data[0] : data
+      const form: API_DATA.IGetDirectorInfoResData = Array.isArray(data) ? data[0] : data
       if(!form) return {}
       const { country, another_name, avatar, avatar_id, ...nextForm } = form
       return {
@@ -219,7 +219,7 @@ export const AboutInfo = {
 
       const { deleteItem, editItem, addItem } = operation
 
-      return function(item: API_DATA.IGetDirectorInfoRes): React.ReactNode  {
+      return function(item: API_DATA.IGetDirectorInfoResData): React.ReactNode  {
         const { _id, another_name, name, createdAt, updatedAt, avatar, source_type } = item
         if (_id) {
           return (
@@ -295,7 +295,7 @@ export const AboutInfo = {
             }}
           />
           <ProFormSelect
-            request={() => localFetchData4Array<API_DATA.IGetDistrictInfoRes>(getDistrictInfo)(['_id', 'value'], ['name', 'label'])}
+            request={() => localFetchData4Array<API_DATA.IGetDistrictInfoResData, API_DATA.IGetDistrictInfoRes>(getDistrictInfo)(['_id', 'value'], ['name', 'label'], data => data.list)}
             name="country"
             label="地区"
             hasFeedback
@@ -320,7 +320,7 @@ export const AboutInfo = {
     fetchData: async (values: API_DATA.IGetClassifyInfoParams) => {
       const data = await getClassifyInfo(values)
       if(!values || !values._id) return data
-      const form: API_DATA.IGetClassifyInfoRes = Array.isArray(data) ? data[0] : data
+      const form: API_DATA.IGetClassifyInfoResData = Array.isArray(data) ? data[0] : data
       if(!form) return {}
       const { icon, icon_id, ...nextForm } = form
       return {
@@ -353,7 +353,7 @@ export const AboutInfo = {
 
       const { deleteItem, editItem, addItem } = operation
 
-      return function(item: API_DATA.IGetClassifyInfoRes): React.ReactNode  {
+      return function(item: API_DATA.IGetClassifyInfoResData): React.ReactNode  {
         const { _id, name, createdAt, updatedAt, glance, icon, source_type } = item
         if (_id) {
           return (
@@ -451,7 +451,7 @@ export const AboutInfo = {
 
       const { deleteItem, editItem, addItem } = operation
 
-      return function(item: API_DATA.IGetLanguageInfoRes): React.ReactNode  {
+      return function(item: API_DATA.IGetLanguageInfoResData): React.ReactNode  {
         const { _id, name, createdAt, updatedAt, source_type } = item
         if (_id) {
           return (
@@ -533,7 +533,7 @@ export const AboutInfo = {
 
       const { deleteItem, editItem, addItem } = operation
 
-      return function(item: API_DATA.IGetDistrictInfoRes): React.ReactNode {
+      return function(item: API_DATA.IGetDistrictInfoResData): React.ReactNode {
         const { _id, name, createdAt, updatedAt, source_type } = item
         if (_id) {
           return (

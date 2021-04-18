@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Card, Radio } from 'antd'
 import { Pie } from '../Charts'
 import noop from 'lodash/noop'
@@ -35,9 +35,33 @@ const ProportionClassify: React.FC<any> = ({
 
   const [ classifyType, setClassifyType ] =  useState<keyof typeof EType>(EType.classify)
 
-  const onClassifyChange = (value: any) => {
-    setClassifyType(value)
-  }
+  const onClassifyChange = useCallback((e: any) => {
+    setClassifyType(e.target.value)
+  }, [])
+
+  const chartData = useMemo(() => {
+    let rest = 1 
+    const newData: IClassifyData[] = Array.isArray(data) ? data : []
+    const newList = newData.reduce<{ x: string, y: number, value: number }[]>((acc, cur) => {
+      const { count, classify: { name, _id }={} } = cur
+      let value = parseFloat(count)
+      if(!Number.isNaN(value) && !!name && rest - value >= 0) {
+        rest -= value
+        acc.push({
+          x: name,
+          y: value,
+          value: total * value
+        })
+      }
+      return acc 
+    }, [])
+    if(rest !== 0) newList.push({
+      x: '未知',
+      y: rest,
+      value: total * rest
+    })
+    return newList
+  }, [data])
 
   useEffect(() => {
     fetchData()
@@ -79,20 +103,9 @@ const ProportionClassify: React.FC<any> = ({
         分类
       </h4>
       <Pie
-        hasLegend
-        subTitle={
-          '分类'
-        }
-        total={() => (total || 0).toString()}
-        data={(Array.isArray(data) ? data : []).map(d => {
-          const { count, classify: { name, _id }={} } = d
-          const value = parseFloat(count)
-          return {
-            x: name,
-            y: Number.isNaN(value) ? 0 : value
-          }
-        })}
-        valueFormat={(value: number) => `${(value || 0) * total}`}
+        // total={() => (total || 0).toString()}
+        data={chartData}
+        // valueFormat={(value: number) => `${(value || 0) * total}`}
         height={248}
         lineWidth={4}
       />

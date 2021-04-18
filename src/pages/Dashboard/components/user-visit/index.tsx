@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { Card } from 'antd'
 import { TimelineChart } from '../Charts'
 import { connect } from 'umi'
@@ -23,6 +23,10 @@ const UserVisit: React.FC<IProps> = ({
   fetchData=noop
 }) => {
 
+  const chartData = useMemo(() => {
+    return data.map((item: IVisitStatisticsData) => ({ x: item.day, y: item.count }))
+  }, [data])
+
   useEffect(() => {
     fetchData()
   }, [])
@@ -43,7 +47,7 @@ const UserVisit: React.FC<IProps> = ({
       >
         <TimelineChart
           height={400}
-          data={data.map((item: IVisitStatisticsData) => ({ x: item.day, y1: item.count }))}
+          data={chartData}
         />
       </div>
     </Card>

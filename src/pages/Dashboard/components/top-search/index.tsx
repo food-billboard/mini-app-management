@@ -24,13 +24,7 @@ const SalesCard: React.FC<any> = ({
   statisticsTopSearchChart=[],
   statisticsTopSearchAverageChart=[],
   topSearchList=[],
-  keyword=[{
-    name: 'text',
-    count: 111
-  }, {
-    name: 'text',
-    count: 11122
-  }],
+  keyword=[],
   fetchData=noop
 }: {
   loading: boolean,

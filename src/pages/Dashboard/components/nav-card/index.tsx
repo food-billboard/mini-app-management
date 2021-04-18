@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { Row, Col, Tooltip } from 'antd'
 import { InfoCircleOutlined } from '@ant-design/icons'
 import { ChartCard, MiniArea, MiniBar, MiniProgress, Field } from '../Charts';
@@ -35,6 +35,19 @@ const NavCard: React.FC<any> = ({
   feedback_count: INavFeedbackCount
   fetchData: () => any
 }) => {
+
+  const miniProgressData = useMemo(() => {
+    const data = feedback_count?.transform_count || 0
+    return data > 1 ? data : data * 100
+  }, [feedback_count])
+
+  const miniAreaData = useMemo(() => {
+    return (visit_day?.data || []).map((item: IDataStatisticsData) => ({ x: item.day, y: item.count }))
+  }, [visit_day])
+
+  const miniBarData = useMemo(() => {
+    return (data_count?.data || []).map((item: IDataStatisticsData) => ({ x: item.day, y: item.count }))
+  }, [data_count])
 
   useEffect(() => {
     fetchData()
@@ -82,7 +95,7 @@ const NavCard: React.FC<any> = ({
             flag={Trend.flag(user_count?.day_add)}
           >
             <span>日同比</span>
-            <span className={styles.trendText}>{(user_count?.week_add || 0) * 100}%</span>
+            <span className={styles.trendText}>{(user_count?.day_add || 0) * 100}%</span>
           </Trend>
         </ChartCard>
       </Col>
@@ -113,7 +126,7 @@ const NavCard: React.FC<any> = ({
           }
           contentHeight={46}
         >
-          <MiniBar data={(data_count?.data || []).map((item: IDataStatisticsData) => ({ x: item.day, y: item.count }))} />
+          <MiniBar data={miniBarData} />
         </ChartCard>
       </Col>
       <Col {...topColResponsiveProps}>
@@ -143,7 +156,7 @@ const NavCard: React.FC<any> = ({
           }
           contentHeight={46}
         >
-          <MiniArea data={(visit_day?.data || []).map((item: IDataStatisticsData) => ({ x: item.day, y: item.count }))} />
+          <MiniArea data={miniAreaData} />
         </ChartCard>
       </Col>
       <Col {...topColResponsiveProps}>
@@ -195,7 +208,7 @@ const NavCard: React.FC<any> = ({
           }
           contentHeight={46}
         >
-          <MiniProgress percent={(feedback_count?.transform_count || 0) * 100} strokeWidth={8} target={(feedback_count?.transform_count || 0) * 100} color="#13C2C2" />
+          <MiniProgress percent={miniProgressData} strokeWidth={8} target={miniProgressData} color="#13C2C2" />
         </ChartCard>
       </Col>
     </Row>

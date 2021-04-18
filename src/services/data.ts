@@ -78,7 +78,7 @@ export const getStoreUserList = (params: API_DATA.IGetStoreUserListParams) => {
 //演员信息
 export const getActorInfo = (params?: API_DATA.IGetActorInfoParams) => {
 
-  return request<API_DATA.IGetActorInfoRes[]>('/api/manage/movie/detail/info/actor', {
+  return request<API_DATA.IGetActorInfoRes>('/api/manage/movie/detail/info/actor', {
     method: 'GET',
     params
   })
@@ -111,7 +111,7 @@ export const deleteActorInfo = (params: API_DATA.IDeleteActorParams) => {
 
 //导演信息
 export const getDirectorInfo = (params?: API_DATA.IGetDirectorInfoParams) => {
-  return request<API_DATA.IGetDirectorInfoRes[]>('/api/manage/movie/detail/info/director', {
+  return request<API_DATA.IGetDirectorInfoRes>('/api/manage/movie/detail/info/director', {
     method: 'GET',
     params
   })
@@ -143,7 +143,7 @@ export const deleteDirectorInfo = (params: API_DATA.IDeleteDirectorParams) => {
 
 //地区信息
 export const getDistrictInfo = (params?: API_DATA.IGetDistrictInfoParams) => {
-  return request<API_DATA.IGetDistrictInfoRes[]>('/api/manage/movie/detail/info/district', {
+  return request<API_DATA.IGetDistrictInfoRes>('/api/manage/movie/detail/info/district', {
     method: 'GET',
     params
   })
@@ -175,7 +175,7 @@ export const deleteDistrictInfo = (params: API_DATA.IDeleteDistrictParams) => {
 
 //语言信息
 export const getLanguageInfo = (params?: API_DATA.IGetLanguageInfoParams) => {
-  return request<API_DATA.IGetLanguageInfoRes[]>('/api/manage/movie/detail/info/language', {
+  return request<API_DATA.IGetLanguageInfoRes>('/api/manage/movie/detail/info/language', {
     method: 'GET',
     params
   })
@@ -207,7 +207,7 @@ export const deleteLanguageInfo = (params: API_DATA.IDeleteLanguageParams) => {
 
 //分类信息
 export const getClassifyInfo = (params?: API_DATA.IGetClassifyInfoParams) => {
-  return request<API_DATA.IGetClassifyInfoRes[]>('/api/manage/movie/detail/info/classify', {
+  return request<API_DATA.IGetClassifyInfoRes>('/api/manage/movie/detail/info/classify', {
     method: 'GET',
     params
   })
@@ -237,3 +237,18 @@ export const deleteClassifyInfo = (params: API_DATA.IDeleteClassifyParams) => {
   })
 }
 
+//通过审核
+export const putMovieStatus = (params: API_DATA.IPutMovieStatusParams) => {
+  return request('/api/manage/movie/detail/valid', {
+    method: 'PUT',
+    data: params
+  })
+}
+
+//不通过审核
+export const deleteMovieStatus = (params: API_DATA.IDeleteMovieStatusParams) => {
+  return request('/api/manage/movie/detail/valid', {
+    method: 'DELETE',
+    params
+  })
+}

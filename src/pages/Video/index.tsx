@@ -6,8 +6,8 @@ import Video from '@/components/Video'
 const VideoPreview: FC<any> = () => {
 
   const videoId: string | undefined = useMemo(() => {
-    const { location: { state } } = history
-    const { url } = state as { url: string | undefined }
+    const { location: { query } } = history
+    const { url } = query as { url: string | undefined }
     return url
   }, [])
 

@@ -107,9 +107,9 @@ export default {
     //注册
     * register({ payload }: { payload: RegisterParamsType }, { call }: { call: any }) {
       const response = yield call(register, payload)
-      console.log(response, '注册')
+
       //注册成功跳转至登录
-      if (response.status === 'ok') {
+      if (!!response.token) {
         message.success({
           content: '注册成功',
           duration: 1.5,
