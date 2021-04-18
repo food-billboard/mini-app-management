@@ -2,7 +2,7 @@
 import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
-import routerConfig from './router-config'
+import routerConfig from './router-config';
 
 const { REACT_APP_ENV } = process.env;
 
@@ -13,7 +13,7 @@ export default defineConfig({
     hmr: true,
   },
   history: {
-    type: "hash"
+    type: 'hash',
   },
   // layout: {
   //   name: 'Ant Design Pro',
@@ -47,6 +47,7 @@ export default defineConfig({
   manifest: {
     basePath: '/',
   },
+  //-----打包配置
   // base: '/api/backend/',
   // publicPath: "/api/backend/"
 });
