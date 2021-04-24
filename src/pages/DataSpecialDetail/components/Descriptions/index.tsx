@@ -69,7 +69,9 @@ export default memo((props: IProps) => {
         ...values,
         valueTypeMap: {
           poster: {
-            render: PreImage,
+            render: (value: string) => {
+              return <PreImage value={value} />
+            },
             renderFormItem: (value: any, props: any) => {
               return (
                 <div

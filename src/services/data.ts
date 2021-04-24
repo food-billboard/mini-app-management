@@ -61,7 +61,7 @@ export const movieDetail = (params: API_DATA.IGetMovieDetailParams) => {
 
 //评论列表
 export const getMovieCommentList = (params: API_DATA.IGetMovieCommentParams) => {
-  return request<API_DATA.IGetMovieCommentRes[]>('/api/manage/movie/detail/comment', {
+  return request<API_DATA.IGetMovieCommentRes>('/api/manage/movie/detail/comment', {
     method: 'GET',
     params
   })
@@ -69,7 +69,7 @@ export const getMovieCommentList = (params: API_DATA.IGetMovieCommentParams) => 
 
 //收藏用户列表
 export const getStoreUserList = (params: API_DATA.IGetStoreUserListParams) => {
-  return request<API_DATA.IGetStoreUserListRes[]>('/api/manage/movie/detail/user', {
+  return request<API_DATA.IGetStoreUserListRes>('/api/manage/movie/detail/user', {
     method: 'GET',
     params
   })
@@ -248,6 +248,30 @@ export const putMovieStatus = (params: API_DATA.IPutMovieStatusParams) => {
 //不通过审核
 export const deleteMovieStatus = (params: API_DATA.IDeleteMovieStatusParams) => {
   return request('/api/manage/movie/detail/valid', {
+    method: 'DELETE',
+    params
+  })
+}
+
+//数据标签列表
+export const getMovieTagList = (params: API_DATA.IGetMovieTagListParams) => {
+  return request<API_DATA.IGetMovieTagRes>('/api/manage/movie/detail/tag', {
+    method: 'GET',
+    params
+  })
+}
+
+//数据标签修改
+export const putMovieTag = (data: API_DATA.IPutMovieTagParams) => {
+  return request('/api/manage/movie/detail/tag', {
+    method: 'PUT',
+    data
+  })
+}
+
+//数据标签删除
+export const deleteMovieTag = (params: API_DATA.IDeleteMovieTagParams) => {
+  return request('/api/manage/movie/detail/tag', {
     method: 'DELETE',
     params
   })

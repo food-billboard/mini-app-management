@@ -48,7 +48,7 @@ export default defineConfig({
     basePath: '/',
   },
   define: {
-    'process.env.REACT_APP_ENV': 'env'
+    'process.env.REACT_APP_ENV': 'dev'
   },
   //-----打包配置
   // base: '/api/backend/',

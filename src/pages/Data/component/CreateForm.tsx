@@ -94,6 +94,7 @@ class CreateForm extends Component<IProps, IState> {
         onFinish={async (values: Store) => {
           this.props.onSubmit && this.props.onSubmit(values as FormData)
           this.setState({ visible: false })
+          this.formRef.current?.resetFields()
         }}
         onVisibleChange={(visible: boolean) => {
           if(!visible) this.onCancel()
@@ -114,6 +115,9 @@ class CreateForm extends Component<IProps, IState> {
         <ProFormTextArea 
           name="description" 
           label="描述" 
+          fieldProps={{
+            autoSize: true
+          }}
           rules={[{
             required: true
           }]}
@@ -169,7 +173,7 @@ class CreateForm extends Component<IProps, IState> {
             }]}
           />
           <ProFormSelect
-            request={() => localFetchData4Array<API_DATA.IGetLanguageInfoResData, API_DATA.IGetLanguageInfoRes>(getLanguageInfo, { all: 1 })(['_id', 'value'], [ 'name', 'label' ], data => data.data)}
+            request={() => localFetchData4Array<API_DATA.IGetLanguageInfoResData, API_DATA.IGetLanguageInfoRes>(getLanguageInfo, { all: 1 })(['_id', 'value'], [ 'name', 'label' ], data => data.list)}
             name="language"
             label="语言"
             hasFeedback
@@ -254,6 +258,9 @@ class CreateForm extends Component<IProps, IState> {
         <ProFormTextArea 
           name="author_description" 
           label="主观描述" 
+          fieldProps={{
+            autoSize: true
+          }}
           rules={[{
             required: true
           }]}

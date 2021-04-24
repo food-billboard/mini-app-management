@@ -1,57 +1,54 @@
-import React, { useRef, createRef, useCallback, memo, useMemo } from 'react'
-import { Button, Dropdown, message, Menu, Space, Modal } from 'antd'
+import React, { useRef, useCallback, memo, useMemo, useState } from 'react'
+import { Button, Dropdown, message, Menu, Space, Modal, Input } from 'antd'
+import { unstable_batchedUpdates } from 'react-dom'
 import { PageHeaderWrapper } from '@ant-design/pro-layout'
 import ProTable, { ActionType } from '@ant-design/pro-table'
-import { DownOutlined, PlusOutlined, EllipsisOutlined } from '@ant-design/icons'
+import { DownOutlined } from '@ant-design/icons'
 import { connect } from 'umi'
+import merge from 'lodash/merge'
 import pickBy from 'lodash/pickBy'
+import pick from 'lodash/pick'
 import identity from 'lodash/identity'
-import { history } from 'umi'
 import { mapStateToProps, mapDispatchToProps } from './connect'
-import CreateForm from './components/CreateForm'
 import column from './columns'
-import { getUserList, putUser, deleteUser, postUser } from '@/services'
+import { getUserFeedbackList, putUserFeedback, deleteUserFeedback } from '@/services'
 
-const MemberManage = memo(() => {
+const FeedbackManage = memo(() => {
 
   const actionRef = useRef<ActionType>()
 
-  const modalRef = createRef<CreateForm>()
+  const [ description, setDescription ] = useState<string>('')
+  const [ visible, setVisible ] = useState<boolean>(false)
+  const [ curEditData, setCurEditData ] = useState<API_USER.IGetFeedbackData>()
 
   /**
    * 添加节点
    * @param fields
    */
-  const handleAdd = useCallback(async (fields: any) => {
-    const hide = message.loading('正在添加')
-    const method = !!fields._id ? putUser : postUser
+  const handleAdd = useCallback(async (fields: API_USER.IGetFeedbackData) => {
 
-    const { avatar, role, ...nextFields } = fields
+    const hide = message.loading('正在修改')
+    const params = merge({}, { description }, pick(fields, ['_id', 'status'])) as API_USER.IPutFeedbackParams
 
-    const params = {
-      ...nextFields,
-      avatar: Array.isArray(avatar) ? avatar[0] : avatar,
-      role: (Array.isArray(role) ? role : [role]).join(',')
-    }
-
-    try {
-      await method(params)
-      hide()
+    return putUserFeedback(params)
+    .then(_ => {
       message.success('操作成功')
-      return true
-    } catch (error) {
       hide()
-      message.error('操作失败请重试！')
-      return false
-    }
-  }, [])
+      actionRef.current?.reload()
+    })
+    .catch(err => {
+      message.success('操作失败，请重试')
+      hide()
+    })
+
+  }, [description])
 
   /**
    *  删除节点
    * @param selectedRows
    */
 
-  const handleRemove = useCallback(async (selectedRows: API_USER.IGetUserListResData[]) => {
+  const handleRemove = useCallback(async (selectedRows: API_USER.IGetFeedbackData[]) => {
 
     const res = await new Promise((resolve) => {
 
@@ -78,9 +75,9 @@ const MemberManage = memo(() => {
     const hide = message.loading('正在删除')
     if (!selectedRows) return true
 
-    const response = await Promise.all(selectedRows.map((row: API_USER.IGetUserListResData) => {
+    const response = await Promise.all(selectedRows.map((row: API_USER.IGetFeedbackData) => {
       const { _id } = row
-      return deleteUser({
+      return deleteUserFeedback({
         _id
       })
     }))
@@ -107,51 +104,28 @@ const MemberManage = memo(() => {
         key: 'option',
         dataIndex: 'option',
         valueType: 'option',
-        render: (_: any, record: API_USER.IGetUserListResData) => {
+        render: (_: any, record: API_USER.IGetFeedbackData) => {
           return (
             <Space>
-              <a
-                onClick={() => handleModalVisible(record._id)}
-              >
-                编辑
+              {
+                <a
+                  onClick={edit.bind(this, merge({}, record, { status: "DEAL" }))}
+                >
+                  完成处理
               </a>
+              }
               <a
                 style={{color: 'red'}}
                 onClick={() => handleRemove([record])}
               >
                 删除
               </a>
-              <Dropdown overlay={
-                <Menu>
-                  <Menu.Item>
-                    <a style={{color: '#1890ff'}} onClick={() => history.push(`/member/${record._id}`)}>
-                    详情
-                    </a>
-                  </Menu.Item>
-                </Menu>
-              }>
-                <a onClick={e => e.preventDefault()}>
-                  <EllipsisOutlined />
-                </a>
-              </Dropdown>
             </Space>
           )
         }
       }
     ]
   
-  }, [])
-
-  const handleModalVisible = (id?: string) => {
-    modalRef.current?.open(id)
-  }
-
-  const onSubmit = useCallback(async value => {
-    const success = await handleAdd(value)
-
-    if (success) {
-      actionRef.current?.reload()
-    }
   }, [])
 
   const fetchData = useCallback(async (params: any) => {
@@ -161,22 +135,42 @@ const MemberManage = memo(() => {
       currPage: current - 1
     }
     newParams = pickBy(newParams, identity)
-    return getUserList(newParams)
+    return getUserFeedbackList(newParams)
     .then(({ list }) => ({ data: list }) )
     .catch(_ => ({ data: [] }))
   }, [])
+
+  const edit = useCallback((data: API_USER.IGetFeedbackData) => {
+    unstable_batchedUpdates(() => {
+      setVisible(true)
+      setCurEditData(data)
+    })
+  }, [])
+
+  const onInputCancel = useCallback(() => {
+    unstable_batchedUpdates(() => {
+      setVisible(false)
+      setDescription('')
+      setCurEditData(undefined)
+    })
+  }, [])
+
+  const onInputOk = useCallback(() => {
+    return handleAdd(curEditData!)
+    .then(_ => {
+      return onInputCancel()
+    })
+
+  }, [handleAdd, onInputCancel, curEditData])
 
   return (
     <PageHeaderWrapper>
       <ProTable
         scroll={{ x: 'max-content' }}
-        headerTitle="用户列表"
+        headerTitle="用户反馈列表"
         actionRef={actionRef}
         rowKey="_id"
         toolBarRender={(action, { selectedRows }) => [
-          <Button key={'add'} icon={<PlusOutlined />} type="primary" onClick={() => handleModalVisible()}>
-            新建
-          </Button>,
           selectedRows && selectedRows.length > 0 && (
             <Dropdown
               overlay={
@@ -219,12 +213,25 @@ const MemberManage = memo(() => {
         columns={columns}
         rowSelection={{}}
       />
-      <CreateForm
-        onSubmit={onSubmit}
-        ref={modalRef}
-      />
+      <Modal
+        visible={visible}
+        okText="确定"
+        cancelText="取消"
+        title='提示'
+        onOk={onInputOk}
+        onCancel={onInputCancel}
+      >
+        <Input.TextArea
+          autoSize
+          defaultValue="输入对此次处理的描述"
+          maxLength={100}
+          showCount
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+      </Modal>
   </PageHeaderWrapper>
   )
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(MemberManage)
+export default connect(mapStateToProps, mapDispatchToProps)(FeedbackManage)

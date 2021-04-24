@@ -30,7 +30,7 @@ export const postUser = (data: API_USER.IPostUserParams) => {
 }
 
 //修改用户
-export const putUser = (data: API_USER.IPUTUserParams) => {
+export const putUser = (data: API_USER.IPutUserParams) => {
   return request('/api/manage/user', {
     method: 'PUT',
     data

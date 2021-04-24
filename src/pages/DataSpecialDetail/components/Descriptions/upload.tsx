@@ -5,22 +5,21 @@ import { isObjectId } from '@/components/Upload/util'
 import { IMAGE_FALLBACK, formatUrl } from '@/utils'
 import { getMediaList } from '@/services'
 
-export const PreImage = (value: string) => {
+export const PreImage = ({ value, onClick }: { value: string, onClick?: any }) => {
 
   const [ src, setSrc ] = useState<string>(value)
 
   const error = useCallback((err) => {
-    message.info('图片获取失败')
+    // message.info('图片获取失败')
   }, [])
 
   const fetchData = useCallback(async (objectId: string) => {
-    return Promise.resolve('https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3206689113,2237998950&fm=26&gp=0.jpg')
     try {
       const data = await getMediaList({
         type: 0,
         _id: objectId
       })
-      return formatUrl(data.list[0].src)
+      return setSrc(formatUrl(data.list[0].src))
     }catch(err) {
       return ''
     }
@@ -31,12 +30,6 @@ export const PreImage = (value: string) => {
       setSrc(formatUrl(value))
     }else {
       fetchData(value)
-      .then(data => {
-        setSrc(data as string)
-      })
-      .catch(err => {
-        message.error('图片解析失败')
-      })
     }
   }, [value])
 
@@ -49,6 +42,7 @@ export const PreImage = (value: string) => {
       preview={false}
       src={src}
       fallback={IMAGE_FALLBACK}
+      onClick={onClick}
     />
   )
 

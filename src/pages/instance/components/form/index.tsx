@@ -59,6 +59,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   const onFinish = useCallback(async (values: Store) => {
     onSubmit && onSubmit(values as FormData)
     setVisible(false)
+    formRef.current?.resetFields()
   }, [onSubmit])
 
   useImperativeHandle(ref, () => ({
@@ -81,7 +82,9 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
           required: true,
           message: '请输入信息'
         }]}
-        width={"m"}
+        fieldProps={{
+          autoSize: true
+        }}
       />
       <ProFormTextArea 
         name="notice" 
@@ -90,7 +93,9 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
           required: true,
           message: '请输入跑马灯内容'
         }]}
-        width={"m"}
+        fieldProps={{
+          autoSize: true
+        }}
       />
       <ProFormSwitch
         name="valid"

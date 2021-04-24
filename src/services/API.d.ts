@@ -82,6 +82,7 @@ declare namespace API_USER {
     createdAt: string
     updatedAt: string
     status: keyof typeof UserStatus
+    avatar: string 
   }
 
   export interface IPostUserParams {
@@ -94,7 +95,7 @@ declare namespace API_USER {
     role: keyof typeof UserRole
   }
 
-  export interface IPUTUserParams extends IPostUserParams {
+  export interface IPutUserParams extends IPostUserParams {
     _id: string
   }
 
@@ -157,7 +158,7 @@ declare namespace API_USER {
     content: {
       text: string
       image: string[]
-      image: string[]
+      video: string[]
     }
   }
 
@@ -168,7 +169,7 @@ declare namespace API_USER {
 
   export interface IPutFeedbackParams {
     _id: string
-    description: string
+    description?: string
     status: TFeedbackStatus
   }
 
@@ -237,8 +238,8 @@ declare namespace API_DATA {
     pageSize?: number
     content?: string
     classify?: 1 | -1
-    status?: "VERIFY" | "COMPLETE" | "NOT_VERIFY"
-    source_type?: 'ORIGIN' | 'USER'
+    status?: IDataStatus
+    source_type?: IDataSourceType
     start_date?: string
     end_date?: string
     _id?: string
@@ -333,23 +334,25 @@ declare namespace API_DATA {
 
   export interface IGetMovieCommentRes {
     total: number
-    list: {
+    list: IGetMovieCommentData[]
+  }
+
+  export interface IGetMovieCommentData {
+    _id: string
+    user_info: {
       _id: string
-      user_info: {
-        _id: string
-        username: string
-      }
-      createdAt: string
-      updatedAt: string
-      comment_count: number
-      like_person_count: number
-      total_like: number
-      content: {
-        text: string
-        image: string[]
-        video: string[]
-      }
-    }[]
+      username: string
+    }
+    createdAt: string
+    updatedAt: string
+    comment_count: number
+    like_person_count: number
+    total_like: number
+    content: {
+      text: string
+      image: string[]
+      video: string[]
+    }
   }
 
   export interface IGetStoreUserListParams extends Exclude<IGetMovieCommentParams, 'hot' | 'time' | 'comment'> {
@@ -359,22 +362,24 @@ declare namespace API_DATA {
 
   export interface IGetStoreUserListRes {
     total: number
-    list: {
-      _id: string
-      username: string
-      mobile: number
-      email: string
-      hot: number
-      createdAt: string
-      updatedAt: string
-      status: API_USER.UserStatus
-      roles: keyof typeof API_USER.UserRole
-      glance_date: string
-      movie_name: string
-      issue_count: number
-      fans_count: number
-      attentions_count: number
-    }[]
+    list: IGetStoreUserListData[]
+  }
+
+  export interface IGetStoreUserListData {
+    _id: string
+    username: string
+    mobile: number
+    email: string
+    hot: number
+    createdAt: string
+    updatedAt: string
+    status: API_USER.UserStatus
+    roles: keyof typeof API_USER.UserRole
+    glance_date: string
+    movie_name: string
+    issue_count: number
+    fans_count: number
+    attentions_count: number
   }
 
   export interface IGetActorInfoParams {
@@ -496,9 +501,49 @@ declare namespace API_DATA {
 
   export interface IDeleteClassifyParams extends IGetDirectorInfoParams {}
 
-  export interface IPutMovieStatusParams extends IGetActorInfoParams {}
+  export interface IPutMovieStatusParams {
+    _id: string
+  }
 
-  export interface IDeleteMovieStatusParams extends IGetActorInfoParams {}
+  export interface IDeleteMovieStatusParams {
+    _id: string
+  }
+
+  export interface IGetMovieTagListParams {
+    start_date?: string 
+    end_date?: string 
+    valid?: boolean 
+    content?: string 
+    _id?: string 
+    weight?: number 
+  }
+
+  export interface IGetMovieTagRes {
+    total: number 
+    list: IGetMovieTagResData[]
+  }
+
+  export interface IGetMovieTagResData {
+    text: string 
+    weight: number 
+    source: {
+      name: string 
+      _id: string 
+    } 
+    valid: boolean 
+    createdAt: string 
+    updatedAt: string 
+    _id: string 
+  }
+
+  export interface IPutMovieTagParams {
+    _id: string 
+    valid: boolean 
+  }
+
+  export interface IDeleteMovieTagParams {
+    _id: string 
+  }
 
 }
 

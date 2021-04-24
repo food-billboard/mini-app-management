@@ -46,17 +46,29 @@ export default [
           },
           {
             path: '/member',
-            component: '@/pages/Member',
             name: 'member',
             icon: 'team',
             title: '用户管理',
             routes: [
               {
+                path: '/member',
+                component: '@/pages/Member',
+              },
+              {
                 path: '/member/:id',
                 component: '@/pages/MemberDetail',
                 title: '用户详情',
+                name: 'memberdetail',
+                hideInMenu: true,
               },
             ],
+          },
+          {
+            path: '/feedback',
+            component: '@/pages/Feedback',
+            name: 'feedback',
+            icon: 'tool',
+            title: '反馈管理'
           },
           {
             path: '/instance',
@@ -87,13 +99,13 @@ export default [
                     name: 'datainfodetail',
                     hideInMenu: true,
                   },
-                  {
-                    path: '/data/main/:id/tag',
-                    component: '@/pages/DataTag',
-                    title: '数据标签管理',
-                    name: 'datainfotagmanage',
-                    hideInMenu: true,
-                  },
+                  // {
+                  //   path: '/data/main/:id/tag',
+                  //   component: '@/pages/DataTag',
+                  //   title: '数据标签管理',
+                  //   name: 'datainfotagmanage',
+                  //   hideInMenu: true,
+                  // },
                 ],
               },
               {
@@ -112,6 +124,17 @@ export default [
                     name: 'specialdetail',
                     hideInMenu: true,
                   },
+                ],
+              },
+              {
+                path: '/data/tag',
+                title: '数据标签管理',
+                name: 'tag',
+                routes: [
+                  {
+                    path: '/data/tag',
+                    component: '@/pages/DataTag',
+                  }
                 ],
               },
               {

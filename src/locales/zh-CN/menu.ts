@@ -53,12 +53,15 @@ export default {
   'menu.error': '错误管理',
   'menu.data': '数据管理',
   'menu.member': '用户管理',
+  'menu.member.memberdetail': '用户详情',
   'menu.data.dataabout': '数据相关管理',
   'menu.data.special': '数据专题管理',
+  'menu.data.tag': '数据标签管理',
   'menu.data.special.specialdetail': '数据专题详情',
   'menu.data.dataabout.dataaboutdetail': '数据相关详情',
   'menu.data.datainfo': '数据信息管理',
   'menu.data.datainfo.datainfodetail': '数据信息详情',
-  'menu.data.datainfo.datainfotagmanage': '数据标签管理',
-  'menu.instance': '实例管理'
+  // 'menu.data.datainfo.datainfotagmanage': '数据标签管理',
+  'menu.instance': '实例管理',
+  'menu.feedback': '反馈管理'
 };

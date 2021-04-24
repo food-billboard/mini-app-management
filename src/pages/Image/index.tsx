@@ -1,10 +1,14 @@
-import React, { FC, memo, useMemo, useCallback } from 'react'
+import React, { FC, memo, useMemo, useCallback, useState, useEffect } from 'react'
 import { Result, Button } from 'antd'
 import { history } from 'umi'
 import ImageViewer, { TSrc } from '@/components/Image'
-
+import { getMediaList } from '@/services'
+import { formatUrl } from '@/utils'
+import { isObjectId } from '@/components/Upload/util'
 
 const VideoPreview: FC<any> = () => {
+
+  const [ values, setValues ] = useState<TSrc[]>([])
 
   const urls: TSrc[] | undefined = useMemo(() => {
     const { location: { query } } = history
@@ -16,11 +20,41 @@ const VideoPreview: FC<any> = () => {
     })
   }, [])
 
+  const fetchData = useCallback(async (urls: TSrc[]) => {
+    let newValues = []
+    for(let i = 0; i < urls.length; i ++) {
+      const target = urls[i]
+      const { url } = target 
+      if(typeof url === 'string' && !isObjectId(url)) {
+        newValues.push({
+          src: formatUrl(url)
+        })
+      }else {
+        try {
+          const data = await getMediaList({
+            type: 0,
+            _id: url
+          })
+          newValues.push({
+            src: formatUrl(data.list[0].src)
+          })
+        }catch(err) {
+          // return ''
+        }
+      }
+    }
+    setValues(newValues)
+  }, [])
+
+  useEffect(() => {
+    fetchData(urls)
+  }, [urls])
+
   const goback = useCallback(() => {
     history.goBack()
   }, [])
 
-  if(!urls) return <Result
+  if(!values) return <Result
     status="404"
     title="404"
     subTitle="对不起，当前无图片资源"
@@ -31,7 +65,7 @@ const VideoPreview: FC<any> = () => {
 
   return (
     <ImageViewer
-      srcs={urls}
+      srcs={values}
     />
   )
 
