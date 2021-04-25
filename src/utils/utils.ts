@@ -79,3 +79,7 @@ export function formatUrl(url: string) {
   return url.startsWith('http') ? url : (url.startsWith('/') ? `${API_DOMAIN}${url}` : `${API_DOMAIN}/${url}`)
 }
 
+export async function sleep(time: number=1000) {
+  return new Promise(resolve => setTimeout(resolve, time))
+}
+

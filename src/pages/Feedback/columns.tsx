@@ -76,7 +76,7 @@ export default [
           [图片]<a onClick={(e) => {
             e.stopPropagation()
             history.push({
-              pathname: '/data/image',
+              pathname: '/media/detail/image',
               query: {
                 url: record.content.image
               }
@@ -96,7 +96,7 @@ export default [
         <a onClick={(e) => {
           e.stopPropagation()
           history.push({
-            pathname: '/data/video',
+            pathname: '/media/detail/video',
             query: {
               url: record.content.video
             }

@@ -706,7 +706,7 @@ declare namespace Upload {
 
 }
 
-declare namespace API_Media {
+declare namespace API_MEDIA {
 
   type TStatus = "ERROR" | "COMPLETE" | "UPLOADING"
   type TAuth = "PRIVATE" | "PUBLIC"

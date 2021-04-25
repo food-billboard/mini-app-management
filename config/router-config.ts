@@ -64,6 +64,32 @@ export default [
             ],
           },
           {
+            path: '/media',
+            name: 'media',
+            icon: 'picture',
+            title: '媒体资源管理',
+            routes: [
+              {
+                path: '/media',
+                component: '@/pages/Media',
+              },
+              {
+                path: '/media/video',
+                component: '@/pages/Video',
+                title: '视频详情',
+                name: 'mediadetailvideo',
+                hideInMenu: true,
+              },
+              {
+                path: '/media/image',
+                component: '@/pages/Image',
+                title: '图片详情',
+                name: 'mediadetailimage',
+                hideInMenu: true,
+              },
+            ],
+          },
+          {
             path: '/feedback',
             component: '@/pages/Feedback',
             name: 'feedback',
@@ -99,13 +125,6 @@ export default [
                     name: 'datainfodetail',
                     hideInMenu: true,
                   },
-                  // {
-                  //   path: '/data/main/:id/tag',
-                  //   component: '@/pages/DataTag',
-                  //   title: '数据标签管理',
-                  //   name: 'datainfotagmanage',
-                  //   hideInMenu: true,
-                  // },
                 ],
               },
               {
@@ -154,18 +173,6 @@ export default [
                     hideInMenu: true,
                   },
                 ],
-              },
-              {
-                path: '/data/video',
-                component: '@/pages/Video',
-                title: '视频预览',
-                hideInMenu: true,
-              },
-              {
-                path: '/data/image',
-                component: '@/pages/Image',
-                title: '图片预览',
-                hideInMenu: true,
               },
               // {
               //   path: '/data/image/edit',

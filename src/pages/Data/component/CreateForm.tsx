@@ -126,10 +126,7 @@ class CreateForm extends Component<IProps, IState> {
           wrapper={{
             name: "alias",
             label: "别名" ,
-            tooltip: "超出20个字符会自动截断",
-            rules: [{
-              required: true
-            }]
+            tooltip: "超出20个字符会自动截断"
           }}
         />
         <ProForm.Group>
