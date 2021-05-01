@@ -1,54 +1,30 @@
-import { Form, Rate, message, Input } from 'antd'
+import { Form, Rate, message, Input, Card } from 'antd'
 import { FormInstance } from 'antd/lib/form'
+import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
 import ProForm, {
-  DrawerForm,
   ProFormText,
   ProFormDatePicker,
   ProFormSelect,
   ProFormTextArea,
 } from '@ant-design/pro-form'
+import { history } from 'umi'
 import { Store } from 'antd/lib/form/interface'
-import React, { Component, createRef } from 'react'
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
 import SearchForm, { ISelectItem } from '@/components/TransferSelect'
-// import SearchForm, { ISelectItem } from './SearchSelect'
-import InputAlias from './InputSearch'
+import InputAlias from './components/InputSearch'
 import Upload from '@/components/Upload'
-import { getActorInfo, getDirectorInfo, getDistrictInfo, getLanguageInfo, getClassifyInfo, getMovieInfo } from '@/services'
+import { getActorInfo, getDirectorInfo, getDistrictInfo, getLanguageInfo, getClassifyInfo, getMovieInfo, putMovie, postMovie } from '@/services'
 import { fileValidator, localFetchData4Array } from './utils'
 
-type FormData = API_DATA.IPutMovieParams | API_DATA.IPostMovieParams 
+const CreateForm = memo(() => {
 
-interface IProps {
-  onCancel?: () => any
-  onSubmit?: (data: FormData) => any
-}
+  const [ loading, setLoading ] = useState<boolean>(false)
 
-interface IState {
-  visible: boolean
-  loading: boolean
-  editable: boolean
-}
+  const formRef = useRef<FormInstance>()
 
-class CreateForm extends Component<IProps, IState> {
-
-  public state: IState = {
-    visible: false,
-    loading: false,
-    editable: false
-  }
-
-  private formRef = createRef<FormInstance>()
-
-  public open = async (id?: string) => {
-    const isEdit = !!id
-
-    const show = () => {
-      this.setState({
-        visible: true,
-        loading: isEdit,
-        editable: isEdit
-      })
-    }
+  const fetchData = useCallback(async () => {
+    const { location: { query } } = history
+    const { id } = query as { id: string | undefined }
 
     if(id) {
       //获取修改的数据
@@ -57,13 +33,12 @@ class CreateForm extends Component<IProps, IState> {
       })
       .then((data: API_DATA.IGetMovieInfoRes) => {
         const { poster, video } = data
-        this.formRef.current?.setFieldsValue({
+        formRef.current?.setFieldsValue({
           ...data,
           poster: [poster],
           video: [video],
           _id: id
         })
-        show()
       })
       .catch(err => {
         console.log(err)
@@ -71,37 +46,61 @@ class CreateForm extends Component<IProps, IState> {
       })
     }
 
-    show()
+  }, [])
 
-  }
+  const handleAdd = useCallback(async (fields: any) => {
+    const hide = message.loading('正在添加')
+    const method = !!fields._id ? putMovie : postMovie
+  
+    const { video, poster, district, classify, language, ...nextFields } = fields
+  
+    const params = {
+      ...nextFields,
+      classify: Array.isArray(classify) ? classify : [classify],
+      district: Array.isArray(district) ? district : [district],
+      language: Array.isArray(language) ? language : [language],
+      video: Array.isArray(video) ? video[0] : video,
+      poster: Array.isArray(poster) ? poster[0] : poster
+    }
+  
+    try {
+      await method(params)
+      hide()
+      message.success('操作成功')
+      return true
+    } catch (error) {
+      hide()
+      message.error('操作失败请重试！')
+      return false
+    }
+  }, [])
 
-  private onCancel = () => {
-    this.setState({ visible: false })
-    this.formRef.current?.resetFields()
-    this.props.onCancel && this.props.onCancel()
-  }
+  const onFinish = useCallback(async (values: Store) => {
+    formRef.current?.resetFields()
+    const success = await handleAdd(values)
+    if(success) {
+      history.go(-1)
+    }
+  }, [])
 
-  public render = () => {
+  useEffect(() => {
+    fetchData()
+    .then(_ => setLoading(false))
+  }, [])
 
-    const { visible } = this.state
-
-    return (
-      <DrawerForm
-        title="新建表单"
-        visible={visible}
-        //@ts-ignore
-        formRef={this.formRef as any}
-        onFinish={async (values: Store) => {
-          this.props.onSubmit && this.props.onSubmit(values as FormData)
-          this.setState({ visible: false })
-          this.formRef.current?.resetFields()
-        }}
-        onVisibleChange={(visible: boolean) => {
-          if(!visible) this.onCancel()
-          this.setState(prev => {
-            if(prev.visible === visible) return null
-            return { visible }
-          })
+  return (
+    <PageContainer
+      title="新建表单"
+    >
+     <Card
+      bordered
+      loading={loading}
+     >
+      <ProForm
+        formRef={formRef}
+        onFinish={onFinish}
+        submitter={{
+          render: (_, dom) => <FooterToolbar>{dom}</FooterToolbar>,
         }}
       >
         <ProFormText 
@@ -280,11 +279,12 @@ class CreateForm extends Component<IProps, IState> {
             type="hidden"
           />
         </Form.Item>
-      </DrawerForm>
-    )
+      </ProForm>
+    
+     </Card>
+    </PageContainer>
+  )
 
-  }
-
-}
+})
 
 export default CreateForm

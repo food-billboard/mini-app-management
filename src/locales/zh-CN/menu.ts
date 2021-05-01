@@ -61,6 +61,7 @@ export default {
   'menu.data.dataabout.dataaboutdetail': '数据相关详情',
   'menu.data.datainfo': '数据信息管理',
   'menu.data.datainfo.datainfodetail': '数据信息详情',
+  'menu.data.datainfo.datainfoedit': '数据信息修改',
   // 'menu.data.datainfo.datainfotagmanage': '数据标签管理',
   'menu.instance': '实例管理',
   'menu.feedback': '反馈管理',

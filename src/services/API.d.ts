@@ -105,7 +105,9 @@ declare namespace API_USER {
 
   export interface IGetUserDetailRes extends IGetUserListResData {}
 
-  export interface IDeleteUserCommentParams extends IGetUserListResData {}
+  export interface IDeleteUserCommentParams {
+    _id: string
+  }
 
   export type TSourceType = "comment" | "movie"
 
@@ -210,19 +212,17 @@ declare namespace API_USER {
     rate_person: number
     total_rate: number
     source_type: API_DATA.IDataSourceType
+    createdAt: string 
+    value: number
   }
 
   export interface IGetUserRateListParams extends Exclude<IGetUserIssueListParams, 'status'> {
-    value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
+    value?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
   }
 
   export interface IGetUserRateListRes {
     total: number
-    list: Array<{
-      value: number
-      createdAt: string
-      movie: IGetUserRateData
-    }>
+    list: IGetUserRateData[]
   }
 
 }

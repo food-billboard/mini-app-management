@@ -1,6 +1,5 @@
-import React, { useRef, useCallback, memo, useMemo, useState } from 'react'
-import { Button, Dropdown, message, Menu, Space, Modal, Input } from 'antd'
-import { unstable_batchedUpdates } from 'react-dom'
+import React, { useRef, useCallback, memo, useMemo } from 'react'
+import { Button, Dropdown, message, Menu, Space, Modal } from 'antd'
 import { PageHeaderWrapper } from '@ant-design/pro-layout'
 import ProTable, { ActionType } from '@ant-design/pro-table'
 import { DownOutlined } from '@ant-design/icons'
@@ -9,6 +8,7 @@ import merge from 'lodash/merge'
 import pickBy from 'lodash/pickBy'
 import pick from 'lodash/pick'
 import identity from 'lodash/identity'
+import FeedbackModal, { IFeedbackModalRef, TFeedbackEditData } from './components/FeedbackModal'
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import column from './columns'
 import { getUserFeedbackList, putUserFeedback, deleteUserFeedback } from '@/services'
@@ -16,19 +16,16 @@ import { getUserFeedbackList, putUserFeedback, deleteUserFeedback } from '@/serv
 const FeedbackManage = memo(() => {
 
   const actionRef = useRef<ActionType>()
-
-  const [ description, setDescription ] = useState<string>('')
-  const [ visible, setVisible ] = useState<boolean>(false)
-  const [ curEditData, setCurEditData ] = useState<API_USER.IGetFeedbackData>()
+  const feedbackRef = useRef<IFeedbackModalRef>(null)
 
   /**
    * 添加节点
    * @param fields
    */
-  const handleAdd = useCallback(async (fields: API_USER.IGetFeedbackData) => {
+  const handleAdd = useCallback(async (fields: TFeedbackEditData) => {
 
     const hide = message.loading('正在修改')
-    const params = merge({}, { description }, pick(fields, ['_id', 'status'])) as API_USER.IPutFeedbackParams
+    const params = pick(fields, ['_id', 'status', 'description']) as API_USER.IPutFeedbackParams
 
     return putUserFeedback(params)
     .then(_ => {
@@ -41,7 +38,7 @@ const FeedbackManage = memo(() => {
       hide()
     })
 
-  }, [description])
+  }, [])
 
   /**
    *  删除节点
@@ -112,7 +109,7 @@ const FeedbackManage = memo(() => {
                   onClick={edit.bind(this, merge({}, record, { status: "DEAL" }))}
                 >
                   完成处理
-              </a>
+                </a>
               }
               <a
                 style={{color: 'red'}}
@@ -141,27 +138,13 @@ const FeedbackManage = memo(() => {
   }, [])
 
   const edit = useCallback((data: API_USER.IGetFeedbackData) => {
-    unstable_batchedUpdates(() => {
-      setVisible(true)
-      setCurEditData(data)
-    })
+    feedbackRef.current?.open(merge({}, data, { description: '' }))
   }, [])
 
-  const onInputCancel = useCallback(() => {
-    unstable_batchedUpdates(() => {
-      setVisible(false)
-      setDescription('')
-      setCurEditData(undefined)
-    })
-  }, [])
-
-  const onInputOk = useCallback(() => {
-    return handleAdd(curEditData!)
-    .then(_ => {
-      return onInputCancel()
-    })
-
-  }, [handleAdd, onInputCancel, curEditData])
+  const onInputOk = useCallback((value: TFeedbackEditData) => {
+    return handleAdd(value)
+    .then(_ => true)
+  }, [handleAdd])
 
   return (
     <PageHeaderWrapper>
@@ -213,23 +196,10 @@ const FeedbackManage = memo(() => {
         columns={columns}
         rowSelection={{}}
       />
-      <Modal
-        visible={visible}
-        okText="确定"
-        cancelText="取消"
-        title='提示'
+      <FeedbackModal
+        ref={feedbackRef}
         onOk={onInputOk}
-        onCancel={onInputCancel}
-      >
-        <Input.TextArea
-          autoSize
-          defaultValue="输入对此次处理的描述"
-          maxLength={100}
-          showCount
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </Modal>
+      />
   </PageHeaderWrapper>
   )
 })

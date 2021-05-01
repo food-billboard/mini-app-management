@@ -10,7 +10,7 @@ import { Store } from 'antd/lib/form/interface'
 import React, { useCallback, useMemo, useRef, useState, forwardRef, useImperativeHandle } from 'react'
 import Upload from '@/components/Upload'
 import MovieSelect, { ISelectItem } from '@/components/TransferSelect'
-import { fileValidator, localFetchData4Array } from '../../../Data/component/utils'
+import { fileValidator, localFetchData4Array } from '../../../DataEdit/utils'
 import { getMovieList } from '@/services'
 
 type FormData = API_INSTANCE.IPutInstanceSpecialParams | API_INSTANCE.IPostInstanceSpecialParams 

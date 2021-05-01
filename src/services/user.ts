@@ -103,7 +103,7 @@ export const getUserIssueList = (params: API_USER.IGetUserIssueListParams) => {
 
 //用户评分的电影列表
 export const getUserRateList = (params: API_USER.IGetUserRateListParams) => {
-  return request<API_USER.IGetUserRateListRes>('/api/manage/user/detail/issue', {
+  return request<API_USER.IGetUserRateListRes>('/api/manage/user/detail/rate', {
     method: 'GET',
     params
   })

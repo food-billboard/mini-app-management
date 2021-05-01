@@ -119,6 +119,13 @@ export default [
                     component: '@/pages/Data',
                   },
                   {
+                    path: '/data/main/edit',
+                    component: '@/pages/DataEdit',
+                    title: '数据修改',
+                    name: 'datainfoedit',
+                    hideInMenu: true,
+                  },
+                  {
                     path: '/data/main/:id',
                     component: '@/pages/DataDetail',
                     title: '数据详情',
@@ -182,13 +189,13 @@ export default [
               // }
             ],
           },
-          {
-            path: '/error',
-            component: '@/pages/Error',
-            name: 'error',
-            icon: 'meh',
-            title: '错误管理',
-          },
+          // {
+          //   path: '/error',
+          //   component: '@/pages/Error',
+          //   name: 'error',
+          //   icon: 'meh',
+          //   title: '错误管理',
+          // },
           {
             path: '/admin',
             component: '@/pages/Admin',

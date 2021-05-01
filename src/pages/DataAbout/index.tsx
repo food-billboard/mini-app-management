@@ -5,7 +5,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout'
 import { history } from 'umi'
 import TagCloud, { ICloudData } from '../Dashboard/components/Charts/TagCloud'
 import { getActorInfo, getDirectorInfo, getDistrictInfo, getLanguageInfo, getClassifyInfo } from '@/services'
-import { localFetchData4Array } from '../Data/component/utils'
+import { localFetchData4Array } from '../DataEdit/utils'
 import styles from './style.less'
 
 interface IProps {}

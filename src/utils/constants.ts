@@ -3,6 +3,11 @@ const SOURCE_TYPE = {
   USER: "用户"
 }
 
+const COMMENT_SOURCE_TYPE = {
+  comment: '评论',
+  movie: '电影'
+}
+
 const FEEDBACK_STATUS = {
   DEAL: '处理完成',
   DEALING: '处理中'
@@ -56,5 +61,6 @@ export {
   FEEDBACK_STATUS,
   MEDIA_TYPE_MAP,
   MEDIA_AUTH_MAP,
-  MEDIA_UPLOAD_STATUS
+  MEDIA_UPLOAD_STATUS,
+  COMMENT_SOURCE_TYPE
 }

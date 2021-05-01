@@ -2,6 +2,7 @@ import React from 'react'
 import { Carousel, DatePicker, Tooltip, Image } from 'antd'
 import { history } from 'umi'
 import moment from 'moment'
+import ImageView from './components/Image'
 import { FEEDBACK_STATUS, IMAGE_FALLBACK } from '@/utils'
 
 const { RangePicker } = DatePicker
@@ -49,40 +50,10 @@ export default [
     dataIndex: 'image',
     hideInSearch: true,
     render: (_: any, record: API_USER.IGetFeedbackData) => {
-      if(!record.content.image?.length) return ("[图片]")
       return (
-        <Tooltip
-          title={
-            <Carousel
-              autoplay
-              style={{width: 200, height: 150}}
-            >
-              {
-                record.content.image.map((item: string) => {
-                  return (
-                    <Image
-                      key={item}
-                      fallback={IMAGE_FALLBACK}
-                      src={item}
-                      width={200}
-                      height={150}
-                    />
-                  )
-                })
-              }
-            </Carousel>
-          }
-        >
-          [图片]<a onClick={(e) => {
-            e.stopPropagation()
-            history.push({
-              pathname: '/media/detail/image',
-              query: {
-                url: record.content.image
-              }
-            })
-          }} style={{textIndent: '1em', color: '#1890ff'}}>(预览)</a>
-        </Tooltip>
+        <ImageView
+          value={record.content.image}
+        />
       )
     }
   },

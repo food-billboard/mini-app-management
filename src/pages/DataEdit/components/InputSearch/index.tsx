@@ -2,10 +2,9 @@ import {
   Input,
   Tag,
   message,
-  Tooltip
 } from 'antd'
-import React, { useEffect, Fragment, useRef, useState, useMemo } from 'react'
-import { PlusOutlined, InfoCircleOutlined } from '@ant-design/icons'
+import React, { useEffect, Fragment, useRef, useState } from 'react'
+import { PlusOutlined } from '@ant-design/icons'
 import isEqual from 'lodash/isEqual'
 import noop from 'lodash/noop'
 import WrapperItem from '@/components/WrapperItem'

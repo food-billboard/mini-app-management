@@ -1,14 +1,13 @@
-import React, { useEffect, memo, useMemo, useCallback, useState, useRef } from 'react'
+import React, { useEffect, memo, useMemo, useCallback, useState } from 'react'
 import { Button, message, Modal } from 'antd'
 import { unstable_batchedUpdates } from 'react-dom'
 import { PageContainer } from '@ant-design/pro-layout'
 import ProCard from '@ant-design/pro-card'
 import { history } from 'umi'
-import EditForm from '../Data/component/CreateForm'
 import Descriptions from './components/Descriptions'
 import UserTable from './components/User'
 import CommentTable from './components/Comment'
-import { movieDetail, deleteMovie, putMovie, putMovieStatus, deleteMovieStatus } from '@/services'
+import { movieDetail, deleteMovie, putMovieStatus, deleteMovieStatus } from '@/services'
 
 export default memo(() => {
 
@@ -22,34 +21,6 @@ export default memo(() => {
   const [ loading, setLoading ] = useState<boolean>(true)
   const [ activeKey, setActiveKey ] = useState<string>('base')
 
-  const modalRef = useRef<EditForm>(null)
-
-  const handleAdd = useCallback(async (fields: any) => {
-    const hide = message.loading('正在修改')
-  
-    const { video, poster, district, classify, language, ...nextFields } = fields
-  
-    const params = {
-      ...nextFields,
-      classify: Array.isArray(classify) ? classify : [classify],
-      district: Array.isArray(district) ? district : [district],
-      language: Array.isArray(language) ? language : [language],
-      video: Array.isArray(video) ? video[0] : video,
-      poster: Array.isArray(poster) ? poster[0] : poster
-    }
-  
-    try {
-      await putMovie(params)
-      hide()
-      message.success('操作成功')
-      return true
-    } catch (error) {
-      hide()
-      message.error('操作失败请重试！')
-      return false
-    }
-  }, [])
-
   const fetchData = useCallback(async (movieId: string) => {
     setLoading(true)
     const data = await movieDetail({ _id: movieId })
@@ -60,7 +31,12 @@ export default memo(() => {
   }, [])
 
   const edit = useCallback(() => {
-    modalRef.current?.open(detail?._id)
+    return history.push({
+      pathname: '/data/main/edit',
+      query: {
+        id: detail?._id || ''
+      }
+    })
   }, [detail])
 
   const deleteMovieInfo = useCallback(async () => {
@@ -122,13 +98,6 @@ export default memo(() => {
   const onTabChange = useCallback((activeKey: string) => {
     setActiveKey(activeKey)
   }, [])
-
-  const onSubmit = useCallback(async (value) => {
-    const success = await handleAdd(value)
-    if (success) {
-      fetchData(movieId)
-    }
-  }, [movieId, fetchData])
 
   useEffect(() => {
     if(movieId) {
@@ -201,10 +170,6 @@ export default memo(() => {
           </ProCard>
         )
       }
-      <EditForm
-        onSubmit={onSubmit}
-        ref={modalRef}
-      />
     </PageContainer>
   )
 

@@ -8,43 +8,11 @@ import pickBy from 'lodash/pickBy'
 import identity from 'lodash/identity'
 import { history } from 'umi'
 import { mapStateToProps, mapDispatchToProps } from './connect'
-import CreateForm from './component/CreateForm'
 import column from './columns'
-import { deleteMovie, getMovieList, postMovie, putMovie, putMovieStatus, deleteMovieStatus } from '@/services'
+import { deleteMovie, getMovieList, putMovieStatus, deleteMovieStatus } from '@/services'
 
 interface IProps {
   role: any
-}
-
-/**
- * 添加节点
- * @param fields
- */
-const handleAdd = async (fields: any) => {
-  const hide = message.loading('正在添加')
-  const method = !!fields._id ? putMovie : postMovie
-
-  const { video, poster, district, classify, language, ...nextFields } = fields
-
-  const params = {
-    ...nextFields,
-    classify: Array.isArray(classify) ? classify : [classify],
-    district: Array.isArray(district) ? district : [district],
-    language: Array.isArray(language) ? language : [language],
-    video: Array.isArray(video) ? video[0] : video,
-    poster: Array.isArray(poster) ? poster[0] : poster
-  }
-
-  try {
-    await method(params)
-    hide()
-    message.success('操作成功')
-    return true
-  } catch (error) {
-    hide()
-    message.error('操作失败请重试！')
-    return false
-  }
 }
 
 /**
@@ -103,8 +71,6 @@ const handleRemove = async (selectedRows: API_DATA.IGetMovieData[]) => {
 const CardList: React.FC<IProps> = () => {
 
   const actionRef = useRef<ActionType>()
-
-  const modalRef = createRef<CreateForm>()
 
   const putStatus = useCallback(async (id: string, e) => {
     e?.preventDefault()
@@ -179,7 +145,12 @@ const CardList: React.FC<IProps> = () => {
   ]
 
   const handleModalVisible = (id?: string) => {
-    modalRef.current?.open(id)
+    return history.push({
+      pathname: '/data/main/edit',
+      query: {
+        id: id || ''
+      }
+    })
   }
 
   return (
@@ -245,16 +216,6 @@ const CardList: React.FC<IProps> = () => {
         }}
         columns={columns}
         rowSelection={{}}
-      />
-      <CreateForm
-        onSubmit={async value => {
-          const success = await handleAdd(value)
-
-          if (success) {
-            actionRef.current?.reload()
-          }
-        }}
-        ref={modalRef}
       />
   </PageHeaderWrapper>
   )

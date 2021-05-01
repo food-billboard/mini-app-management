@@ -30,7 +30,7 @@ import {
 import { SOURCE_TYPE } from '@/utils/constants'
 import { formatUrl } from '@/utils'
 import { Preview } from '@/components/Image'
-import { localFetchData4Array } from '../../Data/component/utils'
+import { localFetchData4Array } from '../../DataEdit/utils'
 import styles from '../style.less'
 
 const { Text, Paragraph } = Typography

@@ -10,7 +10,7 @@ import { Store } from 'antd/lib/form/interface'
 import React, { Component, createRef } from 'react'
 import Upload from '@/components/Upload'
 import { getUserDetail } from '@/services'
-import { fileValidator } from '../../../Data/component/utils'
+import { fileValidator } from '../../../DataEdit/utils'
 import { ROLES_MAP } from '@/utils'
 
 type FormData = API_DATA.IPutMovieParams | API_DATA.IPostMovieParams 
@@ -22,7 +22,7 @@ const _ROLES_MAP = Object.keys(ROLES_MAP).map(item => ({
 
 interface IProps {
   onCancel?: () => any
-  onSubmit?: (data: FormData) => any
+  onSubmit?: (data: FormData) => Promise<any> | any
 }
 
 interface IState {
