@@ -198,11 +198,14 @@ export default [
           // },
           {
             path: '/admin',
-            component: '@/pages/Admin',
             name: 'admin',
             title: '个人中心',
             icon: 'setting',
             routes: [
+              {
+                path: '/admin',
+                component: '@/pages/Admin',
+              },
               {
                 path: '/admin/setting',
                 component: '@/pages/Setting',

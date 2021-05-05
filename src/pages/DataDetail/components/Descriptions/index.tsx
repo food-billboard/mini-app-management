@@ -16,11 +16,11 @@ export default memo((props: IProps) => {
   }, [props])
 
   const preview = useCallback((value: string | string[]) => {
-    const urls = Array.isArray(value) ? value : [value]
+    const url = Array.isArray(value) ? value : [value]
     return history.push({ 
       pathname: '/media/detail/image',
       query: {
-        urls
+        url
       }
      })
   }, [])

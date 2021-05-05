@@ -68,8 +68,8 @@ export const getMovieCommentList = (params: API_DATA.IGetMovieCommentParams) => 
 }
 
 //收藏用户列表
-export const getStoreUserList = (params: API_DATA.IGetStoreUserListParams) => {
-  return request<API_DATA.IGetStoreUserListRes>('/api/manage/movie/detail/user', {
+export const getGlanceUserList = (params: API_DATA.IGetGlanceUserListParams) => {
+  return request<API_DATA.IGetGlanceUserListRes>('/api/manage/movie/detail/user', {
     method: 'GET',
     params
   })
@@ -273,6 +273,14 @@ export const putMovieTag = (data: API_DATA.IPutMovieTagParams) => {
 export const deleteMovieTag = (params: API_DATA.IDeleteMovieTagParams) => {
   return request('/api/manage/movie/detail/tag', {
     method: 'DELETE',
+    params
+  })
+}
+
+//收藏电影用户列表
+export const getStoreUserList = (params: API_DATA.IGetMovieStoreUserListParams) => {
+  return request<API_DATA.IGetMovieStoreUserListRes>('/api/user/movie/store', {
+    method: 'GET',
     params
   })
 }

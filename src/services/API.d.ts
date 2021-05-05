@@ -62,6 +62,16 @@ declare namespace API_USER {
     content?: string
   }
 
+  export interface IGetUserFansListParams extends IGetUserListParams {
+    _id: string 
+  }
+
+  export interface IGetUserAttentionsListParams extends IGetUserFansListParams {}
+
+  export interface IGetUserFansListRes extends IGetUserListRes {}
+
+  export interface IGetUserAttentionsListRes extends IGetUserListRes {}
+
   export interface IGetUserListRes {
     total: number
     list: Array<IGetUserListResData>
@@ -92,7 +102,8 @@ declare namespace API_USER {
     username: string
     avatar: string
     description: string
-    role: keyof typeof UserRole
+    // role: keyof typeof UserRole
+    role: string 
   }
 
   export interface IPutUserParams extends IPostUserParams {
@@ -355,17 +366,17 @@ declare namespace API_DATA {
     }
   }
 
-  export interface IGetStoreUserListParams extends Exclude<IGetMovieCommentParams, 'hot' | 'time' | 'comment'> {
+  export interface IGetGlanceUserListParams extends Exclude<IGetMovieCommentParams, 'hot' | 'time' | 'comment'> {
     status?: API_USER.UserStatus
     roles?: keyof typeof API_USER.UserRole
   }
 
-  export interface IGetStoreUserListRes {
+  export interface IGetGlanceUserListRes {
     total: number
-    list: IGetStoreUserListData[]
+    list: IGetGlanceUserListData[]
   }
 
-  export interface IGetStoreUserListData {
+  export interface IGetGlanceUserListData {
     _id: string
     username: string
     mobile: number
@@ -380,6 +391,7 @@ declare namespace API_DATA {
     issue_count: number
     fans_count: number
     attentions_count: number
+    avatar: string 
   }
 
   export interface IGetActorInfoParams {
@@ -545,6 +557,21 @@ declare namespace API_DATA {
     _id: string 
   }
 
+  export interface IGetMovieStoreUserListParams {
+    currPage?: number 
+    pageSize?: number 
+    timestamps?: number 
+  }
+
+  export interface IGetMovieStoreUserListRes {
+    total: number 
+    list: IGetMovieStoreUserListData[]
+  }
+
+  export interface IGetMovieStoreUserListData extends Omit<IGetGlanceUserListData, ['glance_date']> {
+    store_date: string 
+  }
+
 }
 
 declare namespace API_INSTANCE {
@@ -639,12 +666,17 @@ declare namespace API_ADMIN {
     roles: keyof typeof API_USER.API_USER
     createdAt: string
     updatedAt: string
+    avatar: string
+    description: string
   }
 
   export interface IPutAdminInfoParams {
     username: string
     avatar: string
     description: string
+    mobile: number 
+    email: string 
+    password: string 
   }
 
   export interface IGetAdminIssueListParams {
@@ -657,10 +689,10 @@ declare namespace API_ADMIN {
     comment?: 1 | -1
   }
 
-  export interface IGetAdminIssueListRes {
+  export interface IGetAdminIssueListData {
     _id: string
     name: string
-    reatedAt: string
+    createdAt: string
     updatedAt: string
     glance: number
     hot: number
@@ -670,6 +702,14 @@ declare namespace API_ADMIN {
     barrage_count: number
     tag_count: number
     comment_count: number
+    description: string 
+    poster: string 
+    images: string[]
+  }
+
+  export interface IGetAdminIssueListRes {
+    list: IGetAdminIssueListData[]
+    total: number
   }
 
   export interface IGetAdminCommentData {

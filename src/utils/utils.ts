@@ -48,7 +48,7 @@ export const setLocalStorage = (key: string, value: any, timestamp: false | numb
   localStorage.setItem(key, data)
 }
 
-export const removeLocalStorate = (key: string) => {
+export const removeLocalStorage = (key: string) => {
   localStorage.removeItem(key)
 }
 
@@ -81,5 +81,16 @@ export function formatUrl(url: string) {
 
 export async function sleep(time: number=1000) {
   return new Promise(resolve => setTimeout(resolve, time))
+}
+
+export function fileSize(size: number) {
+  if(Number.isNaN(+size) || size < 0) return 0
+  const unitMap = ['b', 'kb', 'mb', 'g']
+  const realSize = +size
+  function cal(size: number, index: number=0):string {
+    if(size < 1024 || index == unitMap.length - 1) return size + unitMap[index]
+    return cal(Math.ceil(size / 1024), index + 1)
+  }
+  return cal(realSize)
 }
 

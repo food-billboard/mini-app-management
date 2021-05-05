@@ -1,12 +1,15 @@
 import { history } from 'umi'
 import React from 'react'
-import { Space, message } from 'antd'
+import { Space, message, Dropdown, Menu } from 'antd'
+import { EllipsisOutlined } from '@ant-design/icons'
 import { pick } from 'lodash'
 import issueColumns from './components/Table/issue-columns'
 import commentColumns from './components/Table/comment-columns'
 import rateColumns from './components/Table/rate-columns'
 import feedbackColumns from './components/Table/feedback-columns'
+import userColumns from './components/Table/user-columns'
 import { IFeedbackModalRef, TFeedbackEditData } from '../Feedback/components/FeedbackModal'
+import MemberEdit from '../Member/components/CreateForm'
 import { 
   getUserCommentList, 
   getUserFeedbackList, 
@@ -15,7 +18,11 @@ import {
   deleteUserComment,
   deleteUserFeedback,
   putUserFeedback,
-  deleteMovie
+  deleteMovie,
+  getUserAttentionsList,
+  getUserFansList,
+  deleteUser,
+  putUser
 } from '@/services'
 
 export const ACTIVE_KEY_MAP = {
@@ -128,7 +135,6 @@ export const ACTIVE_KEY_MAP = {
         <Space>
           <a
             onClick={() => {
-              history.push(`/data/main/${record._id}`)
               ref.current?.open()
             }}
           >
@@ -143,5 +149,133 @@ export const ACTIVE_KEY_MAP = {
         </Space>
       )
     } 
+  },
+  fans: {
+    fetchData: getUserFansList,
+    detail: (record: API_USER.IGetUserDetailRes, instance: any) => history.push(`/member/main/${record._id}`),
+    columns: userColumns,
+    deleteOp: deleteUser,
+    editOp: {
+      onOk: async (reload: any, data: unknown) => {
+        const hide = message.loading('正在修改')
+        const { avatar, role, ...nextFields } = data as API_USER.IPutUserParams
+
+        const params = {
+          ...nextFields,
+          avatar: Array.isArray(avatar) ? avatar[0] : avatar,
+          role: (Array.isArray(role) ? role : [role]).join(',')
+        }
+        return putUser(params)
+        .then(_ => {
+          message.success('操作成功')
+        })
+        .catch(err => {
+          message.success('操作失败，请重试')
+        })
+        .then(_ => {
+          hide()
+          return reload()
+        })
+        .then(_ => true)
+      }
+    },
+    op: (record: API_USER.IGetUserDetailRes, ref: React.RefObject<MemberEdit>, deleteOp: any) => {
+      return (
+        <Space>
+          <a
+            onClick={() => {
+              ref.current?.open(record._id)
+            }}
+          >
+            编辑
+          </a>
+          <a
+            style={{color: 'red'}}
+            onClick={deleteOp.bind(this, record._id)}
+          >
+            删除
+          </a>
+          <Dropdown overlay={
+            <Menu>
+              <Menu.Item>
+                <a style={{color: '#1890ff'}} onClick={() => {
+                  history.push(`/member/${record._id}`)
+                }}>
+                详情
+                </a>
+              </Menu.Item>
+            </Menu>
+          }>
+            <a onClick={e => e.preventDefault()}>
+              <EllipsisOutlined />
+            </a>
+          </Dropdown>
+        </Space>
+      )
+    }
+  },
+  attentions: {
+    fetchData: getUserAttentionsList,
+    detail: (record: API_USER.IGetUserDetailRes, instance: any) => history.push(`/member/main/${record._id}`),
+    columns: userColumns,
+    deleteOp: deleteUser,
+    editOp: {
+      onOk: async (reload: any, data: unknown) => {
+        const hide = message.loading('正在修改')
+        const { avatar, role, ...nextFields } = data as API_USER.IPutUserParams
+
+        const params = {
+          ...nextFields,
+          avatar: Array.isArray(avatar) ? avatar[0] : avatar,
+          role: (Array.isArray(role) ? role : [role]).join(',')
+        }
+        return putUser(params)
+        .then(_ => {
+          message.success('操作成功')
+        })
+        .catch(err => {
+          message.success('操作失败，请重试')
+        })
+        .then(_ => {
+          hide()
+          return reload()
+        })
+        .then(_ => true)
+      }
+    },
+    op: (record: API_USER.IGetUserDetailRes, ref: React.RefObject<MemberEdit>, deleteOp: any) => {
+      return (
+        <Space>
+          <a
+            onClick={() => {
+              ref.current?.open(record._id)
+            }}
+          >
+            编辑
+          </a>
+          <a
+            style={{color: 'red'}}
+            onClick={deleteOp.bind(this, record._id)}
+          >
+            删除
+          </a>
+          <Dropdown overlay={
+            <Menu>
+              <Menu.Item>
+                <a style={{color: '#1890ff'}} onClick={() => {
+                  history.push(`/member/${record._id}`)
+                }}>
+                详情
+                </a>
+              </Menu.Item>
+            </Menu>
+          }>
+            <a onClick={e => e.preventDefault()}>
+              <EllipsisOutlined />
+            </a>
+          </Dropdown>
+        </Space>
+      )
+    }
   }
 }

@@ -17,7 +17,7 @@ export const PutAdminInfo = (data: API_ADMIN.IPutAdminInfoParams) => {
 
 //获取个人发布列表
 export const GetAdminIssueList = (params: API_ADMIN.IGetAdminIssueListParams) => {
-  return request<Array<API_ADMIN.IGetAdminIssueListRes>>('/api/manage/admin/upload', {
+  return request<API_ADMIN.IGetAdminIssueListRes>('/api/manage/admin/upload', {
     method: 'GET',
     params
   })

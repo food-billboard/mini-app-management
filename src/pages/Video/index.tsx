@@ -3,6 +3,17 @@ import { Result, Button } from 'antd'
 import { history } from 'umi'
 import Video from '@/components/Video'
 
+export function PreView(videos: string | string[], event: any) {
+  if(!videos) return 
+  let list = Array.isArray(videos) ? videos : [videos]
+  return history.push({
+    pathname: '/media/video',
+    query: {
+      url: list[0],
+    },
+  })
+}
+
 const VideoPreview: FC<any> = () => {
 
   const videoId: string | undefined = useMemo(() => {

@@ -21,6 +21,22 @@ export const getUserList = (params: API_USER.IGetUserListParams) => {
   })
 }
 
+//用户粉丝列表
+export const getUserFansList = (params: API_USER.IGetUserFansListParams) => {
+  return request<API_USER.IGetUserFansListRes>('/api/manage/user/detail/fans', {
+    method: 'GET',
+    params
+  })
+}
+
+//用户关注列表
+export const getUserAttentionsList = (params: API_USER.IGetUserAttentionsListParams) => {
+  return request<API_USER.IGetUserAttentionsListRes>('/api/manage/user/detail/attentions', {
+    method: 'GET',
+    params
+  })
+}
+
 //新增用户
 export const postUser = (data: API_USER.IPostUserParams) => {
   return request('/api/manage/user', {
@@ -61,7 +77,7 @@ export const getUserCommentList = (params: API_USER.IGetUserCommentListParams) =
   })
 }
 
-//删除评论给
+//删除评论
 export const deleteUserComment = (params: API_USER.IDeleteUserCommentParams) => {
   return request('/api/manage/user/detail/comment', {
     method: 'DELETE',

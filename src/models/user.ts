@@ -1,7 +1,7 @@
 import { stringify } from 'querystring'
 import { getUserInfo, forgetPassword, register, LoginParamsType, accountLogin, RegisterParamsType, ResetParamsType, outLogin } from '@/services'
 import { setAuthority } from '@/utils/authority'
-import { getPageQuery, setLocalStorage, removeLocalStorate, getLocalStorage } from '@/utils'
+import { getPageQuery } from '@/utils'
 import { history } from 'umi'
 import { message } from 'antd'
 
@@ -10,20 +10,7 @@ interface IUserModelState {
   status: any
 }
 
-interface CurrentUser {
-  avatar?: string;
-  _id?: string
-  // name?: string;
-  // title?: string;
-  // group?: string;
-  // signature?: string;
-  // tags?: {
-  //   key: string;
-  //   label: string;
-  // }[];
-  // userid?: string;
-  // unreadCount?: number;
-}
+interface CurrentUser extends API_ADMIN.IGetAdminInfoRes {}
 
 export {
   IUserModelState,

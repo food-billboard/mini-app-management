@@ -16,7 +16,6 @@ export default [
     title: '用户名',
     dataIndex: 'username',
     hideInSearch: true,
-    copyable: true,
     render: (value: string, record: API_USER.IGetUserListResData) => <a onClick={() => history.push(`/member/${record._id}`)}>{value}</a>
   },
   {
@@ -24,7 +23,7 @@ export default [
     dataIndex: 'mobile',
     hideInSearch: true,
     copyable: true,
-    renderText: (value: string) => {
+    render: (value: string) => {
       return (
         <Tag color="cyan">{value}</Tag>
       )

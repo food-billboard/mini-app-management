@@ -17,7 +17,7 @@ export interface GlobalHeaderRightProps {
 const loginOut = async () => {
   // await outLogin();
   const { query, pathname } = history.location;
-  const { redirect } = query;
+  const { redirect } = query || {};
   // Note: There may be security issues, please note
   if (window.location.pathname !== '/user/login' && !redirect) {
     history.replace({
@@ -46,7 +46,12 @@ class AvatarDropdown extends Component<any> {
       loginOut()
       return
     }
-    history.push(`/account/${key}`);
+    if(key === 'settings') {
+      return history.push(`/admin/setting`)
+    }
+    if(key === 'center') {
+      return history.push('/admin')
+    }
   }
 
   readonly loading = (
@@ -63,7 +68,7 @@ class AvatarDropdown extends Component<any> {
 
   readonly menuHeaderDropdown = (
     <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
-      {this.props.menu && (
+      {/* {this.props.menu && (
         <Menu.Item key="center">
           <UserOutlined />
           个人中心
@@ -74,7 +79,15 @@ class AvatarDropdown extends Component<any> {
           <SettingOutlined />
           个人设置
         </Menu.Item>
-      )}
+      )} */}
+      <Menu.Item key="center">
+        <UserOutlined />
+        个人中心
+      </Menu.Item>
+      <Menu.Item key="settings">
+        <SettingOutlined />
+        个人设置
+      </Menu.Item>
       {this.props.menu && <Menu.Divider />}
 
       <Menu.Item key="logout">
@@ -86,17 +99,16 @@ class AvatarDropdown extends Component<any> {
 
   public render = () => {
     
-    const { currentUser } = this.props
-  
-    if (!currentUser || !currentUser.username) {
+    const { userInfo } = this.props
+    if (!userInfo || !userInfo.username) {
       return this.loading
     }
 
     return (
       <HeaderDropdown overlay={this.menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
-          <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
-          <span className={`${styles.name} anticon`}>{currentUser.username}</span>
+          <Avatar size="small" className={styles.avatar} src={userInfo.avatar} alt="avatar" />
+          <span className={`${styles.name} anticon`}>{userInfo.username}</span>
         </span>
       </HeaderDropdown>
     )
@@ -105,6 +117,8 @@ class AvatarDropdown extends Component<any> {
 
 }
 
-export default connect(({ user }: ConnectState) => ({
-  currentUser: user.currentUser
-}))(AvatarDropdown)
+export default connect(({ user }: ConnectState) => {
+  return {
+    userInfo: user.currentUser
+  }
+})(AvatarDropdown)

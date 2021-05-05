@@ -29,7 +29,7 @@ import {
 } from '@/services'
 import { SOURCE_TYPE } from '@/utils/constants'
 import { formatUrl } from '@/utils'
-import { Preview } from '@/components/Image'
+import { Preview } from '../../Image'
 import { localFetchData4Array } from '../../DataEdit/utils'
 import styles from '../style.less'
 

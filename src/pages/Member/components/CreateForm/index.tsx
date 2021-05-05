@@ -13,7 +13,7 @@ import { getUserDetail } from '@/services'
 import { fileValidator } from '../../../DataEdit/utils'
 import { ROLES_MAP } from '@/utils'
 
-type FormData = API_DATA.IPutMovieParams | API_DATA.IPostMovieParams 
+export type FormData = API_DATA.IPutMovieParams | API_DATA.IPostMovieParams 
 
 const _ROLES_MAP = Object.keys(ROLES_MAP).map(item => ({
   value: item,

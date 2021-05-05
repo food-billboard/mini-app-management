@@ -4,7 +4,7 @@ import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { unstable_batchedUpdates } from 'react-dom'
 import { LightFilter, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-form'
 import commonColumns from './columns'
-import { getStoreUserList } from '@/services'
+import { getGlanceUserList } from '@/services'
 import { USER_STATUS } from '@/utils'
 
 type IProps = {
@@ -13,7 +13,7 @@ type IProps = {
 
 export default memo((props: IProps) => {
 
-  const [ data, setData ] = useState<API_DATA.IGetStoreUserListData[]>([])
+  const [ data, setData ] = useState<API_DATA.IGetGlanceUserListData[]>([])
   const [ total, setTotal ] = useState<number>(0)
   const [ loading, setLoading ] = useState<boolean>(true)
   const [ currPage, setCurrPage ] = useState<number>(1)
@@ -21,10 +21,10 @@ export default memo((props: IProps) => {
     return props 
   }, [props])
 
-  const fetchData = useCallback(async (params: Partial<API_DATA.IGetStoreUserListParams>={}) => {
+  const fetchData = useCallback(async (params: Partial<API_DATA.IGetGlanceUserListParams>={}) => {
     if(!_id) return 
     setLoading(true)
-    const data = await getStoreUserList({ _id, currPage, pageSize: 10, ...params }) || {}
+    const data = await getGlanceUserList({ _id, currPage, pageSize: 10, ...params }) || {}
     unstable_batchedUpdates(() => {
       setData(data?.list || [])
       setTotal(data?.total || 0)
@@ -58,7 +58,7 @@ export default memo((props: IProps) => {
         title: '操作',
         key: 'op',
         fixed: 'right',
-        render: (_: any, record: API_DATA.IGetStoreUserListData) => {
+        render: (_: any, record: API_DATA.IGetGlanceUserListData) => {
           return (
             <Space>
               <a style={{color: '#1890ff'}} onClick={edit.bind(this, record._id)}>

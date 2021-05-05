@@ -2,7 +2,9 @@ import { Table, message, Modal } from 'antd'
 import React, { memo, useCallback, useEffect, useMemo, useState, Fragment, useRef } from 'react'
 import { unstable_batchedUpdates } from 'react-dom'
 import { omit } from 'lodash'
+import { history } from 'umi'
 import FeedbackModal, { IFeedbackModalRef } from '../../../Feedback/components/FeedbackModal'
+import MemberEdit from '../../../Member/components/CreateForm'
 import { ACTIVE_KEY_MAP } from '../../constants'
 
 type IProps = {
@@ -10,7 +12,7 @@ type IProps = {
   activeKey: keyof typeof ACTIVE_KEY_MAP 
 }
 
-export type ListData = API_USER.IGetFeedbackData | API_USER.ICommentData | API_USER.IGetUserRateData | API_USER.IGetUserIssueData
+export type ListData = API_USER.IGetFeedbackData | API_USER.ICommentData | API_USER.IGetUserRateData | API_USER.IGetUserIssueData | API_USER.IGetUserListResData
 
 export default memo((props: IProps) => {
 
@@ -20,12 +22,13 @@ export default memo((props: IProps) => {
   const [ currPage, setCurPage ] = useState<number>(1)
 
   const feedbackRef = useRef<IFeedbackModalRef>(null)
+  const memberRef = useRef<MemberEdit>(null)
 
   const { value, activeKey } = useMemo(() => {
     return props 
   }, [props])
 
-  const fetchData = useCallback(async (param: Partial<API_USER.IGetUserCommentListParams | API_USER.IGetFeedbackListParams | API_USER.IGetUserRateListParams | API_USER.IGetUserIssueListParams>={}) => {
+  const fetchData = useCallback(async (param: Partial<API_USER.IGetUserCommentListParams | API_USER.IGetFeedbackListParams | API_USER.IGetUserRateListParams | API_USER.IGetUserIssueListParams | API_USER.IGetUserAttentionsListParams | API_USER.IGetUserFansListParams>={}) => {
     setLoading(true)
     const data = await ACTIVE_KEY_MAP[activeKey].fetchData({
       ...param as any,
@@ -33,6 +36,7 @@ export default memo((props: IProps) => {
       pageSize: 10,
       currPage: currPage - 1
     })
+
     unstable_batchedUpdates(() => {
       setData(data?.list || [])
       setTotal(data?.total || 0)
@@ -127,6 +131,15 @@ export default memo((props: IProps) => {
             ref={feedbackRef}
             {...omit(ACTIVE_KEY_MAP[activeKey].editOp, ['onOk'])}
             onOk={ACTIVE_KEY_MAP[activeKey].editOp.onOk.bind(this, reload)}
+          />
+        )
+      }
+      {
+        activeKey === 'fans' || activeKey === 'attentions' && (
+          <MemberEdit
+            ref={memberRef}
+            {...omit(ACTIVE_KEY_MAP[activeKey].editOp, ['onOk'])}
+            onSubmit={ACTIVE_KEY_MAP[activeKey].editOp.onOk.bind(this, reload)}
           />
         )
       }

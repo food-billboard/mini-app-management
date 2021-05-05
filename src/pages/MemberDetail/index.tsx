@@ -76,8 +76,10 @@ export default memo(() => {
   }, [])
 
   useEffect(() => {
-    const { location: { pathname } } = history
+    const { location: { pathname, query } } = history
     const [specialId] = pathname.split('/').slice(-1) || []
+    const { activeKey } = query as { activeKey: string }
+    if(activeKey) setActiveKey(activeKey as keyof typeof ACTIVE_KEY_MAP)
     fetchData(specialId)
   }, [])
 

@@ -2,7 +2,7 @@ import React, {  } from 'react'
 import { Tag, DatePicker, Avatar } from 'antd'
 import { history } from 'umi'
 import moment from 'moment'
-import { SOURCE_TYPE, MEDIA_AUTH_MAP, MEDIA_UPLOAD_STATUS } from '@/utils'
+import { SOURCE_TYPE, MEDIA_AUTH_MAP, MEDIA_UPLOAD_STATUS, fileSize } from '@/utils'
 
 const { RangePicker } = DatePicker
 
@@ -149,7 +149,10 @@ export default [
     title: '文件大小',
     dataIndex: 'size',
     hideInSearch: true,
-    render: (_: string, record: API_MEDIA.IGetMediaListData) => record.info.size || '-'
+    render: (_: string, record: API_MEDIA.IGetMediaListData) => {
+      if(Number.isNaN(record.info.size)) return '-'
+      return fileSize(record.info.size)
+    }
   },
   {
     title: 'mime',

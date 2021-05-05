@@ -67,14 +67,14 @@ export default memo((props: IProps) => {
         dataIndex: 'description',
         valueType: 'textarea',
         key: 'description',
-        span: 3,
+        span: 1,
       },
       {
         title: '头像',
         dataIndex: 'avatar',
         key: 'avatar',
         valueType: 'poster',
-        span: 3
+        span: 1
       },
       {
         title: '角色',
@@ -162,7 +162,8 @@ export default memo((props: IProps) => {
         valueTypeMap: {
           poster: {
             render: (value: string) => {
-              return <PreImage value={value} />
+              const image = Array.isArray(value) ? value[0] : value 
+              return <PreImage value={image} />
             },
             renderFormItem: (value: any, props: any) => {
               return (
