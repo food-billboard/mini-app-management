@@ -46,7 +46,7 @@ export default memo((props: IImageProps) => {
         [图片]<a onClick={(e) => {
           e.stopPropagation()
           history.push({
-            pathname: '/media/detail/image',
+            pathname: '/media/image',
             query: {
               url: value
             }

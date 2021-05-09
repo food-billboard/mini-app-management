@@ -128,6 +128,7 @@ class ImagePreview extends PureComponent<any> {
                   md={8}
                   lg={6}
                   key={item?.src || index}
+                  style={{marginBottom: 24}}
                 >
                   <div
                     className={styles["image-viewer-item-wrapper"]}

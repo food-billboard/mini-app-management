@@ -67,7 +67,7 @@ export default [
         <a onClick={(e) => {
           e.stopPropagation()
           history.push({
-            pathname: '/media/detail/video',
+            pathname: '/media/video',
             query: {
               url: record.content.video
             }

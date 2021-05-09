@@ -4,8 +4,7 @@ import { pick } from 'lodash'
 import ProDescriptions from '@ant-design/pro-descriptions'
 import ProProvider from '@ant-design/pro-provider'
 import Upload, { PreImage } from './upload'
-import MultiSelect from './multi-select'
-import { USER_STATUS } from '@/utils'
+import { USER_STATUS, ROLES_MAP } from '@/utils'
 
 interface IProps {
   loading?: boolean
@@ -79,7 +78,17 @@ export default memo((props: IProps) => {
       {
         title: '角色',
         dataIndex: 'roles',
-        valueType: 'multiselect',
+        valueType: 'select',
+        valueEnum: Object.entries(ROLES_MAP).reduce((acc, cur) => {
+          const [ key, title ] = cur
+          acc[key] = {
+            text: title
+          } 
+          return acc 
+        }, {}),
+        fieldProps: {
+          mode: "multiple"
+        },
         key: 'roles',
         span: 1,
       },
@@ -182,19 +191,6 @@ export default memo((props: IProps) => {
               )
             },
           },
-          multiselect: {
-            render: (value: string) => {
-              return <span>{Array.isArray(value) ? value.join(',') : value}</span>
-            },
-            renderFormItem: (value: any, props: any) => {
-              return (
-                <MultiSelect
-                  value={value}
-                  props={props}
-                />
-              )
-            },
-          }
         },
       }}
     >

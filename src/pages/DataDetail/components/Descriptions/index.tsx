@@ -18,7 +18,7 @@ export default memo((props: IProps) => {
   const preview = useCallback((value: string | string[]) => {
     const url = Array.isArray(value) ? value : [value]
     return history.push({ 
-      pathname: '/media/detail/image',
+      pathname: '/media/image',
       query: {
         url
       }
