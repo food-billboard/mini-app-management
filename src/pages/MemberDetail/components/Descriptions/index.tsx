@@ -3,7 +3,7 @@ import { Card } from 'antd'
 import { pick } from 'lodash' 
 import ProDescriptions from '@ant-design/pro-descriptions'
 import ProProvider from '@ant-design/pro-provider'
-import Upload, { PreImage } from './upload'
+import Upload, { PreImage } from '../../../DataSpecialDetail/components/Descriptions/upload'
 import { USER_STATUS, ROLES_MAP } from '@/utils'
 
 interface IProps {

@@ -6,6 +6,7 @@ import { DownOutlined, PlusOutlined, EllipsisOutlined } from '@ant-design/icons'
 import { connect } from 'umi'
 import pickBy from 'lodash/pickBy'
 import identity from 'lodash/identity'
+import omit from 'lodash/omit'
 import { history } from 'umi'
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import CreateForm from './components/CreateForm'
@@ -26,12 +27,12 @@ const MemberManage = memo(() => {
     const hide = message.loading('正在添加')
     const method = !!fields._id ? putUser : postUser
 
-    const { avatar, role, ...nextFields } = fields
+    const { avatar, roles, ...nextFields } = fields
 
     const params = {
       ...nextFields,
       avatar: Array.isArray(avatar) ? avatar[0] : avatar,
-      role: (Array.isArray(role) ? role : [role]).join(',')
+      roles: (Array.isArray(roles) ? roles : [roles]).join(',')
     }
 
     try {
@@ -94,10 +95,14 @@ const MemberManage = memo(() => {
       message.error('删除失败，请重试')
       return false
     })
+    .then(res => {
+      actionRef.current?.reload()
+      return res 
+    })
 
     return response
 
-  }, [])
+  }, [actionRef])
 
   const columns: any[] = useMemo(() => {
     return [
@@ -147,7 +152,11 @@ const MemberManage = memo(() => {
   }
 
   const onSubmit = useCallback(async value => {
-    const success = await handleAdd(value)
+    const { avatar } = value
+    let newParams = omit(value, ['avatar'])
+    if(Array.isArray(avatar) && avatar.length) newParams.avatar = avatar[0]
+    if(typeof avatar == 'string') newParams.avatar = avatar
+    const success = await handleAdd(newParams)
 
     if (success) {
       actionRef.current?.reload()
@@ -162,8 +171,8 @@ const MemberManage = memo(() => {
     }
     newParams = pickBy(newParams, identity)
     return getUserList(newParams)
-    .then(({ list }) => ({ data: list }) )
-    .catch(_ => ({ data: [] }))
+    .then(({ list, total }) => ({ data: list, total }) )
+    .catch(_ => ({ data: [], total: 0 }))
   }, [])
 
   return (
@@ -184,7 +193,6 @@ const MemberManage = memo(() => {
                   onClick={async e => {
                     if (e.key === 'remove') {
                       await handleRemove(selectedRows)
-                      action?.reload()
                     }
                   }}
                   selectedKeys={[]}

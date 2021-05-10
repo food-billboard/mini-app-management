@@ -40,16 +40,16 @@ export default [
     dataIndex: 'white_list_count',
     hideInSearch: true,
   },
-  {
-    title: '头像',
-    dataIndex: 'avatar',
-    hideInSearch: true,
-    render: (value: string, record: API_USER.IGetUserListResData) => {
-      return (
-        <Avatar src={value} size={40} >{record.username}</Avatar>
-      )
-    }
-  },
+  // {
+  //   title: '头像',
+  //   dataIndex: 'avatar',
+  //   hideInSearch: true,
+  //   render: (value: string, record: API_USER.IGetUserListResData) => {
+  //     return (
+  //       <Avatar src={value} size={40} >{record.username}</Avatar>
+  //     )
+  //   }
+  // },
   {
     title: '创建时间',
     dataIndex: 'createdAt',
@@ -158,13 +158,28 @@ export default [
     title: 'mime',
     dataIndex: 'mime',
     hideInSearch: true,
-    render: (_: string, record: API_MEDIA.IGetMediaListData) => record.info.mime || '-'
+    render: (_: string, record: API_MEDIA.IGetMediaListData) => (record.info.mime || '-').toLowerCase()
   },
   {
     title: '状态',
     dataIndex: 'status',
     hideInSearch: true,
-    render: (_: string, record: API_MEDIA.IGetMediaListData) => MEDIA_UPLOAD_STATUS[record.info.status] || '-'
+    render: (_: string, record: API_MEDIA.IGetMediaListData) => {
+      let color = 'error'
+      switch(record.info.status) {
+        case 'COMPLETE': 
+          color = 'cyan'
+          break 
+        case 'UPLOADING':
+          color = 'gold'
+          break 
+        case 'ERROR': 
+        default: color = 'error'
+      }
+      return (
+        <Tag color={color}>{MEDIA_UPLOAD_STATUS[record.info.status] || '-'}</Tag>
+      )
+    }
   },
   {
     title: '状态',

@@ -1,9 +1,9 @@
 import React from 'react'
-import { Carousel, DatePicker, Tooltip, Image } from 'antd'
+import { DatePicker, Tag } from 'antd'
 import { history } from 'umi'
 import moment from 'moment'
 import ImageView from './components/Image'
-import { FEEDBACK_STATUS, IMAGE_FALLBACK } from '@/utils'
+import { FEEDBACK_STATUS } from '@/utils'
 
 const { RangePicker } = DatePicker
 
@@ -22,7 +22,9 @@ export default [
     title: '状态',
     dataIndex: 'status',
     hideInSearch: true,
-    render: (val: string) => FEEDBACK_STATUS[val] || '-'
+    render: (val: string) => {
+      return <Tag color="yellow">{FEEDBACK_STATUS[val] || '-'}</Tag>
+    }
   },
   {
     title: '状态',
@@ -34,7 +36,8 @@ export default [
         status: cur
       }
       return acc
-    }, {})
+    }, {}),
+    initialValue: "DEALING"
   },
   {
     title: '文字内容',

@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useCallback } from 'react'
+import { history } from 'umi'
 import styles from './index.less'
 import numeral from 'numeral'
 
@@ -6,6 +7,7 @@ export interface IRankData {
   index?: number
   title: string
   value: number | React.ReactNode
+  _id: string 
 }
 
 const Rank: React.FC<any> = ({
@@ -15,6 +17,12 @@ const Rank: React.FC<any> = ({
   title: string | React.ReactNode,
   data: Array<IRankData>
 }) => {
+
+  const getUserDetail = useCallback((id: string) => {
+    if(id) {
+      history.push(`/member/${id}`)
+    }
+  }, [])
 
   return (
     <div className={styles.salesRank}>
@@ -29,7 +37,7 @@ const Rank: React.FC<any> = ({
               <span className={`${styles.rankingItemNumber} ${index < 3 ? styles.active : ''}`}>
                 {index}
               </span>
-              <span className={styles.rankingItemTitle} title={title}>
+              <span onClick={getUserDetail.bind(this, item._id)} className={styles.rankingItemTitle} title={title}>
                 {title}
               </span>
               <span className={styles.rankingItemValue}>

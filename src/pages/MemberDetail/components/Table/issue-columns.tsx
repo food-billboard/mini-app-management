@@ -17,7 +17,7 @@ export default [
       username: string
       _id: string
     }) => {
-      return value.username
+      return value?.username
     }
   },
   {

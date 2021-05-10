@@ -279,7 +279,7 @@ export const deleteMovieTag = (params: API_DATA.IDeleteMovieTagParams) => {
 
 //收藏电影用户列表
 export const getStoreUserList = (params: API_DATA.IGetMovieStoreUserListParams) => {
-  return request<API_DATA.IGetMovieStoreUserListRes>('/api/user/movie/store', {
+  return request<API_DATA.IGetMovieStoreUserListRes>('/api/manage/movie/detail/store', {
     method: 'GET',
     params
   })

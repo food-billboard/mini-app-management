@@ -2,7 +2,6 @@ import { Table, message, Modal } from 'antd'
 import React, { memo, useCallback, useEffect, useMemo, useState, Fragment, useRef } from 'react'
 import { unstable_batchedUpdates } from 'react-dom'
 import { omit } from 'lodash'
-import { history } from 'umi'
 import FeedbackModal, { IFeedbackModalRef } from '../../../Feedback/components/FeedbackModal'
 import MemberEdit from '../../../Member/components/CreateForm'
 import { ACTIVE_KEY_MAP } from '../../constants'
@@ -76,7 +75,7 @@ export default memo((props: IProps) => {
       message.success('删除成功，即将刷新')
       return true
     })
-    .catch(err => {
+    .catch(_ => {
       hide()
       message.error('删除失败，请重试')
       return false
@@ -85,9 +84,11 @@ export default memo((props: IProps) => {
     return response
   }, [value, activeKey])
 
-  const reload = useCallback(() => {
+  const reload = useCallback(async () => {
+    let method = currPage == 1 ? fetchData : () => {}
     setCurPage(() => 1)
-  }, [])
+    await method()
+  }, [currPage, activeKey])
 
   useEffect(() => {
     if(value) fetchData()
@@ -106,7 +107,19 @@ export default memo((props: IProps) => {
         key: 'op',
         fixed: 'right',
         render: (_: any, record: ListData) => {
-          return ACTIVE_KEY_MAP[activeKey].op(record as any, feedbackRef, handleRemove)
+          let ref  
+          switch(activeKey) {
+            case 'fans':
+            case 'attentions':
+              ref = memberRef
+              break
+            case 'feedback':
+              ref = feedbackRef
+              break
+            default:
+              ref = null 
+          }
+          return ACTIVE_KEY_MAP[activeKey].op(record as any, ref, handleRemove)
         }
       }
     ]

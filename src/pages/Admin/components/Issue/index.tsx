@@ -20,7 +20,7 @@ const Issue = (props: IProps) => {
 
   const fetchData = useCallback(async (params: API_ADMIN.IGetAdminIssueListParams={}) => {
     const data = await GetAdminIssueList(merge({}, params, {
-      currPage,
+      currPage: currPage - 1,
       pageSize: 10
     }))
     unstable_batchedUpdates(() => {

@@ -114,6 +114,16 @@ export default memo(() => {
           key: 'feedback',
           closable: false,
         },
+        {
+          tab: '粉丝信息',
+          key: 'fans',
+          closable: false,
+        },
+        {
+          tab: '关注信息',
+          key: 'attentions',
+          closable: false,
+        },
       ]}
       tabProps={{
         onChange: onTabChange,

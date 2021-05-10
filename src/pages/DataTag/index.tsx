@@ -132,8 +132,8 @@ const TagManage = memo(() => {
     }
     newParams = pickBy(newParams, identity)
     return getMovieTagList(newParams)
-    .then(({ list }) => ({ data: list }) )
-    .catch(_ => ({ data: [] }))
+    .then(({ list, total }) => ({ data: list, total }) )
+    .catch(_ => ({ data: [], total: 0 }))
   }, [])
 
   return (

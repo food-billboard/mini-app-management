@@ -1,8 +1,9 @@
 import React, { memo, forwardRef, useImperativeHandle, useState, useCallback, useMemo } from 'react'
+import { unstable_batchedUpdates } from 'react-dom'
 import { Modal, Input } from 'antd'
 import { merge } from 'lodash'
 
-export type TFeedbackEditData = API_USER.IGetFeedbackData & { description: string }
+export type TFeedbackEditData = API_USER.IGetFeedbackData & { description?: string }
 
 export interface IFeedbackModalRef {
   open: (data?: TFeedbackEditData) => void
@@ -23,7 +24,15 @@ export default memo(forwardRef<IFeedbackModalRef, IFeedbackModalProps>((props, r
   }), [])
 
   const openModal = useCallback((data?: TFeedbackEditData) => {
-    data && setData(data)
+    unstable_batchedUpdates(() => {
+      data && setData(() => {
+        const { status, ...nextData } = data
+        return merge({}, nextData, {
+          status: status === 'DEALING' ? 'DEAL' : 'DEALING' as API_USER.TFeedbackStatus
+        })
+      })
+      setVisible(true)
+    })
   }, [])
 
   const { onOk, onCancel } = useMemo(() => {

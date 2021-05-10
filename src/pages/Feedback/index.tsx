@@ -105,11 +105,13 @@ const FeedbackManage = memo(() => {
           return (
             <Space>
               {
-                <a
-                  onClick={edit.bind(this, merge({}, record, { status: "DEAL" }))}
-                >
-                  完成处理
-                </a>
+                record.status === 'DEALING' && (
+                  <a
+                    onClick={edit.bind(this, record)}
+                  >
+                    完成处理
+                  </a>
+                )
               }
               <a
                 style={{color: 'red'}}
@@ -133,8 +135,8 @@ const FeedbackManage = memo(() => {
     }
     newParams = pickBy(newParams, identity)
     return getUserFeedbackList(newParams)
-    .then(({ list }) => ({ data: list }) )
-    .catch(_ => ({ data: [] }))
+    .then(({ list, total }) => ({ data: list, total }) )
+    .catch(_ => ({ data: [], total: 0 }))
   }, [])
 
   const edit = useCallback((data: API_USER.IGetFeedbackData) => {

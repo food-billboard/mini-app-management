@@ -50,7 +50,7 @@ const Comments = memo((props: IProps) => {
 
   const fetchData = useCallback(async (params: API_ADMIN.IGetAdminCommentListParams={}) => {
     const data = await GerAdminCommentList(merge({}, params, {
-      currPage,
+      currPage: currPage - 1,
       pageSize: 10
     }) as API_ADMIN.IGetAdminCommentListParams)
     unstable_batchedUpdates(() => {

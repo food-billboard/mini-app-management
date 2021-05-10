@@ -40,7 +40,7 @@ export const ACTIVE_KEY_MAP = {
               history.push({
                 pathname: '/data/main/edit',
                 query: {
-                  _id: record._id
+                  id: record._id
                 }
               })
             }}
@@ -53,7 +53,7 @@ export const ACTIVE_KEY_MAP = {
           >
             删除
           </a>
-          {/* <Dropdown overlay={
+          <Dropdown overlay={
             <Menu>
               <Menu.Item>
                 <a style={{color: '#1890ff'}} onClick={() => {
@@ -67,7 +67,7 @@ export const ACTIVE_KEY_MAP = {
             <a onClick={e => e.preventDefault()}>
               <EllipsisOutlined />
             </a>
-          </Dropdown> */}
+          </Dropdown>
         </Space>
       )
     }
@@ -120,7 +120,7 @@ export const ACTIVE_KEY_MAP = {
         .then(_ => {
           message.success('操作成功')
         })
-        .catch(err => {
+        .catch(_ => {
           message.success('操作失败，请重试')
         })
         .then(_ => {
@@ -133,13 +133,17 @@ export const ACTIVE_KEY_MAP = {
     op: (record: API_USER.IGetFeedbackData, ref: React.RefObject<IFeedbackModalRef>, deleteOp: any) => {
       return (
         <Space>
-          <a
-            onClick={() => {
-              ref.current?.open()
-            }}
-          >
-            编辑
-          </a>
+          {
+            record.status === 'DEALING' && (
+              <a
+                onClick={() => {
+                  ref.current?.open(record)
+                }}
+              >
+                处理
+              </a>
+            )
+          }
           <a
             style={{color: 'red'}}
             onClick={deleteOp.bind(this, record._id)}

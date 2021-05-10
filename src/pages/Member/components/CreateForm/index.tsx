@@ -117,9 +117,6 @@ class CreateForm extends Component<IProps, IState> {
           name="password" 
           label="密码" 
           placeholder={"请输入密码"} 
-          rules={[{
-            required: true
-          }]}
         />
         <ProFormText 
           name="email" 
@@ -149,7 +146,7 @@ class CreateForm extends Component<IProps, IState> {
         />
         <ProFormSelect
           options={_ROLES_MAP}
-          name="classify"
+          name="roles"
           label="权限"
           hasFeedback
           placeholder="请选择权限"
@@ -162,7 +159,7 @@ class CreateForm extends Component<IProps, IState> {
         <Upload 
           wrapper={{
             label: '头像',
-            name: 'poster',
+            name: 'avatar',
             rules: [
               {
                 required: true,

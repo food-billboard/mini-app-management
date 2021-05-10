@@ -211,8 +211,8 @@ const CardList: React.FC<IProps> = () => {
           }
           newParams = pickBy(newParams, identity)
           return getMovieList(newParams)
-          .then(({ list }) => ({ data: list }) )
-          .catch(_ => ({ data: [] }))
+          .then(({ list, total }) => ({ data: list, total }) )
+          .catch(_ => ({ data: [], total: 0 }))
         }}
         columns={columns}
         rowSelection={{}}

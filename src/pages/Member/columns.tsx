@@ -11,11 +11,13 @@ export default [
     dataIndex: 'index',
     valueType: 'indexBorder',
     width: 48,
+    fixed: "left",
   },
   {
     title: '用户名',
     dataIndex: 'username',
     hideInSearch: true,
+    fixed: "left",
     render: (value: string, record: API_USER.IGetUserListResData) => <a onClick={() => history.push(`/member/${record._id}`)}>{value}</a>
   },
   {

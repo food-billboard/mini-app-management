@@ -208,8 +208,8 @@ const MediaManage = memo(() => {
     }
     if(typeof size === 'number' || typeof minSize === 'number' || typeof maxSize === 'number') params.size = size ? size : `${minSize},${maxSize}`
     return getMediaList(newParams)
-    .then(({ list }) => ({ data: list }) )
-    .catch(_ => ({ data: [] }))
+    .then(({ list, total }) => ({ data: list, total }) )
+    .catch(_ => ({ data: [], total: 0 }))
   }, [activeKey])
 
   const onTabChange = useCallback(async (activeKey: string) => {

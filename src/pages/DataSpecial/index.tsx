@@ -209,8 +209,8 @@ const InstanceManage: React.FC<any> = () => {
     realParams = nextParams
     if(valid !== undefined) realParams.valid = !Boolean(Number(valid))
     return getInstanceSpecialList(realParams)
-    .then(({ list }) => ({ data: list }) )
-    .catch(_ => ({ data: [] }))
+    .then(({ list, total }) => ({ data: list, total }) )
+    .catch(_ => ({ data: [], total: 0 }))
   }, [])
 
   return (

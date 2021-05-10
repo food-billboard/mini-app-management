@@ -186,8 +186,8 @@ const InstanceManage: React.FC<any> = () => {
         )}
         request={async (_: any) => {
           return getInstanceInfoList()
-          .then(({ list }) => ({ data: list }) )
-          .catch(_ => ({ data: [] }))
+          .then(({ list, total }) => ({ data: list, total }) )
+          .catch(_ => ({ data: [], total: 0 }))
         }}
         columns={columns}
         rowSelection={{}}
