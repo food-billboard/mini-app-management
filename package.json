@@ -83,7 +83,7 @@
     "use-merge-value": "^1.0.1",
     "video.js": "^7.12.1",
     "viewerjs": "^1.9.0",
-    "winbox": "^0.1.8"
+    "winbox": "^0.1.92"
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^2.0.4",
@@ -100,6 +100,7 @@
     "@types/react-helmet": "^6.1.0",
     "@types/spark-md5": "^3.0.2",
     "@types/video.js": "^7.3.11",
+    "@types/winbox": "^0.1.0",
     "@umijs/plugin-blocks": "^2.0.5",
     "@umijs/plugin-esbuild": "^1.0.0-beta.2",
     "@umijs/preset-ant-design-pro": "^1.2.0",

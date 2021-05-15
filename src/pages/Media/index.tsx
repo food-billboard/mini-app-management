@@ -3,8 +3,7 @@ import { Button, Dropdown, message, Menu, Space, Modal } from 'antd'
 import { PageContainer } from '@ant-design/pro-layout'
 import ProTable, { ActionType } from '@ant-design/pro-table'
 import { DownOutlined, EllipsisOutlined } from '@ant-design/icons'
-import { connect } from 'umi'
-import { history } from 'umi'
+import { connect, history } from 'umi'
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import CreateForm, { IFormRef } from './components/CreateForm'
 import column from './columns'
@@ -250,7 +249,7 @@ const MediaManage = memo(() => {
                   onClick={async e => {
                     if (e.key === 'remove') {
                       await handleRemove(selectedRows)
-                      action?.reload()
+                      actionRef.current?.reloadAndRest?.();
                     }
                   }}
                   selectedKeys={[]}

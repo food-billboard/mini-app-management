@@ -68,7 +68,7 @@ const handleRemove = async (selectedRows: API_DATA.IGetMovieData[]) => {
 
 }
 
-const CardList: React.FC<IProps> = () => {
+const CardList: React.FC<IProps> = (props: any) => {
 
   const actionRef = useRef<ActionType>()
 
@@ -170,7 +170,7 @@ const CardList: React.FC<IProps> = () => {
                   onClick={async e => {
                     if (e.key === 'remove') {
                       await handleRemove(selectedRows)
-                      action?.reload()
+                      actionRef.current?.reloadAndRest?.();
                     }
                   }}
                   selectedKeys={[]}

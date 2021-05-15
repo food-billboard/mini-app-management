@@ -772,6 +772,7 @@ declare namespace API_MEDIA {
     _id: string 
     src: string 
     name: string 
+    poster?: string 
     createdAt: string 
     updatedAt: string 
     origin_type: API_DATA.IDataSourceType

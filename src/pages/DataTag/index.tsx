@@ -150,7 +150,7 @@ const TagManage = memo(() => {
                   onClick={async e => {
                     if (e.key === 'remove') {
                       await handleRemove(selectedRows)
-                      action?.reload()
+                      actionRef.current?.reloadAndRest?.();
                     }
                   }}
                   selectedKeys={[]}

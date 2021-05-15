@@ -193,6 +193,7 @@ const MemberManage = memo(() => {
                   onClick={async e => {
                     if (e.key === 'remove') {
                       await handleRemove(selectedRows)
+                      actionRef.current?.reloadAndRest?.();
                     }
                   }}
                   selectedKeys={[]}

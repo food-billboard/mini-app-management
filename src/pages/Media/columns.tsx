@@ -1,8 +1,8 @@
-import React, {  } from 'react'
-import { Tag, DatePicker, Avatar } from 'antd'
+import React from 'react'
+import { Tag, DatePicker, Avatar, Image } from 'antd'
 import { history } from 'umi'
 import moment from 'moment'
-import { SOURCE_TYPE, MEDIA_AUTH_MAP, MEDIA_UPLOAD_STATUS, fileSize } from '@/utils'
+import { SOURCE_TYPE, MEDIA_AUTH_MAP, MEDIA_UPLOAD_STATUS, fileSize, IMAGE_FALLBACK } from '@/utils'
 
 const { RangePicker } = DatePicker
 
@@ -40,16 +40,16 @@ export default [
     dataIndex: 'white_list_count',
     hideInSearch: true,
   },
-  // {
-  //   title: '头像',
-  //   dataIndex: 'avatar',
-  //   hideInSearch: true,
-  //   render: (value: string, record: API_USER.IGetUserListResData) => {
-  //     return (
-  //       <Avatar src={value} size={40} >{record.username}</Avatar>
-  //     )
-  //   }
-  // },
+  {
+    title: '海报',
+    dataIndex: 'poster',
+    hideInSearch: true,
+    render: (value: string, record: API_USER.IGetUserListResData) => {
+      return (
+        <Image src={value} width={200} height={100} fallback={IMAGE_FALLBACK} />
+      )
+    }
+  },
   {
     title: '创建时间',
     dataIndex: 'createdAt',

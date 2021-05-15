@@ -82,11 +82,11 @@ class Login extends Component<any> {
 
             <Mobile
               name="mobile"
-              placeholder="请输入手机号: 18368003190"
+              placeholder="请输入手机号"
             />
             <Password
               name="password"
-              placeholder="请输入密码: shenjing8"
+              placeholder="请输入密码"
             />
           </Tab>
           <Submit loading={submitting}>登录</Submit>

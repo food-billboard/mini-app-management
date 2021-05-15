@@ -2,7 +2,7 @@ import { ConnectState } from '@/models/connect'
 
 export const mapStateToProps = (state: ConnectState) => {
   return {
-    role: 1
+    userInfo: state.user.currentUser,
   }
 }
 
