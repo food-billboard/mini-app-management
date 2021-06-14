@@ -63,6 +63,7 @@ const handleRemove = async (selectedRows: TableListItem[]) => {
     });
     hide();
     message.success('删除成功，即将刷新');
+    actionRef.current?.reloadAndRest?.();
     return true;
   } catch (error) {
     hide();
@@ -191,7 +192,6 @@ const TableList: React.FC<{}> = () => {
             onClick={async () => {
               await handleRemove(selectedRowsState);
               setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
             }}
           >
             批量删除

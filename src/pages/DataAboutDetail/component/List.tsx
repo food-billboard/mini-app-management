@@ -116,7 +116,9 @@ const Data = forwardRef<DataAboutRef, IProps>((props, ref) => {
 
   const pageChange = useCallback(async (page: number, pageSize?: number) => {
     setCurrPage(page)
-    await internalFetchData()
+    await internalFetchData({
+      currPage: page - 1
+    })
   }, [internalFetchData])
 
   const footerContent = useMemo(() => {

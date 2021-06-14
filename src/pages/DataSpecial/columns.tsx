@@ -1,8 +1,6 @@
 import React from 'react'
-import { Typography, Badge } from 'antd'
+import { Badge } from 'antd'
 import moment from 'moment'
-
-const { Paragraph } = Typography
 
 export default [
   {

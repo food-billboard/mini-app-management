@@ -16,9 +16,9 @@ export function localFetchData4Array<T extends object, O=T[], K=any>(fetchMethod
     let [ , data ] = await withTry<O>(fetchMethod)(...restArgs)
     if(!data) return []
     const lastParams = pickParams[pickParams.length - 1]
-    let getOrignData = typeof lastParams === 'function' ? lastParams : null
-    let realRestPickParams = getOrignData ? pickParams.slice(0, -1) : pickParams
-    const realData = getOrignData ? getOrignData(data) : data
+    let getOriginData = typeof lastParams === 'function' ? lastParams : null
+    let realRestPickParams = getOriginData ? pickParams.slice(0, -1) : pickParams
+    const realData = getOriginData ? getOriginData(data) : data
 
     return (realData as T[])?.map((item: T) => {
       const keysMap = (realRestPickParams as [keyof T, string][]).reduce((acc:any, cur: [ keyof T, string ]) => {
@@ -44,9 +44,9 @@ export async function localFetchData4Object<T extends object, O=T, K=any>(fetchM
     let [ , data ] = await withTry<O>(fetchMethod)(...restArgs)
     if(!data) return {} as K
     const lastParams = pickParams[pickParams.length - 1]
-    let getOrignData = typeof lastParams === 'function' ? lastParams : null
-    let realRestPickParams = getOrignData ? pickParams.slice(0, -1) : pickParams
-    const realData = getOrignData ? getOrignData(data) : data
+    let getOriginData = typeof lastParams === 'function' ? lastParams : null
+    let realRestPickParams = getOriginData ? pickParams.slice(0, -1) : pickParams
+    const realData = getOriginData ? getOriginData(data) : data
     const keysMap = (realRestPickParams as [keyof T, string][]).reduce((acc:any, cur: [ keyof T, string ]) => {
       const [ prevKey, newKey ] = cur
       acc[prevKey] = newKey

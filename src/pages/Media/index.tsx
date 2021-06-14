@@ -85,6 +85,7 @@ const MediaManage = memo(() => {
     .then(_ => {
       hide()
       message.success('删除成功，即将刷新')
+      actionRef.current?.reloadAndRest?.();
       return true
     })
     .catch(err => {
@@ -249,7 +250,6 @@ const MediaManage = memo(() => {
                   onClick={async e => {
                     if (e.key === 'remove') {
                       await handleRemove(selectedRows)
-                      actionRef.current?.reloadAndRest?.();
                     }
                   }}
                   selectedKeys={[]}

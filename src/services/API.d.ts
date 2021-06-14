@@ -809,3 +809,165 @@ declare namespace API_MEDIA {
   }
 
 }
+
+declare namespace API_CHAT {
+
+  export type TRoomType = "GROUP_CHAT" | "CHAT" | "SYSTEM"
+
+
+  export type TCreateUser = {
+    description: string 
+    _id: string 
+    username: string 
+    avatar: string 
+    member: string 
+  }
+
+  export type TRoomInfo = {
+    name: string 
+    description: string 
+    avatar: string 
+  }
+
+  export interface IGetRoomListParams {
+    currPage?: number 
+    pageSize?: number 
+    _id?: string 
+    type: TRoomType
+    origin?: boolean 
+    create_user?: string 
+    content?: string 
+    members?: string  
+  }
+
+  export interface IGetRoomListRes {
+    total: number 
+    list: IGetRoomListResData[]
+  }
+
+  export interface IGetRoomListResData {
+    _id: string 
+    createdAt: string 
+    updatedAt: string 
+    type: TRoomType
+    origin: string 
+    delete_users: number 
+    message: number 
+    create_user: TCreateUser
+    info: TRoomInfo
+    members: number 
+    online_members: number 
+    id_delete: boolean 
+  }
+
+  export interface IPostRoomParams {
+    name: string 
+    avatar: string 
+    members?: string 
+    description?: string 
+  }
+
+  export interface IPutRoomParams extends Partial<IPostRoomParams> {
+    _id: string 
+  }
+
+  export interface IDeleteRoomParams {
+    _id: string 
+  }
+
+  export interface IGetMessageListParams {
+    currPage?: number 
+    pageSize?: number 
+    _id: string 
+  }
+
+  export type TMessageRoom = {
+    _id: string 
+    createdAt: string 
+    updatedAt: string 
+    info: TRoomType
+    type: TRoomType
+  }
+
+  export interface IGetMessageRes{
+    total: number 
+    room: TMessageRoom
+    list: IGetMessageResData[]
+  }
+
+  export type TMessageType = "ORIGIN" | "USER"
+
+  export type TMessageMediaType = "IMAGE" | "AUDIO" | "TEXT" | "VIDEO"
+
+  export type TMessageContent = {
+    image?: string 
+    video?: string 
+    text?: string 
+    audio?: string 
+  }
+  export interface IGetMessageResData {
+    _id: string 
+    createdAt: string 
+    updatedAt: string 
+    user_info: TCreateUser
+    message_type: TMessageType
+    point_to: string 
+    readed_count: number 
+    deleted_count: number 
+    content: TMessageContent
+    media_type: TMessageMediaType
+    room: string 
+  }
+
+  export interface IPostMessageParams {
+    content: string 
+    media_type: TMessageMediaType
+    _id: string 
+    point_to?: string 
+  }
+
+  export interface IDeleteMessageParams {
+    _id: string 
+    type?: 0 | 1
+  }
+
+  export interface IGetMemberListParams {
+    currPage?: number 
+    pageSize?: number 
+    _id?: string 
+    room?: string 
+  }
+
+  export interface IGetMemberListRes {
+    total: number 
+    list: IGetMemberListResData[]
+  }
+
+  export type TMemberRoom = {
+    _id: string 
+    name: string 
+    description: string 
+  }
+
+  export interface IGetMemberListResData {
+    _id: string 
+    createdAt: string 
+    updatedAt: string 
+    user: Omit<TCreateUser, "member">
+    sid: string 
+    temp_user_id: string 
+    room: TMemberRoom[]
+  }
+
+  export interface IPostMemberParams {
+    _id: string 
+    room: string 
+  }
+
+  export interface IDeleteMemberParams {
+    _id: string 
+    room: string 
+    is_delete?: 0 | 1
+  }
+
+}

@@ -1,50 +1,56 @@
-import React, { useRef, useCallback, memo } from 'react'
+import React, { useRef, useCallback, useState, useEffect } from 'react'
 import { Button, Dropdown, message, Menu, Space, Modal } from 'antd'
 import { PageHeaderWrapper } from '@ant-design/pro-layout'
 import ProTable, { ActionType } from '@ant-design/pro-table'
 import { DownOutlined, PlusOutlined } from '@ant-design/icons'
-import { connect } from 'umi'
-import pick from 'lodash/pick'
-import Form, { IFormRef } from './components/form'
+import { connect, history } from 'umi'
+import pickBy from 'lodash/pickBy'
+import identity from 'lodash/identity'
+import Form, { IFormRef } from './components/CreateForm'
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import column from './columns'
-import { getInstanceInfoList, deleteInstanceInfo, postInstanceInfo, putInstanceInfo } from '@/services'
+import { deleteMember, getMemberList, postMember } from '@/services'
 
-const InstanceManage: React.FC<any> = () => {
+interface IProps {
+  role: any
+}
+
+const CardList: React.FC<IProps> = (props: any) => {
+
+  const [ roomId, setRoomId ] = useState<string>('')
 
   const actionRef = useRef<ActionType>()
 
-  const modalRef = useRef<IFormRef>(null)
+  const formRef = useRef<IFormRef>(null)
 
-  const handleAdd = useCallback(async (values: API_INSTANCE.IPostInstanceInfoParams | API_INSTANCE.IPutInstanceInfoParams) => {
-    try {
-      if((values as API_INSTANCE.IPutInstanceInfoParams)._id) {
-        await putInstanceInfo(values as API_INSTANCE.IPutInstanceInfoParams)
-      }else {
-        await postInstanceInfo(values as API_INSTANCE.IPostInstanceInfoParams)
+  const columns: any[] = [
+    ...column ,
+    {
+      title: '操作',
+      key: 'option',
+      dataIndex: 'option',
+      valueType: 'option',
+      render: (_: any, record: API_CHAT.IGetMemberListResData) => {
+        return (
+          <Space>
+            {/* <a
+              onClick={() => handleModalVisible(record)}
+            >
+              编辑
+            </a> */}
+            <a
+              style={{color: 'red'}}
+              onClick={() => handleRemove([record])}
+            >
+              删除
+            </a>
+          </Space>
+        )
       }
-      message.success('操作成功')
-      return true 
-    }catch(err) {
-      console.error(err)
-      message.error('操作失败')
-      return false 
     }
-  }, [])
+  ]
 
-  const putInfo = useCallback(async (value: boolean, record: API_INSTANCE.IGetInstanceInfoData) => {
-    await handleAdd({
-      ...pick(record, ['info', 'notice', '_id']),
-      valid: value
-    })
-    actionRef.current?.reload()
-  }, [])
-
-  const handleModalVisible = useCallback((values?: API_INSTANCE.IGetInstanceInfoData) => {
-    modalRef.current?.open(values)
-  }, [modalRef])
-
-  const handleRemove = useCallback(async (selectedRows: API_INSTANCE.IGetInstanceInfoData[]) => {
+  const handleRemove = async (selectedRows: API_CHAT.IGetMemberListResData[]) => {
 
     const res = await new Promise((resolve) => {
   
@@ -71,16 +77,16 @@ const InstanceManage: React.FC<any> = () => {
     const hide = message.loading('正在删除')
     if (!selectedRows) return true
   
-    const response = await Promise.all(selectedRows.map((row: API_INSTANCE.IGetInstanceInfoData) => {
+    const response = await Promise.all(selectedRows.map((row: API_CHAT.IGetMemberListResData) => {
       const { _id } = row
-      return deleteInstanceInfo({
-        _id
+      return deleteMember({
+        _id,
+        room: roomId
       })
     }))
     .then(_ => {
       hide()
       message.success('删除成功，即将刷新')
-      actionRef.current?.reload()
       actionRef.current?.reloadAndRest?.()
       return true
     })
@@ -92,56 +98,39 @@ const InstanceManage: React.FC<any> = () => {
   
     return response
   
+  }
+
+  const onSubmit = useCallback(async (value: API_CHAT.IPostMemberParams) => {
+    try {
+      await postMember(value as API_CHAT.IPostMemberParams)
+      message.info('操作成功')
+      actionRef.current?.reloadAndRest?.()
+    }catch(err) {
+      message.info('操作失败，请重试')
+    }
   }, [])
 
-  const columns: any[] = [
-    ...column,
-    {
-      title: '操作',
-      key: 'opera',
-      dataIndex: 'opera',
-      valueType: 'option',
-      render: (_: any, record: API_INSTANCE.IGetInstanceInfoData) => {
-        const { valid } = record
-        return (
-          <Space>
-            <a
-              onClick={() => handleModalVisible(record)}
-            >
-              编辑
-            </a>
-            <a
-              style={{color: 'red'}}
-              onClick={() => handleRemove([record])}
-            >
-              删除
-            </a>
-            {
-              (valid) && (
-                <a onClick={putInfo.bind(this, false, record)} style={{color: 'red'}}>
-                  禁用
-                </a>
-              )
-            }
-            {
-              (!valid) && (
-                <a style={{color: '#1890ff'}} onClick={putInfo.bind(this, true, record)}>
-                  启用
-                </a>
-              )
-            }
-          </Space>
-        )
-      }
-    }
-  ]
+  const handleModalVisible = (data?: API_CHAT.IGetMemberListResData) => {
+    return formRef.current?.open(roomId)
+  }
+
+  useEffect(() => {
+    const { location: { pathname } } = history
+    const [roomId] = pathname.split('/').slice(-1) || []
+    setRoomId(roomId)
+  }, [])
+
+  useEffect(() => {
+    if(!!roomId) actionRef.current?.reloadAndRest?.()
+  }, [roomId])
 
   return (
     <PageHeaderWrapper>
       <ProTable
         search={false}
-        headerTitle="实例列表"
+        headerTitle="成员列表"
         actionRef={actionRef}
+        scroll={{ x: 'max-content' }}
         rowKey="_id"
         toolBarRender={(action, { selectedRows }) => [
           <Button key={'add'} icon={<PlusOutlined />} type="primary" onClick={() => handleModalVisible()}>
@@ -184,8 +173,19 @@ const InstanceManage: React.FC<any> = () => {
             </span>
           </div>
         )}
-        request={async (_: any) => {
-          return getInstanceInfoList()
+        request={async (params: any) => {
+          if(!roomId) return {
+            data: [],
+            total: 0
+          }
+          const { createdAt=[], current, ...nextParams } = params
+          let newParams = {
+            ...nextParams,
+            currPage: current - 1,
+            room: roomId
+          }
+          newParams = pickBy(newParams, identity)
+          return getMemberList(newParams)
           .then(({ list, total }) => ({ data: list, total }) )
           .catch(_ => ({ data: [], total: 0 }))
         }}
@@ -193,17 +193,12 @@ const InstanceManage: React.FC<any> = () => {
         rowSelection={{}}
       />
       <Form
-        onSubmit={async value => {
-          const success = await handleAdd(value)
-          if (success) {
-            actionRef.current?.reload()
-          }
-        }}
-        ref={modalRef}
+        ref={formRef}
+        onSubmit={onSubmit}
       />
   </PageHeaderWrapper>
   )
 
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(InstanceManage))
+export default connect(mapStateToProps, mapDispatchToProps)(CardList)

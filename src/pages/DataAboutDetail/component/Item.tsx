@@ -41,7 +41,7 @@ export type TDeleteActionType = (id: string) => void
 export type TEditActionType = TDeleteActionType
 export type TAddActionType = () => void
 
-const format = (date: string) => moment(date).format('YYYY-MM-DD hh:mm:ss')
+const format = (date: string) => moment(date).format('YYYY-MM-DD')
 
 export const AboutInfo = {
   actor: {

@@ -1,47 +1,57 @@
-import React, { useRef, useCallback, memo, useMemo } from 'react'
+import React, { useRef, useCallback } from 'react'
 import { Button, Dropdown, message, Menu, Space, Modal } from 'antd'
 import { PageHeaderWrapper } from '@ant-design/pro-layout'
 import ProTable, { ActionType } from '@ant-design/pro-table'
-import { DownOutlined } from '@ant-design/icons'
+import { DownOutlined, PlusOutlined } from '@ant-design/icons'
 import { connect } from 'umi'
 import pickBy from 'lodash/pickBy'
 import identity from 'lodash/identity'
+import Form, { IFormRef } from './components/CreateForm'
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import column from './columns'
-import { getMovieTagList, putMovieTag, deleteMovieTag } from '@/services'
+import { deleteRoom, getRoomList, putRoom, postRoom } from '@/services'
 
-const TagManage = memo(() => {
+interface IProps {
+  role: any
+}
+
+const CardList: React.FC<IProps> = (props: any) => {
 
   const actionRef = useRef<ActionType>()
 
-  /**
-   * 修改节点
-   * @param fields
-   */
-  const handleAdd = useCallback(async (record: API_DATA.IGetMovieTagResData) => {
-    const hide = message.loading('正在修改')
+  const formRef = useRef<IFormRef>(null)
 
-    try {
-      await putMovieTag({ _id: record._id, valid: !record.valid })
-      hide()
-      message.success('操作成功')
-      return true
-    } catch (error) {
-      hide()
-      message.error('操作失败请重试！')
-      return false
+  const columns: any[] = [
+    ...column ,
+    {
+      title: '操作',
+      key: 'option',
+      dataIndex: 'option',
+      valueType: 'option',
+      render: (_: any, record: API_CHAT.IGetRoomListResData) => {
+        return (
+          <Space>
+            <a
+              onClick={() => handleModalVisible(record)}
+            >
+              编辑
+            </a>
+            <a
+              style={{color: 'red'}}
+              onClick={() => handleRemove([record])}
+            >
+              删除
+            </a>
+          </Space>
+        )
+      }
     }
-  }, [])
+  ]
 
-  /**
-   *  删除节点
-   * @param selectedRows
-   */
-
-  const handleRemove = useCallback(async (selectedRows: API_DATA.IGetMovieTagResData[]) => {
+  const handleRemove = async (selectedRows: API_CHAT.IGetRoomListResData[]) => {
 
     const res = await new Promise((resolve) => {
-
+  
       Modal.confirm({
         cancelText: '取消',
         centered: true,
@@ -57,24 +67,24 @@ const TagManage = memo(() => {
           resolve(true)
         }
       })
-
+  
     })
-
+  
     if(!res) return
-
+  
     const hide = message.loading('正在删除')
     if (!selectedRows) return true
-
-    const response = await Promise.all(selectedRows.map((row: API_DATA.IGetMovieTagResData) => {
+  
+    const response = await Promise.all(selectedRows.map((row: API_CHAT.IGetRoomListResData) => {
       const { _id } = row
-      return deleteMovieTag({
+      return deleteRoom({
         _id
       })
     }))
     .then(_ => {
       hide()
       message.success('删除成功，即将刷新')
-      actionRef.current?.reloadAndRest?.()
+      actionRef.current?.reloadAndRest?.();
       return true
     })
     .catch(err => {
@@ -82,68 +92,40 @@ const TagManage = memo(() => {
       message.error('删除失败，请重试')
       return false
     })
-
-    return response
-
-  }, [])
-
-  const columns: any[] = useMemo(() => {
-    return [
-      ...column ,
-      {
-        title: '操作',
-        key: 'option',
-        dataIndex: 'option',
-        valueType: 'option',
-        render: (_: any, record: API_DATA.IGetMovieTagResData) => {
-          return (
-            <Space>
-              <a
-                style={{color: record.valid ? 'red' : 'currentcolor'}}
-                onClick={() => handleAdd(record)}
-              >
-                {record.valid ? '禁用' : '启用'}
-              </a>
-              <a
-                style={{color: 'red'}}
-                onClick={() => handleRemove([record])}
-              >
-                删除
-              </a>
-            </Space>
-          )
-        }
-      }
-    ]
   
+    return response
+  
+  }
+
+  const onSubmit = useCallback(async (value: API_CHAT.IPutRoomParams) => {
+    try {
+      if(value._id) { 
+        await putRoom(value)
+      }else {
+        await postRoom(value as API_CHAT.IPostRoomParams)
+      }
+      message.info('操作成功')
+      actionRef.current?.reloadAndRest?.()
+    }catch(err) {
+      message.info('操作失败，请重试')
+    }
   }, [])
 
-  const fetchData = useCallback(async (params: any) => {
-    const { current, valid, ...nextParams } = params
-    let newParams = {
-      ...nextParams,
-      currPage: current - 1
-    }
-    if(valid !== undefined) {
-      if(valid === 'true') {
-        newParams.valid = true 
-      }else {
-        newParams.valid = false
-      }
-    }
-    newParams = pickBy(newParams, identity)
-    return getMovieTagList(newParams)
-    .then(({ list, total }) => ({ data: list, total }) )
-    .catch(_ => ({ data: [], total: 0 }))
-  }, [])
+  const handleModalVisible = (data?: API_CHAT.IGetRoomListResData) => {
+    return formRef.current?.open(data)
+  }
 
   return (
     <PageHeaderWrapper>
       <ProTable
-        headerTitle="数据标签列表"
+        headerTitle="聊天室列表"
         actionRef={actionRef}
+        scroll={{ x: 'max-content' }}
         rowKey="_id"
         toolBarRender={(action, { selectedRows }) => [
+          <Button key={'add'} icon={<PlusOutlined />} type="primary" onClick={() => handleModalVisible()}>
+            新建
+          </Button>,
           selectedRows && selectedRows.length > 0 && (
             <Dropdown
               overlay={
@@ -151,7 +133,6 @@ const TagManage = memo(() => {
                   onClick={async e => {
                     if (e.key === 'remove') {
                       await handleRemove(selectedRows)
-                      actionRef.current?.reloadAndRest?.();
                     }
                   }}
                   selectedKeys={[]}
@@ -182,12 +163,27 @@ const TagManage = memo(() => {
             </span>
           </div>
         )}
-        request={fetchData}
+        request={async (params: any) => {
+          const { createdAt=[], current, ...nextParams } = params
+          let newParams = {
+            ...nextParams,
+            currPage: current - 1
+          }
+          newParams = pickBy(newParams, identity)
+          return getRoomList(newParams)
+          .then(({ list, total }) => ({ data: list, total }) )
+          .catch(_ => ({ data: [], total: 0 }))
+        }}
         columns={columns}
         rowSelection={{}}
       />
+      <Form
+        ref={formRef}
+        onSubmit={onSubmit}
+      />
   </PageHeaderWrapper>
   )
-})
 
-export default connect(mapStateToProps, mapDispatchToProps)(TagManage)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CardList)

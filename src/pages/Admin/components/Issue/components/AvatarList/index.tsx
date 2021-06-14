@@ -23,7 +23,7 @@ export default memo((props: IProps) => {
 
   const getUserDetail = useCallback((id: string, e) => {
     e.stopPropagation()
-    return history.push(`member/${id}`)
+    return history.push(`/member/${id}`)
   }, [])
 
   useEffect(() => {

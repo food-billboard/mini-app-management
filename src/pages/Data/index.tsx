@@ -15,59 +15,6 @@ interface IProps {
   role: any
 }
 
-/**
- *  删除节点
- * @param selectedRows
- */
-
-const handleRemove = async (selectedRows: API_DATA.IGetMovieData[]) => {
-
-  const res = await new Promise((resolve) => {
-
-    Modal.confirm({
-      cancelText: '取消',
-      centered: true,
-      content: '是否确定删除',
-      okText: '确定',
-      title: '提示',
-      onCancel: function(close) {
-        close()
-        resolve(false)
-      },
-      onOk: function(close) {
-        close()
-        resolve(true)
-      }
-    })
-
-  })
-
-  if(!res) return
-
-  const hide = message.loading('正在删除')
-  if (!selectedRows) return true
-
-  const response = await Promise.all(selectedRows.map((row: API_DATA.IGetMovieData) => {
-    const { _id } = row
-    return deleteMovie({
-      _id
-    })
-  }))
-  .then(_ => {
-    hide()
-    message.success('删除成功，即将刷新')
-    return true
-  })
-  .catch(err => {
-    hide()
-    message.error('删除失败，请重试')
-    return false
-  })
-
-  return response
-
-}
-
 const CardList: React.FC<IProps> = (props: any) => {
 
   const actionRef = useRef<ActionType>()
@@ -144,6 +91,60 @@ const CardList: React.FC<IProps> = (props: any) => {
     }
   ]
 
+  /**
+ *  删除节点
+ * @param selectedRows
+ */
+
+const handleRemove = async (selectedRows: API_DATA.IGetMovieData[]) => {
+
+  const res = await new Promise((resolve) => {
+
+    Modal.confirm({
+      cancelText: '取消',
+      centered: true,
+      content: '是否确定删除',
+      okText: '确定',
+      title: '提示',
+      onCancel: function(close) {
+        close()
+        resolve(false)
+      },
+      onOk: function(close) {
+        close()
+        resolve(true)
+      }
+    })
+
+  })
+
+  if(!res) return
+
+  const hide = message.loading('正在删除')
+  if (!selectedRows) return true
+
+  const response = await Promise.all(selectedRows.map((row: API_DATA.IGetMovieData) => {
+    const { _id } = row
+    return deleteMovie({
+      _id
+    })
+  }))
+  .then(_ => {
+    hide()
+    message.success('删除成功，即将刷新')
+    actionRef.current?.reloadAndRest?.();
+    return true
+  })
+  .catch(err => {
+    hide()
+    message.error('删除失败，请重试')
+    return false
+  })
+
+  return response
+
+}
+
   const handleModalVisible = (id?: string) => {
     return history.push({
       pathname: '/data/main/edit',
@@ -170,7 +171,6 @@ const CardList: React.FC<IProps> = (props: any) => {
                   onClick={async e => {
                     if (e.key === 'remove') {
                       await handleRemove(selectedRows)
-                      actionRef.current?.reloadAndRest?.();
                     }
                   }}
                   selectedKeys={[]}

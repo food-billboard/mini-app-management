@@ -13,9 +13,9 @@ export interface ISelectItem extends TransferItem {
   key: string
 }
 
-interface IProps extends Partial<TransferProps> {
+interface IProps extends Partial<TransferProps<any>> {
   placeholder?: string
-  fetchData: (value?: string) => Promise<ISelectItem[]>
+  fetchData: (value?: any) => Promise<ISelectItem[]>
   fetchSelectData?: () => Promise<string[]>
   onChange?: (value: string[]) => any
   value?: string[]

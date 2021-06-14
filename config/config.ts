@@ -51,7 +51,9 @@ export default defineConfig({
     'process.env.REACT_APP_ENV': 'dev',
     // 'process.env.REACT_APP_ENV': 'prod'
   },
-  //-----打包配置
-  // base: '/api/backend/',
-  // publicPath: "/api/backend/"
+  ...(REACT_APP_ENV === 'prod' ? {
+    //-----打包配置
+    base: '/api/backend/',
+    publicPath: "/api/backend/"
+  } : {})
 });

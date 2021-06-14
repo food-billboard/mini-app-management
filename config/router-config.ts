@@ -90,6 +90,34 @@ export default [
             ],
           },
           {
+            path: '/chat',
+            name: 'chat',
+            icon: 'message',
+            title: '聊天管理',
+            routes: [
+              {
+                path: '/chat',
+                component: '@/pages/Room',
+                // title: '聊天室管理',
+                // name: 'room'
+              },
+              {
+                path: '/chat/message/:room',
+                component: '@/pages/Message',
+                title: '消息管理',
+                name: 'message',
+                hideInMenu: true 
+              },
+              {
+                path: '/chat/member/:room',
+                component: '@/pages/ChatMembers',
+                title: '成员管理',
+                name: 'member',
+                hideInMenu: true 
+              }
+            ]
+          },
+          {
             path: '/feedback',
             component: '@/pages/Feedback',
             name: 'feedback',
