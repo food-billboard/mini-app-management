@@ -9,6 +9,7 @@ import Form, { IFormRef } from './components/form'
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import column from './columns'
 import { getInstanceSpecialList, deleteInstanceSpecial, postInstanceSpecial, putInstanceSpecial } from '@/services'
+import { commonDeleteMethod } from '@/utils'
 
 const InstanceManage: React.FC<any> = () => {
 
@@ -46,52 +47,12 @@ const InstanceManage: React.FC<any> = () => {
   }, [modalRef])
 
   const handleRemove = useCallback(async (selectedRows: API_INSTANCE.IGetInstanceSpecialData[]) => {
-
-    const res = await new Promise((resolve) => {
-  
-      Modal.confirm({
-        cancelText: '取消',
-        centered: true,
-        content: '是否确定删除',
-        okText: '确定',
-        title: '提示',
-        onCancel: function(close) {
-          close()
-          resolve(false)
-        },
-        onOk: function(close) {
-          close()
-          resolve(true)
-        }
-      })
-  
-    })
-  
-    if(!res) return
-  
-    const hide = message.loading('正在删除')
-    if (!selectedRows) return true
-  
-    const response = await Promise.all(selectedRows.map((row: API_INSTANCE.IGetInstanceSpecialData) => {
+    return commonDeleteMethod<API_INSTANCE.IGetInstanceSpecialData>(selectedRows, (row: API_INSTANCE.IGetInstanceSpecialData) => {
       const { _id } = row
       return deleteInstanceSpecial({
         _id
       })
-    }))
-    .then(_ => {
-      hide()
-      message.success('删除成功，即将刷新')
-      actionRef.current?.reload()
-      return true
-    })
-    .catch(err => {
-      hide()
-      message.error('删除失败，请重试')
-      return false
-    })
-  
-    return response
-  
+    }, actionRef.current?.reloadAndRest)
   }, [])
 
   const tableAlertRender = useMemo(() => {
@@ -216,7 +177,8 @@ const InstanceManage: React.FC<any> = () => {
   return (
     <PageHeaderWrapper>
       <ProTable
-        headerTitle="实例列表"
+        headerTitle="专题列表"
+        scroll={{x: 'max-content'}}
         actionRef={actionRef}
         rowKey="_id"
         toolBarRender={toolbarRender}
@@ -224,6 +186,7 @@ const InstanceManage: React.FC<any> = () => {
         request={onSearchChange}
         columns={columns}
         rowSelection={{}}
+        pagination={{defaultPageSize: 10}}
       />
       <Form
         onSubmit={async value => {

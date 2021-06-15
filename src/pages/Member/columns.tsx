@@ -1,10 +1,16 @@
 import React, {  } from 'react'
-import { Tag, DatePicker, Avatar } from 'antd'
+import { Tag, DatePicker, Avatar, Badge } from 'antd'
 import { history } from 'umi'
 import moment from 'moment'
 import { ROLES_MAP, USER_STATUS } from '@/utils'
 
 const { RangePicker } = DatePicker
+
+const UserStatus = (status: keyof typeof USER_STATUS) => {
+  if(status === 'FREEZE') return <Badge status="default" text={USER_STATUS[status]} />
+  if(status === 'SIGNIN') return <Badge status="success" text={USER_STATUS[status]} />
+  if(status === 'SIGNOUT') return <Badge status="warning" text={USER_STATUS[status]} />
+}
 
 export default [
   {
@@ -113,7 +119,7 @@ export default [
     title: '状态',
     dataIndex: 'status',
     hideInSearch: true,
-    render: (val: string) => USER_STATUS[val] || '-'
+    render: (val: string) => UserStatus(val as keyof typeof USER_STATUS)
   },
   {
     title: '状态',

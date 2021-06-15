@@ -162,6 +162,7 @@ const TableList: React.FC<{}> = () => {
       <ProTable<TableListItem>
         headerTitle="查询表格"
         actionRef={actionRef}
+        pagination={{defaultPageSize: 10}}
         rowKey="key"
         search={{
           labelWidth: 120,

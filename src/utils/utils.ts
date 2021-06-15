@@ -1,3 +1,5 @@
+import React from 'react'
+import { Modal, message } from 'antd'
 import { parse } from 'querystring'
 import { API_DOMAIN } from '../../config/proxy'
 
@@ -92,5 +94,47 @@ export function fileSize(size: number) {
     return cal(Math.ceil(size / 1024), index + 1)
   }
   return cal(realSize)
+}
+
+export async function commonDeleteMethod<T=any>(items: T[], action: (item: T) => Promise<any>, reload?: any): Promise<boolean | null> {
+  const res = await new Promise((resolve) => {
+  
+    Modal.confirm({
+      cancelText: '取消',
+      centered: true,
+      content: '是否确定删除',
+      okText: '确定',
+      title: '提示',
+      onCancel: function(close) {
+        close()
+        resolve(false)
+      },
+      onOk: function(close) {
+        close()
+        resolve(true)
+      }
+    })
+
+  })
+
+  if(!res) return null 
+
+  const hide = message.loading('正在删除')
+  if (!items) return true
+
+  const response = await Promise.all(items.map(action))
+  .then(_ => {
+    hide()
+    message.success('删除成功，即将刷新')
+    reload?.()
+    return true
+  })
+  .catch(err => {
+    hide()
+    message.error('删除失败，请重试')
+    return false
+  })
+
+  return response
 }
 

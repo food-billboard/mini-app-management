@@ -176,6 +176,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
         <Select
           options={memberList}
           placeholder="请选择特指的成员"
+          allowClear
         />
       </Form.Item>
       <Form.Item

@@ -10,6 +10,7 @@ import Form, { IFormRef } from './components/CreateForm'
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import column from './columns'
 import { deleteRoom, getRoomList, putRoom, postRoom } from '@/services'
+import { commonDeleteMethod } from '@/utils'
 
 interface IProps {
   role: any
@@ -49,52 +50,12 @@ const CardList: React.FC<IProps> = (props: any) => {
   ]
 
   const handleRemove = async (selectedRows: API_CHAT.IGetRoomListResData[]) => {
-
-    const res = await new Promise((resolve) => {
-  
-      Modal.confirm({
-        cancelText: '取消',
-        centered: true,
-        content: '是否确定删除',
-        okText: '确定',
-        title: '提示',
-        onCancel: function(close) {
-          close()
-          resolve(false)
-        },
-        onOk: function(close) {
-          close()
-          resolve(true)
-        }
-      })
-  
-    })
-  
-    if(!res) return
-  
-    const hide = message.loading('正在删除')
-    if (!selectedRows) return true
-  
-    const response = await Promise.all(selectedRows.map((row: API_CHAT.IGetRoomListResData) => {
+    return commonDeleteMethod<API_CHAT.IGetRoomListResData>(selectedRows, (row: API_CHAT.IGetRoomListResData) => {
       const { _id } = row
       return deleteRoom({
         _id
       })
-    }))
-    .then(_ => {
-      hide()
-      message.success('删除成功，即将刷新')
-      actionRef.current?.reloadAndRest?.();
-      return true
-    })
-    .catch(err => {
-      hide()
-      message.error('删除失败，请重试')
-      return false
-    })
-  
-    return response
-  
+    }, actionRef.current?.reloadAndRest)  
   }
 
   const onSubmit = useCallback(async (value: API_CHAT.IPutRoomParams) => {
@@ -121,6 +82,7 @@ const CardList: React.FC<IProps> = (props: any) => {
         headerTitle="聊天室列表"
         actionRef={actionRef}
         scroll={{ x: 'max-content' }}
+        pagination={{defaultPageSize: 10}}
         rowKey="_id"
         toolBarRender={(action, { selectedRows }) => [
           <Button key={'add'} icon={<PlusOutlined />} type="primary" onClick={() => handleModalVisible()}>

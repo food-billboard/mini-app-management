@@ -1,10 +1,22 @@
 import React from 'react'
-import { DatePicker, Image } from 'antd'
+import { DatePicker, Image, Tooltip, Tag } from 'antd'
 import { history } from 'umi'
 import moment from 'moment'
-import { IMAGE_FALLBACK, CHAT_ROOM_TYPE, SOURCE_TYPE, MESSAGE_MEDIA_TYPE } from '@/utils'
+import { IMAGE_FALLBACK, SOURCE_TYPE, MESSAGE_MEDIA_TYPE } from '@/utils'
 
 const { RangePicker } = DatePicker
+
+const MediaType = (type: keyof typeof MESSAGE_MEDIA_TYPE) => {
+  let color 
+  if(type === 'AUDIO') color = 'orange'
+  if(type === 'IMAGE') color = 'green'
+  if(type === 'TEXT') color = 'blue'
+  if(type === 'VIDEO') color = 'gold'
+
+  return (
+    <Tag color={color}>{MESSAGE_MEDIA_TYPE[type]}</Tag>
+  )
+}
 
 export default [
   {
@@ -28,13 +40,16 @@ export default [
     title: '消息媒体类型',
     dataIndex: 'media_type',
     hideInSearch: true,
-    valueEnum: Object.keys(MESSAGE_MEDIA_TYPE).reduce((acc: any, cur: string) => {
-      acc[cur] = {
-        text: MESSAGE_MEDIA_TYPE[cur],
-        origin_type: cur
-      }
-      return acc
-    }, {}),
+    // valueEnum: Object.keys(MESSAGE_MEDIA_TYPE).reduce((acc: any, cur: string) => {
+    //   acc[cur] = {
+    //     text: MESSAGE_MEDIA_TYPE[cur],
+    //     origin_type: cur
+    //   }
+    //   return acc
+    // }, {}),
+    render: (value: string) => {
+      return MediaType(value as keyof typeof MESSAGE_MEDIA_TYPE)
+    }
   },
   {
     title: '创建时间',
@@ -106,7 +121,15 @@ export default [
     dataIndex: 'content',
     hideInSearch: true,
     render: (value: API_CHAT.IGetMessageResData["content"]) => {
-      if(value.text) return (<div>{value.text}</div>)
+      if(value.text) {
+        return (
+          <Tooltip
+            title={value.text}
+          >
+            <div style={{maxWidth: 200, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}>{value.text}</div>
+          </Tooltip>
+        )
+      }
       if(value.audio) return (<div>暂时不支持音频</div>)
       if(value.image) {
         return (

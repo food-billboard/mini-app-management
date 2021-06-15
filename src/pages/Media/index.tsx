@@ -9,6 +9,7 @@ import CreateForm, { IFormRef } from './components/CreateForm'
 import column from './columns'
 import { MEDIA_TYPE_MAP, sleep } from '@/utils'
 import { getMediaList, updateMedia, deleteMedia, getMediaValid } from '@/services'
+import { commonDeleteMethod } from '@/utils'
 
 const MediaManage = memo(() => {
 
@@ -49,53 +50,13 @@ const MediaManage = memo(() => {
   }, [activeKey])
 
   const handleRemove = useCallback(async (selectedRows: API_MEDIA.IGetMediaListData[]) => {
-
-    const res = await new Promise((resolve) => {
-
-      Modal.confirm({
-        cancelText: '取消',
-        centered: true,
-        content: '是否确定删除',
-        okText: '确定',
-        title: '提示',
-        onCancel: function(close) {
-          close()
-          resolve(false)
-        },
-        onOk: function(close) {
-          close()
-          resolve(true)
-        }
-      })
-
-    })
-
-    if(!res) return
-
-    const hide = message.loading('正在删除')
-    if (!selectedRows) return true
-
-    const response = await Promise.all(selectedRows.map((row: API_MEDIA.IGetMediaListData) => {
+    return commonDeleteMethod<API_MEDIA.IGetMediaListData>(selectedRows, (row: API_MEDIA.IGetMediaListData) => {
       const { _id } = row
       return deleteMedia({
         _id,
         type: MEDIA_TYPE_MAP[activeKey] as any
       }) 
-    }))
-    .then(_ => {
-      hide()
-      message.success('删除成功，即将刷新')
-      actionRef.current?.reloadAndRest?.();
-      return true
-    })
-    .catch(err => {
-      hide()
-      message.error('删除失败，请重试')
-      return false
-    })
-
-    return response
-
+    }, actionRef.current?.reloadAndRest)
   }, [activeKey])
 
   const getProcess = useCallback(async (id: string) => {
@@ -141,8 +102,9 @@ const MediaManage = memo(() => {
   }, [activeKey])
 
   const columns: any[] = useMemo(() => {
+    const newColumn = activeKey === 'video' ? column : column.filter(item => item.dataIndex != 'poster')
     return [
-      ...column ,
+      ...newColumn ,
       {
         title: '操作',
         key: 'option',
@@ -186,7 +148,7 @@ const MediaManage = memo(() => {
       }
     ]
   
-  }, [getDetail, handleRemove, getProcess])
+  }, [getDetail, handleRemove, getProcess, activeKey])
 
   const handleModalVisible = (value: API_MEDIA.IGetMediaListData) => {
     modalRef.current?.open(value)
@@ -240,6 +202,7 @@ const MediaManage = memo(() => {
       <ProTable
         scroll={{ x: 'max-content' }}
         headerTitle="媒体资源列表"
+        pagination={{defaultPageSize: 10}}
         actionRef={actionRef}
         rowKey="_id"
         toolBarRender={(action, { selectedRows }) => [

@@ -22,7 +22,10 @@ export default [
     title: '来源',
     dataIndex: 'origin',
     hideInSearch: true,
-    renderText: (val: API_MEDIA.IGetMediaListData["origin"]) => <a onClick={() => history.push(`/member/${val._id}`)}>{val.name}</a>
+    renderText: (val: API_MEDIA.IGetMediaListData["origin"]) => {
+      if(!val._id) return '-'
+      return <a onClick={() => history.push(`/member/${val._id}`)}>{val.name}</a>
+    }
   },
   {
     title: '文件地址',
@@ -44,9 +47,9 @@ export default [
     title: '海报',
     dataIndex: 'poster',
     hideInSearch: true,
-    render: (value: string, record: API_USER.IGetUserListResData) => {
+    render: (value: string) => {
       return (
-        <Image src={value} width={200} height={100} fallback={IMAGE_FALLBACK} />
+        <Image src={value} width={50} height={50} fallback={IMAGE_FALLBACK} />
       )
     }
   },

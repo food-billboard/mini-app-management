@@ -12,6 +12,7 @@ import FeedbackModal, { IFeedbackModalRef, TFeedbackEditData } from './component
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import column from './columns'
 import { getUserFeedbackList, putUserFeedback, deleteUserFeedback } from '@/services'
+import { commonDeleteMethod } from '@/utils'
 
 const FeedbackManage = memo(() => {
 
@@ -46,52 +47,12 @@ const FeedbackManage = memo(() => {
    */
 
   const handleRemove = useCallback(async (selectedRows: API_USER.IGetFeedbackData[]) => {
-
-    const res = await new Promise((resolve) => {
-
-      Modal.confirm({
-        cancelText: '取消',
-        centered: true,
-        content: '是否确定删除',
-        okText: '确定',
-        title: '提示',
-        onCancel: function(close) {
-          close()
-          resolve(false)
-        },
-        onOk: function(close) {
-          close()
-          resolve(true)
-        }
-      })
-
-    })
-
-    if(!res) return
-
-    const hide = message.loading('正在删除')
-    if (!selectedRows) return true
-
-    const response = await Promise.all(selectedRows.map((row: API_USER.IGetFeedbackData) => {
+    return commonDeleteMethod<API_USER.IGetFeedbackData>(selectedRows, (row: API_USER.IGetFeedbackData) => {
       const { _id } = row
       return deleteUserFeedback({
         _id
       })
-    }))
-    .then(_ => {
-      hide()
-      message.success('删除成功，即将刷新')
-      actionRef.current?.reloadAndRest?.();
-      return true
-    })
-    .catch(err => {
-      hide()
-      message.error('删除失败，请重试')
-      return false
-    })
-
-    return response
-
+    }, actionRef.current?.reloadAndRest)
   }, [])
 
   const columns: any[] = useMemo(() => {
@@ -155,6 +116,7 @@ const FeedbackManage = memo(() => {
         scroll={{ x: 'max-content' }}
         headerTitle="用户反馈列表"
         actionRef={actionRef}
+        pagination={{defaultPageSize: 10}}
         rowKey="_id"
         toolBarRender={(action, { selectedRows }) => [
           selectedRows && selectedRows.length > 0 && (

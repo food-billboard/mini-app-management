@@ -5,6 +5,7 @@ import { omit } from 'lodash'
 import FeedbackModal, { IFeedbackModalRef } from '../../../Feedback/components/FeedbackModal'
 import MemberEdit from '../../../Member/components/CreateForm'
 import { ACTIVE_KEY_MAP } from '../../constants'
+import { commonDeleteMethod } from '@/utils'
 
 type IProps = {
   value?: string
