@@ -22,7 +22,7 @@ export default [
     title: '聊天室名称',
     dataIndex: 'name',
     hideInSearch: true,
-    render: (_: string, record: API_CHAT.IGetRoomListResData) => <div onClick={() => {}}>{record.info.name}</div>
+    render: (_: string, record: API_CHAT.IGetRoomListResData) => <div onClick={() => {}}>{record.info.name || "这个聊天室没有名字"}</div>
   },
   {
     title: '海报',
@@ -38,7 +38,7 @@ export default [
     title: '聊天室描述',
     dataIndex: 'description',
     hideInSearch: true,
-    render: (_: string, record: API_CHAT.IGetRoomListResData) => <div>{record.info.description}</div>
+    render: (_: string, record: API_CHAT.IGetRoomListResData) => <div>{record.info.description || "这个聊天室没有任何描述"}</div>
   },
   {
     title: '聊天室类型',

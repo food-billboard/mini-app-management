@@ -25,7 +25,10 @@ export default [
     renderText: (value: {
       username: string
       _id: string
-    }) => <a onClick={() => history.push(`/member/${value._id}`)}>{value.username}</a>
+    }) => {
+      if(value.username) return (<span>-</span>)
+      return <a onClick={() => history.push(`/member/${value._id}`)}>{value.username}</a>
+    }
   },
   {
     title: '创建时间',

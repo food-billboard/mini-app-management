@@ -87,7 +87,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
 
   const onFinish = useCallback(async (values: Store) => {
     const { members, avatar, ...nextValues } = values
-    await (onSubmit && onSubmit(({
+    await (onSubmit?.(({
       ...nextValues,
       avatar: Array.isArray(avatar) ? avatar[0] : avatar,
       members: members.join(',')
@@ -117,7 +117,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
 
   return (
     <ModalForm
-      title="新建表单"
+      title="新建聊天室"
       visible={visible}
       //@ts-ignore
       formRef={formRef}

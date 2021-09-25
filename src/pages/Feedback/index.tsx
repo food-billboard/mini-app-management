@@ -108,6 +108,7 @@ const FeedbackManage = memo(() => {
   const onInputOk = useCallback((value: TFeedbackEditData) => {
     return handleAdd(value)
     .then(_ => true)
+    .catch(_ => false)
   }, [handleAdd])
 
   return (

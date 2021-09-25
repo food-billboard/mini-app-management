@@ -57,9 +57,7 @@ const Issue = (props: IProps) => {
         }}
         dataSource={list}
         renderItem={item => (
-          <List.Item
-            onClick={getUserDetail.bind(this, item._id)}
-          >
+          <List.Item>
             <Card 
               className={styles.card} 
               hoverable 
@@ -71,7 +69,7 @@ const Issue = (props: IProps) => {
                     (item.images || []).map(item => {
                       return (
                         <div>
-                          <img style={{width: '100%'}} src={item} />
+                          <img style={{width: '100%', height: 200}} src={item} />
                         </div>
                       )
                     })
@@ -79,13 +77,15 @@ const Issue = (props: IProps) => {
                 </Carousel>
               }
             >
-              <Card.Meta title={<a>{item.name}</a>} description={item.description} />
-              <div className={styles.cardItemContent}>
-                <span>{moment(item.updatedAt).fromNow()}</span>
-                <div className={styles.avatarList}>
-                  <AvatarList
-                    id={item._id}
-                  />
+              <div onClick={getUserDetail.bind(this, item._id)}>
+                <Card.Meta title={<a>{item.name}</a>} description={item.description} />
+                <div className={styles.cardItemContent}>
+                  <span>{moment(item.updatedAt).fromNow()}</span>
+                  <div className={styles.avatarList}>
+                    <AvatarList
+                      id={item._id}
+                    />
+                  </div>
                 </div>
               </div>
             </Card>

@@ -5,6 +5,7 @@ import { LoginParamsType } from '@/services/login';
 import LoginFrom from './components/Login';
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import styles from './style.less';
+import { withTry } from '@/utils'
 import { ConnectState } from '@/models/connect';
 
 const { Tab, Username, Password, Submit, Mobile } = LoginFrom;
@@ -63,7 +64,7 @@ class Login extends Component<any> {
 
   public handleSubmit = async (values: LoginParamsType) => {
     this.setSubmitting(true)
-    await this.props.login(values)
+    await withTry(this.props.login)(values)
     this.setSubmitting(false);
   };
 

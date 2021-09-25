@@ -107,7 +107,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
 
   return (
     <ModalForm
-      title="新建表单"
+      title="新增消息"
       visible={visible}
       //@ts-ignore
       formRef={formRef}

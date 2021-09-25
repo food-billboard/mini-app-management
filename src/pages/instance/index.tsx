@@ -1,5 +1,5 @@
 import React, { useRef, useCallback, memo } from 'react'
-import { Button, Dropdown, message, Menu, Space, Modal } from 'antd'
+import { Button, Dropdown, message, Menu, Space } from 'antd'
 import { PageHeaderWrapper } from '@ant-design/pro-layout'
 import ProTable, { ActionType } from '@ant-design/pro-table'
 import { DownOutlined, PlusOutlined } from '@ant-design/icons'
@@ -25,11 +25,11 @@ const InstanceManage: React.FC<any> = () => {
         await postInstanceInfo(values as API_INSTANCE.IPostInstanceInfoParams)
       }
       message.success('操作成功')
-      return true 
+      return Promise.resolve() 
     }catch(err) {
       console.error(err)
       message.error('操作失败')
-      return false 
+      return Promise.reject(false) 
     }
   }, [])
 
@@ -104,6 +104,7 @@ const InstanceManage: React.FC<any> = () => {
         actionRef={actionRef}
         pagination={{defaultPageSize: 10}}
         rowKey="_id"
+        scroll={{x: "max-content"}}
         toolBarRender={(action, { selectedRows }) => [
           <Button key={'add'} icon={<PlusOutlined />} type="primary" onClick={() => handleModalVisible()}>
             新建
@@ -155,9 +156,11 @@ const InstanceManage: React.FC<any> = () => {
       />
       <Form
         onSubmit={async value => {
-          const success = await handleAdd(value)
-          if (success) {
+          try {
+            await handleAdd(value)
             actionRef.current?.reload()
+          }catch(err) {
+
           }
         }}
         ref={modalRef}

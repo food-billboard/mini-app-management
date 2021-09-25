@@ -103,6 +103,10 @@ const BaseView = (props: IProps) => {
                 required: true,
                 message: "请输入邮箱",
               },
+              {
+                pattern: /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
+                message: "不正确的邮箱格式"
+              }
             ]}
           />
           <ProFormText 
@@ -133,9 +137,10 @@ const BaseView = (props: IProps) => {
                 required: true,
                 message: "请输入手机号",
               },
-              // {
-              //   validator: validatorPhone,
-              // },
+              {
+                pattern: /^1\d{10}$/,
+                message: '不正确的手机格式',
+              },
             ]}
             fieldProps={{
               type:"tel"

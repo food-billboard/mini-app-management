@@ -19,7 +19,7 @@ export const deleteMedia = (params: API_MEDIA.IDeleteMediaParams) => {
 //媒体修改
 export const updateMedia = (data: API_MEDIA.IPutMediaParams) => {
   return request('/api/manage/media', {
-    method: 'POST',
+    method: 'PUT',
     data
   })
 }

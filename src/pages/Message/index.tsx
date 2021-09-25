@@ -65,8 +65,10 @@ const CardList: React.FC<IProps> = (props: any) => {
       await postMessage(value as API_CHAT.IPostMessageParams)
       message.info('操作成功')
       actionRef.current?.reloadAndRest?.()
+      return Promise.resolve()
     }catch(err) {
       message.info('操作失败，请重试')
+      return Promise.reject()
     }
   }, [])
 

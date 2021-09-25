@@ -158,7 +158,9 @@ const MediaManage = memo(() => {
     const success = await handleAdd(value)
     if (success) {
       actionRef.current?.reload()
+      return Promise.resolve()
     }
+    return Promise.reject()
   }, [activeKey])
 
   const fetchData = useCallback(async (params: any) => {

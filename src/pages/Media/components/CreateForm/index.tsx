@@ -47,7 +47,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   }, [onCancel, visible])
 
   const onFinish = useCallback(async (values: Store) => {
-    await (onSubmit && onSubmit((values) as FormData))
+    await (onSubmit?.((values) as FormData))
     setVisible(false)
     formRef.current?.resetFields()
   }, [onSubmit])
@@ -80,7 +80,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
 
   return (
     <ModalForm
-      title="新建表单"
+      title="媒体资源修改"
       visible={visible}
       //@ts-ignore
       formRef={formRef}

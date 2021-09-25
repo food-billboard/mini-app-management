@@ -2,7 +2,7 @@ import React from 'react';
 import { Input } from 'antd';
 import styles from './PhoneView.less';
 
-const PhoneView = props => {
+const PhoneView = (props: any) => {
   const { value, onChange } = props;
   let values = ['', ''];
 

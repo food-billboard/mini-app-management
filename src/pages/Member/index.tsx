@@ -118,7 +118,9 @@ const MemberManage = memo(() => {
 
     if (success) {
       actionRef.current?.reload()
+      return Promise.resolve()
     }
+    return Promise.reject()
   }, [])
 
   const fetchData = useCallback(async (params: any) => {

@@ -123,12 +123,12 @@ export default memo(() => {
           closable: false,
         },
         {
-          tab: '访问用户列表',
+          tab: '访问列表',
           key: 'user',
           closable: false,
         },
         {
-          tab: '用户评论列表',
+          tab: '评论列表',
           key: 'comment',
           closable: false,
         },

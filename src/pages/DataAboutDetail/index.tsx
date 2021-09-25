@@ -57,9 +57,10 @@ const CardList: FC<any> = () => {
     try {
       await AboutInfo[path][formState](values)
       await listRef.current?.fetchData()
+      return Promise.resolve()
     }catch(err) {
-      console.log(err)
       message.error('操作失败，请重试')
+      return Promise.reject()
     }
 
   }, [formState])

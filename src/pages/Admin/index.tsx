@@ -57,6 +57,7 @@ class Center extends Component<IProps> {
     const { tabKey } = this.state
     const { userInfo, loading } = this.props
     const dataLoading = loading || !(userInfo && Object.keys(userInfo).length)
+    const rolesText = Array.isArray(userInfo.roles) ? userInfo.roles.map(item => ROLES_MAP[item]).join(',') : userInfo.roles
 
     return (
       <GridContent>
@@ -80,18 +81,18 @@ class Center extends Component<IProps> {
                     <div>{userInfo.description}</div>
                   </div>
                   <div className={styles.info}>
-                    <p>
+                    <p title={userInfo.mobile.toString()}>
                       <i className={styles.mobile} />
                       {userInfo.mobile}
                     </p>
-                    <p>
+                    <p title={userInfo.email.toString()}>
                       <i className={styles.email} />
                       {userInfo.email}
                     </p>
-                    <p>
+                    <p title={rolesText.toString()}>
                       <i className={styles.auth} />
                       {
-                        Array.isArray(userInfo.roles) ? userInfo.roles.map(item => ROLES_MAP[item]).join(',') : userInfo.roles
+                        rolesText
                       }
                     </p>
                   </div>

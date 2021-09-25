@@ -54,7 +54,7 @@ const EditModal = forwardRef<IEditRef, IProps>((props, ref) => {
   }, [id])
 
   const onFinish = useCallback(async (values: Store) => {
-    onConfirm && await onConfirm(values)
+    await onConfirm?.(values)
     message.success('提交成功')
     formRef.current?.resetFields()
     setVisible(false)

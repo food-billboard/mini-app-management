@@ -93,7 +93,7 @@ class CreateForm extends Component<IProps, IState> {
         //@ts-ignore
         formRef={this.formRef as any}
         onFinish={async (values: Store) => {
-          this.props.onSubmit && this.props.onSubmit(values as FormData)
+          await this.props.onSubmit?.(values as FormData)
           this.setState({ visible: false })
           this.formRef.current?.resetFields()
         }}
@@ -110,8 +110,11 @@ class CreateForm extends Component<IProps, IState> {
           label="手机号" 
           placeholder={"请输入手机号"} 
           rules={[{
-            required: true
-          }]}
+            required: true,
+          }, {
+            pattern: /^1\d{10}$/,
+            message: '不正确的手机格式',
+          },]}
         />
         <ProFormText 
           name="password" 
@@ -124,6 +127,9 @@ class CreateForm extends Component<IProps, IState> {
           placeholder={"请输入邮箱"} 
           rules={[{
             required: true
+          }, {
+            pattern: /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
+            message: "不正确的邮箱格式"
           }]}
         />
         <ProFormText 

@@ -56,7 +56,6 @@
     "@umijs/route-utils": "^1.0.33",
     "antd": "^4.15.1",
     "bizcharts": "^4.0.15",
-    "caniuse-lite": "^1.0.30001209",
     "classnames": "^2.2.6",
     "filepond": "^4.23.1",
     "filepond-plugin-file-poster": "^2.3.1",

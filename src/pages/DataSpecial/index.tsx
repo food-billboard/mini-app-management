@@ -193,7 +193,9 @@ const InstanceManage: React.FC<any> = () => {
           const success = await handleAdd(value)
           if (success) {
             actionRef.current?.reload()
+            return Promise.resolve()
           }
+          return Promise.reject()
         }}
         ref={modalRef}
       />

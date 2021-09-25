@@ -99,7 +99,6 @@ export default [
     title: '用户成员id',
     dataIndex: 'member',
     hideInSearch: true,
-    render: (_: string, record: API_CHAT.IGetMessageResData) => <a onClick={() => {}}>{record.user_info.member}</a>
   },
   {
     title: '@',
