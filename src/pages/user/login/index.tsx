@@ -6,7 +6,6 @@ import LoginFrom from './components/Login';
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import styles from './style.less';
 import { withTry } from '@/utils'
-import { ConnectState } from '@/models/connect';
 
 const { Tab, Username, Password, Submit, Mobile } = LoginFrom;
 

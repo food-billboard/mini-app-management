@@ -6,9 +6,9 @@ export default memo(({ rules }: any) => {
   return (
     <Upload 
       wrapper={{
-        label: '海报',
+        label: '图片',
         name: 'image',
-        rules: rules
+        rules
       }}
       item={{
         maxFiles: 1,

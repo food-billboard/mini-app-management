@@ -1,12 +1,12 @@
 import { Form, message, Input } from 'antd'
-import { FormInstance } from 'antd/lib/form'
+import type { FormInstance } from 'antd/lib/form'
 import {
   ModalForm,
   ProFormText,
   ProFormSelect,
   ProFormTextArea,
 } from '@ant-design/pro-form'
-import { Store } from 'antd/lib/form/interface'
+import type { Store } from 'antd/lib/form/interface'
 import React, { Component, createRef } from 'react'
 import Upload from '@/components/Upload'
 import { getUserDetail } from '@/services'
@@ -15,7 +15,7 @@ import { ROLES_MAP } from '@/utils'
 
 export type FormData = API_DATA.IPutMovieParams | API_DATA.IPostMovieParams 
 
-const _ROLES_MAP = Object.keys(ROLES_MAP).map(item => ({
+const ROLES_MAP_ENUM = Object.keys(ROLES_MAP).map(item => ({
   value: item,
   label: ROLES_MAP[item]
 }))
@@ -53,7 +53,7 @@ class CreateForm extends Component<IProps, IState> {
     }
 
     if(id) {
-      //获取修改的数据
+      // 获取修改的数据
       return await getUserDetail({
         _id: id
       })
@@ -66,20 +66,21 @@ class CreateForm extends Component<IProps, IState> {
         })
         show()
       })
-      .catch(err => {
-        console.log(err)
+      .catch(() => {
         message.info('数据获取错误，请重试')
       })
     }
 
     show()
 
+    return Promise.resolve()
+
   }
 
   private onCancel = () => {
     this.setState({ visible: false })
     this.formRef.current?.resetFields()
-    this.props.onCancel && this.props.onCancel()
+    this.props.onCancel?.()
   }
 
   public render = () => {
@@ -90,18 +91,18 @@ class CreateForm extends Component<IProps, IState> {
       <ModalForm
         title="新建表单"
         visible={visible}
-        //@ts-ignore
+        // @ts-ignore
         formRef={this.formRef as any}
         onFinish={async (values: Store) => {
           await this.props.onSubmit?.(values as FormData)
           this.setState({ visible: false })
           this.formRef.current?.resetFields()
         }}
-        onVisibleChange={(visible: boolean) => {
-          if(!visible) this.onCancel()
+        onVisibleChange={(visibleState: boolean) => {
+          if(!visibleState) this.onCancel()
           this.setState(prev => {
-            if(prev.visible === visible) return null
-            return { visible }
+            if(prev.visible === visibleState) return null
+            return { visible: visibleState }
           })
         }}
       >
@@ -116,7 +117,7 @@ class CreateForm extends Component<IProps, IState> {
             message: '不正确的手机格式',
           },]}
         />
-        <ProFormText 
+        <ProFormText.Password 
           name="password" 
           label="密码" 
           placeholder={"请输入密码"} 
@@ -151,7 +152,7 @@ class CreateForm extends Component<IProps, IState> {
           }]}
         />
         <ProFormSelect
-          options={_ROLES_MAP}
+          options={ROLES_MAP_ENUM}
           name="roles"
           label="权限"
           hasFeedback

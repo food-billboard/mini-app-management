@@ -58,6 +58,51 @@ const requestOrigin = extend({
   credentials: 'include',
 })
 
+// 未登录的多次触发处理
+const dispatchLogin = debounce(function(err){
+  const app = getDvaApp()
+  const dispatch = app._store.dispatch
+  const querystring = stringify({
+    redirect: window.location.href,
+  })
+  history.replace(`/user/login?${querystring}`)
+  if( dispatch ){
+    dispatch({type: 'user/logout'});
+  }
+  message.error(err.msg || '未登录请先登录');
+}, 1000, {'leading': true, 'trailing': false} )
+
+// 处理报错
+export const misManage = (error: any) => {
+  if( error.messageType === 'body' ){
+    const err = error.err || {}
+
+    // 未登录处理
+    if( error.errorType === 'system' && err.code === '401' ){
+      return dispatchLogin(err);
+    }
+    message.error(err.msg || '网络错误');
+    return
+  }
+  const { response } = error;
+  if( response && response.status === 401 ){
+    return dispatchLogin(error);
+  }
+  if (response && response.status) {
+    const errorText = codeMessage[response.status] || response.statusText;
+    const { status, url } = response;
+    notification.error({
+      message: `请求错误 ${status}: ${url}`,
+      description: errorText,
+    });
+  } else if (!response) {
+    notification.error({
+      description: '您的网络发生异常，无法连接服务器',
+      message: '网络异常',
+    });
+  }
+}
+
 const request = async <ResBody>(url: string, setting: RequestOptions = {} as RequestOptions)=>{
 
   // 过滤URL参数
@@ -100,50 +145,5 @@ const request = async <ResBody>(url: string, setting: RequestOptions = {} as Req
   mis && misManage(error);
   throw error
 };
-
-// 未登录的多次触发处理
-const dispathLogin = debounce(function(err){
-  const app = getDvaApp()
-  const dispatch = app._store.dispatch
-  const querystring = stringify({
-    redirect: window.location.href,
-  })
-  history.replace(`/user/login?${querystring}`)
-  if( dispatch ){
-    dispatch({type: 'user/logout'});
-  }
-  message.error(err.msg || '未登录请先登录');
-}, 1000, {'leading': true, 'trailing': false} )
-
-// 处理报错
-export const misManage = (error: any): any=>{
-  if( error.messageType === 'body' ){
-    const err = error.err || {}
-
-    // 未登录处理
-    if( error.errorType === 'system' && err.code === '401' ){
-      return dispathLogin(err);
-    }
-    message.error(err.msg || '网络错误');
-    return
-  }
-  const { response } = error;
-  if( response && response.status === 401 ){
-    return dispathLogin(error);
-  }
-  if (response && response.status) {
-    const errorText = codeMessage[response.status] || response.statusText;
-    const { status, url } = response;
-    notification.error({
-      message: `请求错误 ${status}: ${url}`,
-      description: errorText,
-    });
-  } else if (!response) {
-    notification.error({
-      description: '您的网络发生异常，无法连接服务器',
-      message: '网络异常',
-    });
-  }
-}
 
 export default request

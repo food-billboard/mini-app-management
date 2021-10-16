@@ -1,11 +1,12 @@
 import React, { useRef, useCallback, useState, useEffect } from 'react'
-import { Button, Dropdown, message, Menu, Space, Modal } from 'antd'
+import { Button, Dropdown, message, Menu, Space } from 'antd'
 import { PageHeaderWrapper } from '@ant-design/pro-layout'
 import ProTable, { ActionType } from '@ant-design/pro-table'
 import { DownOutlined, PlusOutlined } from '@ant-design/icons'
 import { connect, history } from 'umi'
 import pickBy from 'lodash/pickBy'
 import identity from 'lodash/identity'
+import omit from 'lodash/omit'
 import Form, { IFormRef } from './components/CreateForm'
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import column from './columns'
@@ -16,13 +17,22 @@ interface IProps {
   role: any
 }
 
-const CardList: React.FC<IProps> = (props: any) => {
+const CardList: React.FC<IProps> = () => {
 
   const [ roomId, setRoomId ] = useState<string>('')
 
   const actionRef = useRef<ActionType>()
 
   const formRef = useRef<IFormRef>(null)
+
+  const handleRemove = async (selectedRows: API_CHAT.IGetMessageResData[]) => {
+    return commonDeleteMethod<API_CHAT.IGetMessageResData>(selectedRows, (row: API_CHAT.IGetMessageResData) => {
+      const { _id } = row
+      return deleteMessage({
+        _id,
+      })
+    }, actionRef.current?.reloadAndRest)  
+  }
 
   const columns: any[] = [
     ...column ,
@@ -51,15 +61,6 @@ const CardList: React.FC<IProps> = (props: any) => {
     }
   ]
 
-  const handleRemove = async (selectedRows: API_CHAT.IGetMessageResData[]) => {
-    return commonDeleteMethod<API_CHAT.IGetMessageResData>(selectedRows, (row: API_CHAT.IGetMessageResData) => {
-      const { _id } = row
-      return deleteMessage({
-        _id,
-      })
-    }, actionRef.current?.reloadAndRest)  
-  }
-
   const onSubmit = useCallback(async (value: API_CHAT.IPostMessageParams) => {
     try {
       await postMessage(value as API_CHAT.IPostMessageParams)
@@ -78,12 +79,12 @@ const CardList: React.FC<IProps> = (props: any) => {
 
   useEffect(() => {
     const { location: { pathname } } = history
-    const [roomId] = pathname.split('/').slice(-1) || []
-    setRoomId(roomId)
+    const [ target ] = pathname.split('/').slice(-1) || []
+    setRoomId(target)
   }, [])
 
   useEffect(() => {
-    if(!!roomId) actionRef.current?.reloadAndRest?.()
+    if(roomId) actionRef.current?.reloadAndRest?.()
   }, [roomId])
 
   return (
@@ -120,7 +121,7 @@ const CardList: React.FC<IProps> = (props: any) => {
             </Dropdown>
           ),
         ]}
-        tableAlertRender={({ selectedRowKeys, selectedRows } : { selectedRowKeys: React.ReactText[], selectedRows: any[] }) => (
+        tableAlertRender={({ selectedRowKeys }: { selectedRowKeys: React.ReactText[] }) => (
           <div>
             已选择{' '}
             <a
@@ -141,9 +142,9 @@ const CardList: React.FC<IProps> = (props: any) => {
             data: [],
             total: 0
           }
-          const { createdAt=[], current, ...nextParams } = params
-          let newParams = {
-            ...nextParams,
+          const { current, ...nextParams } = params
+          let newParams: any = {
+            ...omit(nextParams, ["createdAt"]),
             currPage: current - 1,
             _id: roomId
           }
@@ -152,7 +153,7 @@ const CardList: React.FC<IProps> = (props: any) => {
           .then(({ list, total }) => {
             return { data: list, total }
           } )
-          .catch(_ => ({ data: [], total: 0 }))
+          .catch(() => ({ data: [], total: 0 }))
         }}
         columns={columns}
         rowSelection={{}}

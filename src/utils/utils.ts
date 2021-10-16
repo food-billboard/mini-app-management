@@ -32,7 +32,7 @@ export const getLocalStorage = (key: string) => {
   const realData: any = JSON.parse(data)
   const { timestamp, data: target } = realData
   const now = Date.now()
-  if(!!timestamp) {
+  if(timestamp) {
     if(now >= timestamp) {
       localStorage.removeItem(key)
       return undefined
@@ -56,8 +56,8 @@ export const removeLocalStorage = (key: string) => {
 
 // 处理query 传参的时候导致的空字符串查询问题（后端不愿意给处理）
 export const formatQuery = (query: any ={})=>{
-  let ret = {}
-  Object.keys(query).map((key)=>{
+  const ret = {}
+  Object.keys(query).forEach((key) => {
     if( query[key] !== null && query[key] !== undefined && query[key]!=='' ){
       ret[key] = query[key]
     }
@@ -90,7 +90,7 @@ export function fileSize(size: number) {
   const unitMap = ['b', 'kb', 'mb', 'g']
   const realSize = +size
   function cal(size: number, index: number=0):string {
-    if(size < 1024 || index == unitMap.length - 1) return size + unitMap[index]
+    if(size < 1024 || index === unitMap.length - 1) return size + unitMap[index]
     return cal(Math.ceil(size / 1024), index + 1)
   }
   return cal(realSize)
@@ -105,11 +105,11 @@ export async function commonDeleteMethod<T=any>(items: T[], action: (item: T) =>
       content: '是否确定删除',
       okText: '确定',
       title: '提示',
-      onCancel: function(close) {
+      onCancel(close) {
         close()
         resolve(false)
       },
-      onOk: function(close) {
+      onOk(close) {
         close()
         resolve(true)
       }

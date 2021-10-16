@@ -74,7 +74,7 @@ declare namespace API_USER {
 
   export interface IGetUserListRes {
     total: number
-    list: Array<IGetUserListResData>
+    list: IGetUserListResData[]
   }
 
   export interface IGetUserListResData {
@@ -143,8 +143,8 @@ declare namespace API_USER {
     source_type: TSourceType
     content: {
       text: string
-      image: Array<string>
-      video: Array<string>
+      image: string[]
+      video: string[]
     }
   }
 
@@ -177,7 +177,7 @@ declare namespace API_USER {
 
   export interface IGetFeedbackListRes {
     total: number
-    list: Array<IGetFeedbackData>
+    list: IGetFeedbackData[]
   }
 
   export interface IPutFeedbackParams {
@@ -284,7 +284,7 @@ declare namespace API_DATA {
   export interface IPostMovieParams {
     video: string
     poster: string
-    actor: Array<string>
+    actor: string[]
     director: string[]
     district: string[]
     language: string[]
@@ -330,7 +330,7 @@ declare namespace API_DATA {
   }
 
   export interface IGetMovieDetailRes extends IGetMovieData {
-    classify: Array<string>
+    classify: string[]
     images: string[]
     poster: string
     video: string
@@ -729,7 +729,7 @@ declare namespace API_ADMIN {
 
   export interface IGetAdminCommentListRes {
     total: number
-    list: Array<IGetAdminCommentData>
+    list: IGetAdminCommentData[]
   }
 
 }

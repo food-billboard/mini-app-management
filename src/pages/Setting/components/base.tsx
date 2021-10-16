@@ -1,18 +1,16 @@
-import { Form, message, FormInstance } from 'antd'
+import { message } from 'antd'
+import type { FormInstance } from 'antd'
 import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import ProForm, { ProFormText, ProFormTextArea } from '@ant-design/pro-form'
 import { connect } from 'dva'
 import { history } from 'umi'
-import { Store } from 'antd/lib/form/interface'
+import type { Store } from 'antd/lib/form/interface'
 import { merge } from 'lodash'
-import PhoneView from './PhoneView'
 import Upload from '@/components/Upload'
 import { fileValidator } from '../../DataEdit/utils'
 import { mapStateToProps, mapDispatchToProps } from '../connect'
 import { PutAdminInfo } from '@/services'
 import styles from './BaseView.less'
-
-const FormItem = Form.Item;
 
 interface IProps {
   userInfo: API_ADMIN.IGetAdminInfoRes
@@ -36,19 +34,19 @@ interface IProps {
 //   </Fragment>
 // )
 
-const validatorPhone = (_: any, value: any, callback: any) => {
-  const values = value.split('-');
+// const validatorPhone = (_: any, value: any, callback: any) => {
+//   const values = value.split('-');
 
-  if (!values[0]) {
-    callback('Please input your area code!')
-  }
+//   if (!values[0]) {
+//     callback('Please input your area code!')
+//   }
 
-  if (!values[1]) {
-    callback('Please input your phone number!')
-  }
+//   if (!values[1]) {
+//     callback('Please input your phone number!')
+//   }
 
-  callback();
-}
+//   callback();
+// }
 
 const BaseView = (props: IProps) => {
 
@@ -91,7 +89,7 @@ const BaseView = (props: IProps) => {
     <div className={styles.baseView} ref={viewRef}>
       <div className={styles.left}>
         <ProForm
-          //@ts-ignore
+          // @ts-ignore
           formRef={formRef}
           onFinish={handlerSubmit}
         >
