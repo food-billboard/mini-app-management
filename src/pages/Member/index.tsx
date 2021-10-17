@@ -86,7 +86,7 @@ const MemberManage = memo(() => {
               </a>
               <Dropdown overlay={
                 <Menu>
-                  <Menu.Item>
+                  <Menu.Item key="detail">
                     <a style={{color: '#1890ff'}} onClick={() => history.push(`/member/${record._id}`)}>
                     详情
                     </a>

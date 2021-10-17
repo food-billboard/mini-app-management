@@ -80,7 +80,7 @@
     "umi-request": "^1.0.8",
     "use-deep-compare-effect": "^1.6.1",
     "use-merge-value": "^1.0.1",
-    "video.js": "^7.12.1",
+    "video.js": "^7.16.0",
     "viewerjs": "^1.9.0",
     "winbox": "^0.1.92"
   },

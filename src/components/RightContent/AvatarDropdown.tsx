@@ -67,7 +67,7 @@ class AvatarDropdown extends Component<any> {
   )
 
   readonly menuHeaderDropdown = (
-    <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
+    <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick as any}>
       {/* {this.props.menu && (
         <Menu.Item key="center">
           <UserOutlined />

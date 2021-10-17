@@ -802,11 +802,16 @@ declare namespace API_MEDIA {
     isdelete?: boolean
   }
 
-  export interface IGetMediaValidRes {
+  export type IGetMediaValidData = {
     complete: boolean 
     error: boolean 
     exists: boolean
+    _id: string 
+    src: string 
+    name: string 
   }
+
+  export type IGetMediaValidRes = IGetMediaValidData[]
 
 }
 

@@ -4,8 +4,10 @@ import { PageContainer } from '@ant-design/pro-layout'
 import ProTable, { ActionType } from '@ant-design/pro-table'
 import { DownOutlined, EllipsisOutlined } from '@ant-design/icons'
 import { connect, history } from 'umi'
+import { noop } from 'lodash'
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import CreateForm, { IFormRef } from './components/CreateForm'
+import ListModal, { ListModalRef, formatData } from './components/ListModal'
 import column from './columns'
 import { MEDIA_TYPE_MAP, sleep } from '@/utils'
 import { getMediaList, updateMedia, deleteMedia, getMediaValid } from '@/services'
@@ -16,6 +18,7 @@ const MediaManage = memo(() => {
   const actionRef = useRef<ActionType>()
 
   const modalRef = useRef<IFormRef>(null)
+  const listModalRef = useRef<ListModalRef>(null)
 
   const [ activeKey, setActiveKey ] = useState<keyof typeof MEDIA_TYPE_MAP>('image')
 
@@ -59,8 +62,9 @@ const MediaManage = memo(() => {
     }, actionRef.current?.reloadAndRest)
   }, [activeKey])
 
-  const getProcess = useCallback(async (id: string) => {
-    const hide = message.loading('正在检查')
+  const getProcess = useCallback(async (id: string | string[]) => {
+    let hide: any = noop
+    const idList = Array.isArray(id) ? id.join(",") : id 
     return new Promise<boolean>((resolve) => {
       Modal.confirm({
         okText: '是',
@@ -78,28 +82,31 @@ const MediaManage = memo(() => {
       })
     })
     .then((isDelete: boolean) => {
+      hide = message.loading('正在检查')
       return getMediaValid({
         isdelete: isDelete,
         type: MEDIA_TYPE_MAP[activeKey] as any,
-        _id: id
+        _id: idList
       })
     })
     .then(data => {
-      const { complete, error, exists } = data
-      if(complete) {
-        message.info('当前资源已上传完成')
-      }else if(exists) {
-        message.info('当前资源存在但未上传完成')
+      if(data.length === 1) {
+        const [ target ] = data
+        const { message: messageData } = formatData(target)
+        message.info(messageData)
       }else {
-        message.info('当前资源出错')
+        listModalRef.current?.open(data)
       }
       hide()
+    })
+    .then(_ => {
+      actionRef.current?.reloadAndRest?.()
     })
     .catch(err => {
       hide()
       message.info('操作失败，请重试')
     })
-  }, [activeKey])
+  }, [activeKey, actionRef, listModalRef])
 
   const columns: any[] = useMemo(() => {
     const newColumn = activeKey === 'video' ? column : column.filter(item => item.dataIndex != 'poster')
@@ -215,11 +222,14 @@ const MediaManage = memo(() => {
                   onClick={async e => {
                     if (e.key === 'remove') {
                       await handleRemove(selectedRows)
+                    }else if(e.key === "valid") {
+                      await getProcess(selectedRows.map(item => item._id))
                     }
                   }}
                   selectedKeys={[]}
                 >
                   <Menu.Item key="remove">批量删除</Menu.Item>
+                  <Menu.Item key="valid">批量检测</Menu.Item>
                 </Menu>
               }
             >
@@ -249,6 +259,9 @@ const MediaManage = memo(() => {
       <CreateForm
         onSubmit={onSubmit}
         ref={modalRef}
+      />
+      <ListModal
+        ref={listModalRef}
       />
   </PageContainer>
   )
