@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Image, message } from 'antd'
+import { Image } from 'antd'
 import { Upload } from '@/components/Upload'
 import { isObjectId } from '@/components/Upload/util'
 import { IMAGE_FALLBACK, formatUrl } from '@/utils'
@@ -9,7 +9,7 @@ export const PreImage = ({ value, onClick }: { value: string, onClick?: any }) =
 
   const [ src, setSrc ] = useState<string>(value)
 
-  const error = useCallback((err) => {
+  const error = useCallback(() => {
     // message.info('图片获取失败')
   }, [])
 
@@ -37,7 +37,7 @@ export const PreImage = ({ value, onClick }: { value: string, onClick?: any }) =
     <Image  
       // width={200}
       // height={200}
-      style={{maxWidth: 400, maxHeight: 300}}
+      style={{maxWidth: 400, maxHeight: 300, cursor: "pointer"}}
       onError={error}
       preview={false}
       src={src}
@@ -55,14 +55,14 @@ export default ({ value, props }: {value: string, props: any}) => {
   }, [value])
 
   const { onChange } = useMemo(() => {
-    const { fieldProps: { onChange } } = props 
+    const { fieldProps: { onChange: propsOnChange } } = props 
     return {
-      onChange
+      onChange: propsOnChange
     }
   }, [props])
 
-  const onSelectChange = useCallback((value) => {
-    const [ newValue ] = value
+  const onSelectChange = useCallback((newSelectValue) => {
+    const [ newValue ] = newSelectValue
     onChange(newValue) 
   }, [onChange])
 

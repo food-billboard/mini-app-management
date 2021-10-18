@@ -16,7 +16,7 @@ export default [
     title: '电影名称',
     dataIndex: 'name',
     hideInSearch: true,
-    render: (value: string, record: API_DATA.IGetMovieData) => <a onClick={() => history.push(`/data/main/${record._id}`)}>{value}</a>
+    render: (value: string, record: API_DATA.IGetMovieData) => <a onClick={() => history.push(`/data/main/${record["_id"]}`)}>{value}</a>
   },
   {
     title: '作者名称',
@@ -26,8 +26,8 @@ export default [
       username: string
       _id: string
     }) => {
-      if(value.username) return (<span>-</span>)
-      return <a onClick={() => history.push(`/member/${value._id}`)}>{value.username}</a>
+      if(!value.username) return (<span>-</span>)
+      return <a onClick={() => history.push(`/member/${value["_id"]}`)}>{value.username}</a>
     }
   },
   {
@@ -36,7 +36,7 @@ export default [
     sorter: true,
     valueType: 'date',
     hideInSearch: true,
-    renderFormItem: (_: any, { type, defaultRender, ...rest }: any, form: any) => {
+    renderFormItem: (_: any, { type, defaultRender, ...rest }: any) => {
       return <RangePicker {...rest} />
     },
     renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')

@@ -1,5 +1,5 @@
 import React, { useMemo, memo, useCallback } from 'react'
-import { Card, Button, Carousel } from 'antd'
+import { Card, Button } from 'antd'
 import { history } from 'umi'
 import ProDescriptions from '@ant-design/pro-descriptions'
 import { PreImage } from '../../../DataSpecialDetail/components/Descriptions/upload'
@@ -15,8 +15,8 @@ export default memo((props: IProps) => {
     return props 
   }, [props])
 
-  const preview = useCallback((value: string | string[]) => {
-    const url = Array.isArray(value) ? value : [value]
+  const preview = useCallback((urlList: string | string[]) => {
+    const url = Array.isArray(urlList) ? urlList : [urlList]
     return history.push({ 
       pathname: '/media/image',
       query: {
@@ -48,8 +48,8 @@ export default memo((props: IProps) => {
         valueType: 'text',
         key: 'author',
         span: 1,
-        renderText: (value: API_DATA.IGetMovieData["author"]) => {
-          const { username, _id } = value || {}
+        renderText: (author: API_DATA.IGetMovieData["author"]) => {
+          const { username, _id } = author || {}
           return <Button type="link" onClick={() => history.push(`/member/${_id}`)}>{username}</Button>
         }
       },
@@ -59,8 +59,8 @@ export default memo((props: IProps) => {
         key: 'poster',
         valueType: 'text',
         span: 2,
-        renderText: (value: string) => {
-          return <PreImage value={value} onClick={preview.bind(this, value)} />
+        renderText: (poster: string) => {
+          return <PreImage value={poster} onClick={preview.bind(null, poster)} />
         }
       },
       {
@@ -69,9 +69,9 @@ export default memo((props: IProps) => {
         key: 'images',
         valueType: 'text',
         span: 3,
-        renderText: (value: string[]) => {
+        renderText: (images: string[]) => {
           return (
-            <PreImage value={value[0]} onClick={preview.bind(this, value)} />
+            <PreImage value={images[0]} onClick={preview.bind(null, images)} />
           )
         }
       },

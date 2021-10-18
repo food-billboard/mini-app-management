@@ -1,11 +1,13 @@
 import React, { useRef, useCallback, memo, useMemo } from 'react'
-import { Button, Dropdown, message, Menu, Space, Modal } from 'antd'
+import { Button, Dropdown, message, Menu, Space } from 'antd'
 import { PageHeaderWrapper } from '@ant-design/pro-layout'
-import ProTable, { ActionType } from '@ant-design/pro-table'
+import ProTable from '@ant-design/pro-table'
+import type { ActionType } from '@ant-design/pro-table'
 import { DownOutlined, PlusOutlined, EllipsisOutlined } from '@ant-design/icons'
 import { connect, history } from 'umi'
 import pick from 'lodash/pick'
-import Form, { IFormRef } from './components/form'
+import Form from './components/form'
+import type { IFormRef } from './components/form'
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import column from './columns'
 import { getInstanceSpecialList, deleteInstanceSpecial, postInstanceSpecial, putInstanceSpecial } from '@/services'
@@ -19,7 +21,7 @@ const InstanceManage: React.FC<any> = () => {
 
   const handleAdd = useCallback(async (values: API_INSTANCE.IPostInstanceSpecialParams | API_INSTANCE.IPutInstanceSpecialParams) => {
     try {
-      if((values as API_INSTANCE.IPutInstanceInfoParams)._id) {
+      if((values as API_INSTANCE.IPutInstanceInfoParams)["_id"]) {
         await putInstanceSpecial(values as API_INSTANCE.IPutInstanceSpecialParams)
       }else {
         await postInstanceSpecial(values as API_INSTANCE.IPostInstanceSpecialParams)
@@ -27,7 +29,6 @@ const InstanceManage: React.FC<any> = () => {
       message.success('操作成功')
       return true 
     }catch(err) {
-      console.error(err)
       message.error('操作失败')
       return false 
     }
@@ -36,7 +37,7 @@ const InstanceManage: React.FC<any> = () => {
   const putInfo = useCallback(async (value: boolean, record: API_INSTANCE.IGetInstanceSpecialData) => {
     await handleAdd({
       ...pick(record, ['name', '_id', 'description', 'poster']),
-      movie: record.movie.map(item => item._id),
+      movie: record.movie.map(item => item["_id"]),
       valid: value
     })
     actionRef.current?.reload()
@@ -56,7 +57,7 @@ const InstanceManage: React.FC<any> = () => {
   }, [])
 
   const tableAlertRender = useMemo(() => {
-    return ({ selectedRowKeys, selectedRows } : { selectedRowKeys: React.ReactText[], selectedRows: any[] }) => (
+    return ({ selectedRowKeys }: { selectedRowKeys: React.ReactText[], selectedRows: any[] }) => (
       <div>
         已选择{' '}
         <a
@@ -129,14 +130,14 @@ const InstanceManage: React.FC<any> = () => {
               <Dropdown overlay={
                 <Menu>
                   <Menu.Item>
-                    <a style={{color: '#1890ff'}} onClick={() => history.push(`/data/special/${record._id}`)}>
+                    <a style={{color: '#1890ff'}} onClick={() => history.push(`/data/special/${record["_id"]}`)}>
                     详情
                     </a>
                   </Menu.Item>
                   {
                     (valid) && (
                       <Menu.Item>
-                        <a onClick={putInfo.bind(this, false, record)} style={{color: 'red'}}>
+                        <a onClick={putInfo.bind(null, false, record)} style={{color: 'red'}}>
                           禁用
                         </a>
                       </Menu.Item>
@@ -145,7 +146,7 @@ const InstanceManage: React.FC<any> = () => {
                   {
                     (!valid) && (
                       <Menu.Item>
-                        <a style={{color: '#1890ff'}} onClick={putInfo.bind(this, true, record)}>
+                        <a style={{color: '#1890ff'}} onClick={putInfo.bind(null, true, record)}>
                           启用
                         </a>
                       </Menu.Item>
@@ -168,10 +169,10 @@ const InstanceManage: React.FC<any> = () => {
     let realParams: any = {}
     const { valid, ...nextParams } = params
     realParams = nextParams
-    if(valid !== undefined) realParams.valid = !Boolean(Number(valid))
+    if(valid !== undefined) realParams.valid = !Number(valid)
     return getInstanceSpecialList(realParams)
     .then(({ list, total }) => ({ data: list, total }) )
-    .catch(_ => ({ data: [], total: 0 }))
+    .catch(() => ({ data: [], total: 0 }))
   }, [])
 
   return (

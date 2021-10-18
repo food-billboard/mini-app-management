@@ -572,6 +572,10 @@ declare namespace API_DATA {
     store_date: string 
   }
 
+  export interface IPutMovieTagUpdateParams {
+    _id: string 
+  }
+
 }
 
 declare namespace API_INSTANCE {

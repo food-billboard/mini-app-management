@@ -13,17 +13,17 @@ export default memo(() => {
 
   const movieId: string | undefined = useMemo(() => {
     const { location: { pathname } } = history
-    const [,,,movieId] = pathname.split('/')
-    return movieId
+    const [,,,id] = pathname.split('/')
+    return id
   }, [])
 
   const [ detail, setDetail ] = useState<API_DATA.IGetMovieDetailRes>()
   const [ loading, setLoading ] = useState<boolean>(true)
   const [ activeKey, setActiveKey ] = useState<string>('base')
 
-  const fetchData = useCallback(async (movieId: string) => {
+  const fetchData = useCallback(async (id: string) => {
     setLoading(true)
-    const data = await movieDetail({ _id: movieId })
+    const data = await movieDetail({ _id: id })
     unstable_batchedUpdates(() => {
       setDetail(data)
       setLoading(false)
@@ -34,13 +34,13 @@ export default memo(() => {
     return history.push({
       pathname: '/data/main/edit',
       query: {
-        id: detail?._id || ''
+        id: detail?.["_id"] || ''
       }
     })
   }, [detail])
 
   const deleteMovieInfo = useCallback(async () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       Modal.confirm({
         okText: '确定',
         cancelText: '取消',
@@ -57,32 +57,32 @@ export default memo(() => {
       })
     })
     .then(res => {
-      const id = detail?._id
+      const id = detail?.["_id"]
       if(res && id) {
         return deleteMovie({ _id: id })
       }
       return Promise.reject()
     })
-    .then(_ => {
+    .then(() => {
       message.info('操作成功')
       history.replace('/data/main')
     })
-    .catch(_ => {})
+    .catch(() => {})
   }, [loading, detail])
 
   const editStatus = useCallback(async (valid: boolean, _id: string) => {
     const method = valid ? putMovieStatus : deleteMovieStatus
     await method({ _id })
-    .then(_ => {
+    .then(() => {
       message.info('操作成功')
       return fetchData(_id)
     })
-    .catch(err => message.info('操作失败'))
+    .catch(() => message.info('操作失败'))
   }, [])
 
   const editStatusDom = useMemo(() => {
-    const not = <Button danger key="4" onClick={editStatus.bind(this, false, movieId)}>禁用</Button>
-    const is = <Button type="primary" onClick={editStatus.bind(this, true, movieId)} key="3">启用</Button>
+    const not = <Button danger key="4" onClick={editStatus.bind(null, false, movieId)}>禁用</Button>
+    const is = <Button type="primary" onClick={editStatus.bind(null, true, movieId)} key="3">启用</Button>
     if(detail?.status === 'COMPLETE') return [
       not
     ]
@@ -95,8 +95,8 @@ export default memo(() => {
     ]
   }, [detail?.status, movieId])
 
-  const onTabChange = useCallback((activeKey: string) => {
-    setActiveKey(activeKey)
+  const onTabChange = useCallback((newActiveKey: string) => {
+    setActiveKey(newActiveKey)
   }, [])
 
   useEffect(() => {
@@ -153,7 +153,7 @@ export default memo(() => {
             title="电影数据"
           >
             <UserTable 
-              _id={detail?._id}
+              _id={detail?.["_id"]}
             />
           </ProCard>
         )
@@ -165,7 +165,7 @@ export default memo(() => {
             title="电影数据"
           >
             <CommentTable 
-              _id={detail?._id}
+              _id={detail?.["_id"]}
             />
           </ProCard>
         )

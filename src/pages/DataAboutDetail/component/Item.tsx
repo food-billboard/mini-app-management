@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react'
 import { Button, Card, List, Typography, Space, Input, Form } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { FormInstance } from 'antd/es/form'
 import { ProFormText, ProFormSelect } from '@ant-design/pro-form'
 import moment from 'moment'
 import Upload from '@/components/Upload'
@@ -41,13 +40,39 @@ export type TDeleteActionType = (id: string) => void
 export type TEditActionType = TDeleteActionType
 export type TAddActionType = () => void
 
-const format = (date: string) => moment(date).format('YYYY-MM-DD')
+type OperationType = {
+  deleteItem: TDeleteActionType
+  editItem: TEditActionType
+  addItem: TAddActionType
+}
+
+const format = (date: string, formatText="MM-DD") => moment(date).format(formatText)
+
+function actions<T extends { _id: string }>(operation: OperationType, value: T) {
+  const { deleteItem, editItem } = operation
+  const { _id } = value 
+  return [
+    <Button onClick={() => deleteItem(_id)} key="option1" danger type="link">删除</Button>,
+    <Button onClick={() => editItem(_id)} key="option2" type="link">编辑</Button>
+  ]
+}
+
+function addButton(operation: OperationType, children: string) {
+  const { addItem } = operation
+  return (
+    <List.Item>
+      <Button onClick={() => addItem()} type="dashed" className={styles.newButton}>
+        <PlusOutlined /> {children}
+      </Button>
+    </List.Item>
+  )
+}
 
 export const AboutInfo = {
   actor: {
     fetchData: async (values: API_DATA.IGetActorInfoParams) => {
       const data = await getActorInfo(values)
-      if(!values || !values._id) return data
+      if(!values || !values["_id"]) return data
       const form: API_DATA.IGetActorInfoResData = Array.isArray(data) ? data[0] : data
       if(!form) return {}
       const { country, another_name, avatar, avatar_id, ...nextForm } = form
@@ -56,7 +81,7 @@ export const AboutInfo = {
         alias: another_name,
         avatar: Array.isArray(avatar) ? avatar : [avatar],
         avatar_id: Array.isArray(avatar_id) ? avatar_id : [avatar_id],
-        country: country?._id
+        country: country?.["_id"]
       }
     },
     delete: deleteActorInfo,
@@ -75,23 +100,17 @@ export const AboutInfo = {
         avatar: Array.isArray(avatar_id) ? avatar_id[0] : avatar_id
       })
     },
-    renderItem(operation: {
-      deleteItem: TDeleteActionType
-      editItem: TEditActionType
-      addItem: TAddActionType
-    }) {
+    renderItem(operation: OperationType) {
 
-      const { deleteItem, editItem, addItem } = operation
-
-      return function<T>(item: API_DATA.IGetActorInfoResData): React.ReactNode  {
-        const { _id, another_name, name, createdAt, updatedAt, avatar, source_type } = item
+      return function render(item: API_DATA.IGetActorInfoResData): React.ReactNode  {
+        const { _id, another_name, name, createdAt, avatar, source_type } = item
         if (_id) {
           return (
             <List.Item key={_id}>
               <Card
                 hoverable
                 className={styles.card}
-                actions={[<a onClick={() => deleteItem(_id)} key="option1">删除</a>, <a onClick={() => editItem(_id)} key="option2">编辑</a>]}
+                actions={actions(operation, item)}
               >
                 <Card.Meta
                   avatar={<img alt="" className={styles.cardAvatar} src={formatUrl(avatar)} onClick={Preview.bind(null, formatUrl(avatar))} />}
@@ -114,7 +133,7 @@ export const AboutInfo = {
                         </div>
                         <div>
                           创建时间: {' '}
-                          <Text>{format(createdAt)}</Text>
+                          <Text code title={format(createdAt, "YYYY-MM-DD")}>{format(createdAt)}</Text>
                         </div>
                       </Space>
                     </Paragraph>
@@ -124,17 +143,11 @@ export const AboutInfo = {
             </List.Item>
           )
         }
-      
-        return (
-          <List.Item>
-            <Button onClick={() => addItem()} type="dashed" className={styles.newButton}>
-              <PlusOutlined /> 新增演员信息
-            </Button>
-          </List.Item>
-        )
+        
+        return addButton(operation, "新增演员信息")
       }
     },
-    renderForm(form: FormInstance) {
+    renderForm() {
       return (
         <Fragment>
           <ProFormText 
@@ -183,7 +196,7 @@ export const AboutInfo = {
   director: {
     fetchData: async (values: API_DATA.IGetDirectorInfoResData) => {
       const data = await getDirectorInfo(values)
-      if(!values || !values._id) return data
+      if(!values || !values["_id"]) return data
       const form: API_DATA.IGetDirectorInfoResData = Array.isArray(data) ? data[0] : data
       if(!form) return {}
       const { country, another_name, avatar, avatar_id, ...nextForm } = form
@@ -192,7 +205,7 @@ export const AboutInfo = {
         alias: another_name,
         avatar: Array.isArray(avatar) ? avatar : [avatar],
         avatar_id: Array.isArray(avatar_id) ? avatar_id : [avatar_id],
-        country: country?._id
+        country: country?.["_id"]
       }
     },
     delete: deleteDirectorInfo,
@@ -211,23 +224,17 @@ export const AboutInfo = {
         avatar: Array.isArray(avatar_id) ? avatar_id[0] : avatar_id
       })
     },
-    renderItem(operation: {
-      deleteItem: TDeleteActionType
-      editItem: TEditActionType
-      addItem: TAddActionType
-    }) {
+    renderItem(operation: OperationType) {
 
-      const { deleteItem, editItem, addItem } = operation
-
-      return function(item: API_DATA.IGetDirectorInfoResData): React.ReactNode  {
-        const { _id, another_name, name, createdAt, updatedAt, avatar, source_type } = item
+      return function render(item: API_DATA.IGetDirectorInfoResData): React.ReactNode  {
+        const { _id, another_name, name, createdAt, avatar, source_type } = item
         if (_id) {
           return (
             <List.Item key={_id}>
               <Card
                 hoverable
                 className={styles.card}
-                actions={[<a onClick={() => deleteItem(_id)} key="option1">删除</a>, <a onClick={() => editItem( _id)} key="option2">编辑</a>]}
+                actions={actions(operation, item)}
               >
                 <Card.Meta
                   avatar={<img alt="" className={styles.cardAvatar} src={formatUrl(avatar)} onClick={Preview.bind(null, formatUrl(avatar))} />}
@@ -250,7 +257,7 @@ export const AboutInfo = {
                         </div>
                         <div>
                           创建时间: {' '}
-                          <Text code>{format(createdAt)}</Text>
+                          <Text code title={format(createdAt, "YYYY-MM-DD")}>{format(createdAt)}</Text>
                         </div>
                       </Space>
                     </Paragraph>
@@ -260,17 +267,12 @@ export const AboutInfo = {
             </List.Item>
           )
         }
+
+        return addButton(operation, "新增导演信息")
       
-        return (
-          <List.Item>
-            <Button onClick={() => addItem()} type="dashed" className={styles.newButton}>
-              <PlusOutlined /> 新增导演信息
-            </Button>
-          </List.Item>
-        )
       }
     },
-    renderForm(form: FormInstance) {
+    renderForm() {
       return (
         <Fragment>
           <ProFormText 
@@ -319,7 +321,7 @@ export const AboutInfo = {
   classify: {
     fetchData: async (values: API_DATA.IGetClassifyInfoParams) => {
       const data = await getClassifyInfo(values)
-      if(!values || !values._id) return data
+      if(!values || !values["_id"]) return data
       const form: API_DATA.IGetClassifyInfoResData = Array.isArray(data) ? data[0] : data
       if(!form) return {}
       const { icon, icon_id, ...nextForm } = form
@@ -345,23 +347,17 @@ export const AboutInfo = {
         icon: Array.isArray(icon_id) ? icon_id[0] : icon_id
       })
     },
-    renderItem(operation: {
-      deleteItem: TDeleteActionType
-      editItem: TEditActionType
-      addItem: TAddActionType
-    }) {
+    renderItem(operation: OperationType) {
 
-      const { deleteItem, editItem, addItem } = operation
-
-      return function(item: API_DATA.IGetClassifyInfoResData): React.ReactNode  {
-        const { _id, name, createdAt, updatedAt, glance, icon, source_type } = item
+      return function render(item: API_DATA.IGetClassifyInfoResData): React.ReactNode  {
+        const { _id, name, createdAt, glance, icon, source_type } = item
         if (_id) {
           return (
             <List.Item key={_id}>
               <Card
                 hoverable
                 className={styles.card}
-                actions={[<a onClick={() => deleteItem(_id)} key="option1">删除</a>, <a onClick={() => editItem(_id)} key="option2">编辑</a>]}
+                actions={actions(operation, item)}
               >
                 <Card.Meta
                   avatar={<img alt="" className={styles.cardAvatar} src={formatUrl(icon)} onClick={Preview.bind(null, formatUrl(icon))} />}
@@ -384,7 +380,7 @@ export const AboutInfo = {
                         </div>
                         <div>
                           创建时间: {' '}
-                          <Text code>{format(createdAt)}</Text>
+                          <Text code title={format(createdAt, "YYYY-MM-DD")}>{format(createdAt)}</Text>
                         </div>
                       </Space>
                     </Paragraph>
@@ -394,17 +390,12 @@ export const AboutInfo = {
             </List.Item>
           )
         }
-      
-        return (
-          <List.Item>
-            <Button onClick={() => addItem()} type="dashed" className={styles.newButton}>
-              <PlusOutlined /> 新增分类信息
-            </Button>
-          </List.Item>
-        )
+
+        return addButton(operation, "新增分类信息")
+    
       }
     },
-    renderForm(form: FormInstance) {
+    renderForm() {
       return (
         <Fragment>
           <ProFormText 
@@ -443,23 +434,17 @@ export const AboutInfo = {
     delete: deleteLanguageInfo,
     edit: putLanguageInfo,
     add: postLanguageInfo,
-    renderItem(operation: {
-      deleteItem: TDeleteActionType
-      editItem: TEditActionType
-      addItem: TAddActionType
-    }) {
+    renderItem(operation: OperationType) {
 
-      const { deleteItem, editItem, addItem } = operation
-
-      return function(item: API_DATA.IGetLanguageInfoResData): React.ReactNode  {
-        const { _id, name, createdAt, updatedAt, source_type } = item
+      return function render(item: API_DATA.IGetLanguageInfoResData): React.ReactNode  {
+        const { _id, name, createdAt, source_type } = item
         if (_id) {
           return (
             <List.Item key={_id}>
               <Card
                 hoverable
                 className={styles.card}
-                actions={[<a onClick={() => deleteItem(_id)} key="option1">删除</a>, <a onClick={() => editItem(_id)} key="option2">编辑</a>]}
+                actions={actions(operation, item)}
               >
                 <Card.Meta
                   title={<a>{name}</a>}
@@ -477,7 +462,7 @@ export const AboutInfo = {
                         </div>
                         <div>
                           创建时间: {' '}
-                          <Text code>{format(createdAt)}</Text>
+                          <Text code title={format(createdAt, "YYYY-MM-DD")}>{format(createdAt)}</Text>
                         </div>
                       </Space>
                     </Paragraph>
@@ -487,17 +472,12 @@ export const AboutInfo = {
             </List.Item>
           )
         }
+
+        return addButton(operation, "新增语言信息")
       
-        return (
-          <List.Item>
-            <Button onClick={() => addItem()} type="dashed" className={styles.newButton}>
-              <PlusOutlined /> 新增语言信息
-            </Button>
-          </List.Item>
-        )
       }
     },
-    renderForm(form: FormInstance) {
+    renderForm() {
       return (
         <Fragment>
           <ProFormText 
@@ -525,23 +505,17 @@ export const AboutInfo = {
     delete: deleteDistrictInfo,
     edit: putDistrictInfo,
     add: postDistrictInfo,
-    renderItem(operation: {
-      deleteItem: TDeleteActionType
-      editItem: TEditActionType
-      addItem: TAddActionType
-    }) {
+    renderItem(operation: OperationType) {
 
-      const { deleteItem, editItem, addItem } = operation
-
-      return function(item: API_DATA.IGetDistrictInfoResData): React.ReactNode {
-        const { _id, name, createdAt, updatedAt, source_type } = item
+      return function render(item: API_DATA.IGetDistrictInfoResData): React.ReactNode {
+        const { _id, name, createdAt, source_type } = item
         if (_id) {
           return (
             <List.Item key={_id}>
               <Card
                 hoverable
                 className={styles.card}
-                actions={[<a onClick={() => deleteItem(_id)} key="option1">删除</a>, <a onClick={() => editItem(_id)} key="option2">编辑</a>]}
+                actions={actions(operation, item)}
               >
                 <Card.Meta
                   title={<a>{name}</a>}
@@ -561,7 +535,7 @@ export const AboutInfo = {
                           </div>   
                           <div>
                             创建时间: {' '}
-                            <Text code>{format(createdAt)}</Text>
+                            <Text code title={format(createdAt, "YYYY-MM-DD")}>{format(createdAt)}</Text>
                           </div>                     
                         </Space>
                       </Paragraph>
@@ -571,17 +545,12 @@ export const AboutInfo = {
             </List.Item>
           )
         }
-      
-        return (
-          <List.Item>
-            <Button onClick={() => addItem()} type="dashed" className={styles.newButton}>
-              <PlusOutlined /> 新增地区信息
-            </Button>
-          </List.Item>
-        )
+
+        return addButton(operation, "新增地区信息")
+    
       }
     },
-    renderForm(form: FormInstance) {
+    renderForm() {
       return (
         <Fragment>
           <ProFormText 

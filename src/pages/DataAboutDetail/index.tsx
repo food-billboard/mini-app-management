@@ -1,9 +1,13 @@
-import React, { FC, Fragment, memo, useCallback, useRef, useState, useMemo } from 'react'
+import React, { Fragment, memo, useCallback, useRef, useState, useMemo } from 'react'
+import type { FC } from 'react'
 import { Button, message, Result, Modal } from 'antd'
 import { history } from 'umi'
-import { DataAbout, DataAboutRef } from './component/List'
-import { AboutInfo, TPath, TEditActionType, TDeleteActionType, TAddActionType } from './component/Item'
-import { Edit, IEditRef } from './component/Edit' 
+import { DataAbout } from './component/List'
+import type { DataAboutRef } from './component/List'
+import { AboutInfo } from './component/Item'
+import type { TPath, TEditActionType, TDeleteActionType, TAddActionType } from './component/Item'
+import { Edit } from './component/Edit' 
+import type { IEditRef } from './component/Edit' 
 
 const CardList: FC<any> = () => {
 
@@ -37,13 +41,13 @@ const CardList: FC<any> = () => {
         return AboutInfo[path].delete({
           _id: id
         })
-        .then(_ => {
+        .then(() => {
           message.info('删除成功')
           return listRef.current?.fetchData()
         })
       }
     })
-  }, [])
+  }, [listRef, path])
   
   const editItem: TEditActionType = useCallback((id: string) => {
     editRef.current?.open({
@@ -63,7 +67,7 @@ const CardList: FC<any> = () => {
       return Promise.reject()
     }
 
-  }, [formState])
+  }, [formState, path])
 
   if(!Object.keys(AboutInfo).some(key => key === path)) return <Result
     status="404"

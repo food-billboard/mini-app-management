@@ -1,7 +1,8 @@
-import React, { useRef, createRef, useCallback } from 'react'
-import { Button, Dropdown, message, Menu, Space, Modal } from 'antd'
+import React, { useRef, useCallback } from 'react'
+import { Button, Dropdown, message, Menu, Space } from 'antd'
 import { PageHeaderWrapper } from '@ant-design/pro-layout'
-import ProTable, { ActionType } from '@ant-design/pro-table'
+import ProTable from '@ant-design/pro-table'
+import type { ActionType } from '@ant-design/pro-table'
 import { DownOutlined, PlusOutlined, EllipsisOutlined } from '@ant-design/icons'
 import { connect } from 'umi'
 import pickBy from 'lodash/pickBy'
@@ -9,14 +10,14 @@ import identity from 'lodash/identity'
 import { history } from 'umi'
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import column from './columns'
-import { deleteMovie, getMovieList, putMovieStatus, deleteMovieStatus } from '@/services'
+import { deleteMovie, getMovieList, putMovieStatus, deleteMovieStatus, updateMovieTag } from '@/services'
 import { commonDeleteMethod } from '@/utils'
 
 interface IProps {
   role: any
 }
 
-const CardList: React.FC<IProps> = (props: any) => {
+const CardList: React.FC<IProps> = () => {
 
   const actionRef = useRef<ActionType>()
 
@@ -34,6 +35,41 @@ const CardList: React.FC<IProps> = (props: any) => {
     actionRef.current?.reload()
   }, [])
 
+  const handleModalVisible = (id?: string) => {
+    return history.push({
+      pathname: '/data/main/edit',
+      query: {
+        id: id || ''
+      }
+    })
+  }
+
+  const updateMovieTagMethod = (id: string) => {
+    return updateMovieTag({
+      _id: id
+    })
+    .then(() => {
+      message.info("操作成功")
+    })
+    .catch(() => {
+      message.info("操作失败")
+    })
+  }
+
+  /**
+   *  删除节点
+   * @param selectedRows
+   */
+
+  const handleRemove = async (selectedRows: API_DATA.IGetMovieData[]) => {
+    return commonDeleteMethod<API_DATA.IGetMovieData>(selectedRows, (row: API_DATA.IGetMovieData) => {
+      const { _id } = row
+      return deleteMovie({
+        _id
+      })
+    }, actionRef.current?.reloadAndRest)
+  }
+
   const columns: any[] = [
     ...column ,
     {
@@ -45,7 +81,7 @@ const CardList: React.FC<IProps> = (props: any) => {
         return (
           <Space>
             <a
-              onClick={() => handleModalVisible(record._id)}
+              onClick={() => handleModalVisible(record["_id"])}
             >
               编辑
             </a>
@@ -58,14 +94,14 @@ const CardList: React.FC<IProps> = (props: any) => {
             <Dropdown overlay={
               <Menu>
                 <Menu.Item>
-                  <a style={{color: '#1890ff'}} onClick={() => history.push(`/data/main/${record._id}`)}>
+                  <a style={{color: '#1890ff'}} onClick={() => history.push(`/data/main/${record["_id"]}`)}>
                   详情
                   </a>
                 </Menu.Item>
                 {
                   (record.status === 'COMPLETE' || record.status === 'VERIFY') && (
                     <Menu.Item>
-                      <a onClick={deleteStatus.bind(null, record._id)} style={{color: 'red'}}>
+                      <a onClick={deleteStatus.bind(null, record["_id"])} style={{color: 'red'}}>
                         禁用
                       </a>
                     </Menu.Item>
@@ -74,12 +110,17 @@ const CardList: React.FC<IProps> = (props: any) => {
                 {
                   (record.status === 'NOT_VERIFY' || record.status === 'VERIFY') && (
                     <Menu.Item>
-                      <a style={{color: '#1890ff'}} onClick={putStatus.bind(null, record._id)}>
+                      <a style={{color: '#1890ff'}} onClick={putStatus.bind(null, record["_id"])}>
                         启用
                       </a>
                     </Menu.Item>
                   )
                 }
+                <Menu.Item>
+                  <a style={{color: '#1890ff'}} onClick={() => updateMovieTagMethod(record["_id"])}>
+                  标签重置
+                  </a>
+                </Menu.Item>
               </Menu>
             }>
               <a onClick={e => e.preventDefault()}>
@@ -91,29 +132,6 @@ const CardList: React.FC<IProps> = (props: any) => {
       }
     }
   ]
-
-  /**
- *  删除节点
- * @param selectedRows
- */
-
-const handleRemove = async (selectedRows: API_DATA.IGetMovieData[]) => {
-  return commonDeleteMethod<API_DATA.IGetMovieData>(selectedRows, (row: API_DATA.IGetMovieData) => {
-    const { _id } = row
-    return deleteMovie({
-      _id
-    })
-  }, actionRef.current?.reloadAndRest)
-}
-
-  const handleModalVisible = (id?: string) => {
-    return history.push({
-      pathname: '/data/main/edit',
-      query: {
-        id: id || ''
-      }
-    })
-  }
 
   return (
     <PageHeaderWrapper>
@@ -148,7 +166,7 @@ const handleRemove = async (selectedRows: API_DATA.IGetMovieData[]) => {
             </Dropdown>
           ),
         ]}
-        tableAlertRender={({ selectedRowKeys, selectedRows } : { selectedRowKeys: React.ReactText[], selectedRows: any[] }) => (
+        tableAlertRender={({ selectedRowKeys }: { selectedRowKeys: React.ReactText[], selectedRows: any[] }) => (
           <div>
             已选择{' '}
             <a
@@ -175,7 +193,7 @@ const handleRemove = async (selectedRows: API_DATA.IGetMovieData[]) => {
           newParams = pickBy(newParams, identity)
           return getMovieList(newParams)
           .then(({ list, total }) => ({ data: list, total }) )
-          .catch(_ => ({ data: [], total: 0 }))
+          .catch(() => ({ data: [], total: 0 }))
         }}
         columns={columns}
         rowSelection={{}}

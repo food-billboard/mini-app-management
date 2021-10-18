@@ -1,16 +1,16 @@
 import { Form, Input } from 'antd'
-import { FormInstance } from 'antd/lib/form'
+import type { FormInstance } from 'antd/lib/form'
 import ProForm, {
   ModalForm,
   ProFormTextArea,
   ProFormSwitch
 } from '@ant-design/pro-form'
 import { omit } from 'lodash'
-import { Store } from 'antd/lib/form/interface'
+import type { Store } from 'antd/lib/form/interface'
 import React, { useCallback, useMemo, useRef, useState, forwardRef, useImperativeHandle } from 'react'
 import Upload from '@/components/Upload'
-import MovieSelect, { ISelectItem } from '@/components/TransferSelect'
-import { fileValidator, localFetchData4Array } from '../../../DataEdit/utils'
+import MovieSelect from '@/components/TransferSelect'
+import { fileValidator } from '../../../DataEdit/utils'
 import { getMovieList } from '@/services'
 
 type FormData = API_INSTANCE.IPutInstanceSpecialParams | API_INSTANCE.IPostInstanceSpecialParams 
@@ -42,11 +42,11 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
     }
     if(isEdit) {
       const { poster, movie, ...nextValues } = values!
-      //获取修改的数据
+      // 获取修改的数据
       formRef.current?.setFieldsValue({
         ...nextValues,
         poster: Array.isArray(poster) ? poster : [ poster ],
-        movie: movie.map(item => item._id)
+        movie: movie.map(item => item["_id"])
       })
       show()
     }
@@ -57,12 +57,12 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   const onCancel = useCallback(() => {
     setVisible(false)
     formRef.current?.resetFields()
-    propsCancel && propsCancel()
-  }, [formRef])
+    propsCancel?.()
+  }, [formRef, propsCancel])
 
   const onVisibleChange = useCallback((nowVisible: boolean) => {
     if(!nowVisible) onCancel()
-    if(nowVisible != visible) setVisible(nowVisible)
+    if(nowVisible !== visible) setVisible(nowVisible)
   }, [onCancel, visible])
 
   const onFinish = useCallback(async (values: Store) => {
@@ -80,7 +80,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
     <ModalForm
       title="新增专题"
       visible={visible}
-      //@ts-ignore
+      // @ts-ignore
       formRef={formRef}
       onFinish={onFinish}
       onVisibleChange={onVisibleChange}
@@ -139,7 +139,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
                 required: true,
                 message: '请选择电影',
                 validator: (_: any, value: string[]) => {
-                  return Array.isArray(value) && value.length >= 3 ? Promise.resolve() : Promise.reject('请选择电影')
+                  return Array.isArray(value) && value.length >= 3 ? Promise.resolve() : Promise.reject(new Error("请选择电影"))
                 }
               }
             ]

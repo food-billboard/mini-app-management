@@ -1,6 +1,6 @@
 import { request } from '@/utils'
 
-//媒体获取
+// 媒体获取
 export const getMediaList = (params: API_MEDIA.IGetMediaListParams) => {
   return request<API_MEDIA.IGetMediaListRes>('/api/manage/media', {
     method: 'GET',
@@ -8,7 +8,7 @@ export const getMediaList = (params: API_MEDIA.IGetMediaListParams) => {
   })
 }
 
-//媒体删除
+// 媒体删除
 export const deleteMedia = (params: API_MEDIA.IDeleteMediaParams) => {
   return request('/api/manage/media', {
     method: 'DELETE',
@@ -16,7 +16,7 @@ export const deleteMedia = (params: API_MEDIA.IDeleteMediaParams) => {
   })
 }
 
-//媒体修改
+// 媒体修改
 export const updateMedia = (data: API_MEDIA.IPutMediaParams) => {
   return request('/api/manage/media', {
     method: 'PUT',
@@ -24,7 +24,7 @@ export const updateMedia = (data: API_MEDIA.IPutMediaParams) => {
   })
 }
 
-//媒体上传验证
+// 媒体上传验证
 export const getMediaValid = (params: API_MEDIA.IGetMediaValidParams) => {
   return request<API_MEDIA.IGetMediaValidRes>('/api/manage/media/valid', {
     method: 'GET',

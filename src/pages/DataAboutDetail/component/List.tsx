@@ -15,10 +15,10 @@ export interface IList {
 
 export interface IProps<T=any> {
   loading?: boolean
-  headerContent?: (init: Function) => React.ReactNode
+  headerContent?: (init: () => any) => React.ReactNode
   headerExtra?: React.ReactNode | null
-  renderItem(item: T): React.ReactNode
-  fetchData(...args: any[]): Promise<T | T[]>
+  renderItem: (item: T) => React.ReactNode
+  fetchData: (...args: any[]) => Promise<T | T[]>
 }
 
 export interface DataAboutRef {
@@ -40,63 +40,6 @@ const Data = forwardRef<DataAboutRef, IProps>((props, ref) => {
   const [ total, setTotal ] = useState<number>(0)
   const [ currPage, setCurrPage ] = useState<number>(1)
 
-  useImperativeHandle(ref, () => ({
-    fetchData: internalFetchData
-  }))
-
-  const init = useCallback(async (nextParams?: any) => {
-    setCurrPage(1)
-    await internalFetchData(nextParams)
-  }, [])
-
-  const content = useMemo(() => {
-    if(headerContent) {
-      return headerContent
-    }else {
-      return () => (
-        <div className={styles.pageHeaderContent}>
-          <p
-            style={{display: 'flex', alignItems: 'center'}}
-          >
-            数据辅助信息，帮助多样化电影信息。
-            <LightFilter
-              collapse
-              onFinish={init}
-            >
-              <ProFormText
-                name="content"
-                label="名称"
-              />
-            </LightFilter>
-          </p>
-          {/* <div className={styles.contentLink}>
-            <a>
-              <img alt="" src="https://gw.alipayobjects.com/zos/rmsportal/MjEImQtenlyueSmVEfUD.svg" />{' '}
-              快速开始
-            </a>
-            <a>
-              <img alt="" src="https://gw.alipayobjects.com/zos/rmsportal/NbuDUAuBlIApFuDvWiND.svg" />{' '}
-              产品简介
-            </a>
-            <a>
-              <img alt="" src="https://gw.alipayobjects.com/zos/rmsportal/ohOEPSYdDTNnyMbGuyLb.svg" />{' '}
-              产品文档
-            </a>
-          </div> */}
-        </div>
-      )
-    }
-  }, [headerContent, init])
-
-  const extraContent = headerExtra === undefined ? (
-    <div className={styles.extraImg}>
-      <img
-        alt="数据相关"
-        src="https://gw.alipayobjects.com/zos/rmsportal/RzwpdLnhmvDJToTdfDPe.png"
-      />
-    </div>
-  ) : headerExtra
-
   const internalFetchData = useCallback(async (params?) => {
     setLoading(true)
     const data = await fetchData({
@@ -114,7 +57,49 @@ const Data = forwardRef<DataAboutRef, IProps>((props, ref) => {
     })
   }, [currPage])
 
-  const pageChange = useCallback(async (page: number, pageSize?: number) => {
+  useImperativeHandle(ref, () => ({
+    fetchData: internalFetchData
+  }))
+
+  const init = useCallback(async (nextParams?: any) => {
+    setCurrPage(1)
+    await internalFetchData(nextParams)
+  }, [internalFetchData])
+
+  const content = useMemo(() => {
+    if(headerContent) {
+      return headerContent
+    }
+    return () => (
+      <div className={styles.pageHeaderContent}>
+        <div
+          style={{display: 'flex', alignItems: 'center'}}
+        >
+          数据辅助信息，帮助多样化电影信息。
+          <LightFilter
+            collapse
+            onFinish={init}
+          >
+            <ProFormText
+              name="content"
+              label="名称"
+            />
+          </LightFilter>
+        </div>
+      </div>
+    )
+  }, [headerContent, init])
+
+  const extraContent = headerExtra === undefined ? (
+    <div className={styles.extraImg}>
+      <img
+        alt="数据相关"
+        src="https://gw.alipayobjects.com/zos/rmsportal/RzwpdLnhmvDJToTdfDPe.png"
+      />
+    </div>
+  ) : headerExtra
+
+  const pageChange = useCallback(async (page: number) => {
     setCurrPage(page)
     await internalFetchData({
       currPage: page - 1
@@ -125,6 +110,7 @@ const Data = forwardRef<DataAboutRef, IProps>((props, ref) => {
     return [
       (
         <Pagination
+          key="pagination"
           defaultCurrent={1}
           current={currPage}
           defaultPageSize={DEFAULT_PAGE_SIZE}

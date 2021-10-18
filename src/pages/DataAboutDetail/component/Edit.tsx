@@ -1,19 +1,19 @@
-import React, { memo, forwardRef, useImperativeHandle, useState, useRef, useEffect, useCallback, Fragment } from 'react'
+import React, { memo, forwardRef, useImperativeHandle, useState, useRef, useEffect, useCallback } from 'react'
 import { unstable_batchedUpdates } from 'react-dom'
 import { message } from 'antd'
-import { ModalProps } from 'antd/es/modal'
-import { FormInstance } from 'antd/es/form'
+import type { ModalProps } from 'antd/es/modal'
+import type { FormInstance } from 'antd/es/form'
 import { ModalForm } from '@ant-design/pro-form'
-import { Store } from 'antd/lib/form/interface'
+import type { Store } from 'antd/lib/form/interface'
 
 interface IProps extends ModalProps {
   onConfirm?: (values: Store) => Promise<any>
   renderForm: (form: FormInstance) => React.ReactNode
-  fetchData?(...args: any[]): Promise<any>
+  fetchData?: (...args: any[]) => Promise<any>
 }
 
 export interface IEditRef {
-  open(values?: { id?: string }): void
+  open: (values?: { id?: string }) => void
 }
 
 const EditModal = forwardRef<IEditRef, IProps>((props, ref) => {
@@ -29,10 +29,10 @@ const EditModal = forwardRef<IEditRef, IProps>((props, ref) => {
     open: (values: {
       id?: string
     }={}) => {
-      const { id } = values
+      const { id: dataId } = values
       unstable_batchedUpdates(() => {
         setVisible(true)
-        setId(id)
+        setId(dataId)
       })
     }
   })) 
@@ -62,16 +62,16 @@ const EditModal = forwardRef<IEditRef, IProps>((props, ref) => {
 
   const onCancel = useCallback((e) => {
     setVisible(false)
-    nextProps.onCancel && nextProps.onCancel(e)
-  }, [id, visible])
+    nextProps.onCancel?.(e)
+  }, [nextProps])
 
-  const visibleChange = useCallback((visible: boolean) => {
-    if(!visible) {
+  const visibleChange = useCallback((visibleState: boolean) => {
+    if(!visibleState) {
       onCancel(null)
       setId(false)
       formRef.current?.resetFields()
     }
-  }, [onCancel, id, visible, formRef])
+  }, [onCancel, formRef])
 
   useEffect(() => {
     if(!id) return 
@@ -82,7 +82,7 @@ const EditModal = forwardRef<IEditRef, IProps>((props, ref) => {
     <ModalForm
       title={`${id ? '编辑' : '新增'}信息`}
       visible={visible}
-      //@ts-ignore
+      // @ts-ignore
       formRef={formRef}
       onFinish={onFinish}
       onVisibleChange={visibleChange}

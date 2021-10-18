@@ -1,5 +1,6 @@
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { Form, Rate, message, Input, Card } from 'antd'
-import { FormInstance } from 'antd/lib/form'
+import type { FormInstance } from 'antd/lib/form'
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
 import ProForm, {
   ProFormText,
@@ -8,13 +9,15 @@ import ProForm, {
   ProFormTextArea,
 } from '@ant-design/pro-form'
 import { history } from 'umi'
-import { Store } from 'antd/lib/form/interface'
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
-import SearchForm, { ISelectItem } from '@/components/TransferSelect'
+import moment from 'moment'
+import type { Store } from 'antd/lib/form/interface'
+import SearchForm from '@/components/TransferSelect'
+import type { ISelectItem } from '@/components/TransferSelect'
 import InputAlias from './components/InputSearch'
 import Upload from '@/components/Upload'
 import { getActorInfo, getDirectorInfo, getDistrictInfo, getLanguageInfo, getClassifyInfo, getMovieInfo, putMovie, postMovie } from '@/services'
 import { fileValidator, localFetchData4Array } from './utils'
+import { withTry } from '@/utils'
 
 const CreateForm = memo(() => {
 
@@ -27,7 +30,7 @@ const CreateForm = memo(() => {
     const { id } = query as { id: string | undefined }
 
     if(id) {
-      //获取修改的数据
+      // 获取修改的数据
       return await getMovieInfo({
         _id: id
       })
@@ -46,11 +49,13 @@ const CreateForm = memo(() => {
       })
     }
 
+    return Promise.resolve()
+
   }, [])
 
   const handleAdd = useCallback(async (fields: any) => {
     const hide = message.loading('正在添加')
-    const method = !!fields._id ? putMovie : postMovie
+    const method = fields["_id"] ? putMovie : postMovie
   
     const { video, poster, district, classify, language, ...nextFields } = fields
   
@@ -76,16 +81,16 @@ const CreateForm = memo(() => {
   }, [])
 
   const onFinish = useCallback(async (values: Store) => {
-    formRef.current?.resetFields()
-    const success = await handleAdd(values)
+    const [ , success ] = await withTry(handleAdd)(values)
     if(success) {
+      formRef.current?.resetFields()
       history.go(-1)
     }
-  }, [])
+  }, [formRef, handleAdd])
 
   useEffect(() => {
     fetchData()
-    .then(_ => setLoading(false))
+    .then(() => setLoading(false))
   }, [])
 
   return (
@@ -193,6 +198,11 @@ const CreateForm = memo(() => {
           <ProFormDatePicker 
             name="screen_time" 
             label="上映时间" 
+            fieldProps={{
+              disabledDate: (currentDate) => {
+                return currentDate > moment()
+              }
+            }}
             rules={[{
               required: true
             }]}
