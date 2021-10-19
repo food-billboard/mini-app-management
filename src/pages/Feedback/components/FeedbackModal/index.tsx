@@ -19,21 +19,23 @@ export default memo(forwardRef<IFeedbackModalRef, IFeedbackModalProps>((props, r
   const [ visible, setVisible ] = useState<boolean>(false)
   const [ data, setData ] = useState<TFeedbackEditData>()
 
-  useImperativeHandle(ref, () => ({
-    open: openModal
-  }), [])
-
-  const openModal = useCallback((data?: TFeedbackEditData) => {
+  const openModal = useCallback((values?: TFeedbackEditData) => {
     unstable_batchedUpdates(() => {
-      data && setData(() => {
-        const { status, ...nextData } = data
-        return merge({}, nextData, {
-          status: status === 'DEALING' ? 'DEAL' : 'DEALING' as API_USER.TFeedbackStatus
+      if(values) {
+        setData(() => {
+          const { status, ...nextData } = values
+          return merge({}, nextData, {
+            status: status === 'DEALING' ? 'DEAL' : 'DEALING' as API_USER.TFeedbackStatus
+          })
         })
-      })
+      }
       setVisible(true)
     })
   }, [])
+
+  useImperativeHandle(ref, () => ({
+    open: openModal
+  }), [openModal])
 
   const { onOk, onCancel } = useMemo(() => {
     return props

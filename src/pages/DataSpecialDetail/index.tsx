@@ -7,7 +7,8 @@ import ProCard from '@ant-design/pro-card'
 import { getInstanceSpecialList, deleteInstanceSpecial, putInstanceSpecial } from '@/services'
 import Table from './components/Table'
 import Descriptions from './components/Descriptions'
-import Form, { IFormRef } from '../DataSpecial/components/form'
+import Form from '../DataSpecial/components/form'
+import type { IFormRef } from '../DataSpecial/components/form'
 
 export default memo(() => {
 
@@ -22,13 +23,13 @@ export default memo(() => {
     const data = await getInstanceSpecialList({ _id: specialId })
     const list = data?.list
     unstable_batchedUpdates(() => {
-      if(!!list.length) setDetail(list[0])
+      if(list.length) setDetail(list[0])
       setLoading(false)
     })
   }, [])
 
   const deleteSpecial = useCallback(async () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       Modal.confirm({
         okText: '确定',
         cancelText: '取消',
@@ -45,17 +46,17 @@ export default memo(() => {
       })
     })
     .then(res => {
-      const id = detail?._id
+      const id = detail?.["_id"]
       if(res && id) {
         return deleteInstanceSpecial({ _id: id })
       }
       return Promise.reject()
     })
-    .then(_ => {
+    .then(() => {
       message.info('操作成功')
     })
-    .catch(_ => {})
-  }, [loading, detail])
+    .catch(() => {})
+  }, [detail])
 
   const edit = useCallback(() => {
     modalRef.current?.open(detail)
@@ -68,11 +69,11 @@ export default memo(() => {
     } as API_INSTANCE.IPutInstanceSpecialParams
     await putInstanceSpecial(newValue)
     message.info('操作成功')
-    await fetchData(newValue._id)
-  }, [loading, detail, fetchData])
+    await fetchData(newValue["_id"])
+  }, [detail, fetchData])
 
-  const onTabChange = useCallback((activeKey: string) => {
-    setActiveKey(activeKey)
+  const onTabChange = useCallback((newActiveKey: string) => {
+    setActiveKey(newActiveKey)
   }, [])
 
   useEffect(() => {
@@ -89,8 +90,8 @@ export default memo(() => {
         extra: [
           <Button onClick={edit} key="1" type="primary">编辑</Button>,
           <Button onClick={deleteSpecial} key="2" danger>删除</Button>,
-          detail?.valid === false && <Button type="primary" onClick={editSpecial.bind(this, { valid: true })} key="3">启用</Button>,
-          detail?.valid === true && <Button danger key="4" onClick={editSpecial.bind(this, { valid: false })}>禁用</Button>,
+          detail?.valid === false && <Button type="primary" onClick={editSpecial.bind(null, { valid: true })} key="3">启用</Button>,
+          detail?.valid === true && <Button danger key="4" onClick={editSpecial.bind(null, { valid: false })}>禁用</Button>,
         ],
       }}
       tabList={[
@@ -126,7 +127,7 @@ export default memo(() => {
             title="电影数据"
           >
             <Table 
-              value={detail?.movie.map(item => item._id) || []}
+              value={detail?.movie.map(item => item["_id"]) || []}
               onChange={editSpecial}
             />
           </ProCard>

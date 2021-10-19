@@ -1,9 +1,9 @@
 import { Form, Input } from 'antd'
-import { FormInstance } from 'antd/lib/form'
+import type { FormInstance } from 'antd/lib/form'
 import ProForm,{
   ModalForm,
 } from '@ant-design/pro-form'
-import { Store } from 'antd/lib/form/interface'
+import type { Store } from 'antd/lib/form/interface'
 import React, { useCallback, useMemo, useRef, useState, forwardRef, useImperativeHandle } from 'react'
 import SearchForm from '@/components/TransferSelect'
 import { getMemberList } from '@/services'
@@ -41,7 +41,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       pageSize: 999999
     })
     setMemberList(data.list.map(item => ({
-      key: item._id, 
+      key: item["_id"], 
       title: item.user?.username 
     })))
   }, [formRef])
@@ -49,12 +49,12 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   const onCancel = useCallback(() => {
     setVisible(false)
     formRef.current?.resetFields()
-    propsCancel && propsCancel()
+    propsCancel?.()
   }, [formRef])
 
   const onVisibleChange = useCallback((nowVisible: boolean) => {
     if(!nowVisible) onCancel()
-    if(nowVisible != visible) setVisible(nowVisible)
+    if(nowVisible !== visible) setVisible(nowVisible)
   }, [onCancel, visible])
 
   const onFinish = useCallback(async (values: Store) => {
@@ -72,7 +72,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   }))
 
   const fetchMemberList = useCallback(async () => {
-    let params: API_CHAT.IGetMemberListParams = {
+    const params: API_CHAT.IGetMemberListParams = {
       currPage: 0,
       pageSize: 99999,
     } 
@@ -80,7 +80,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       const data = await getMemberList(params)
       return data.list.map(item => {
         const { _id } = item 
-        const disabled = memberList?.some(member => member.key == _id)
+        const disabled = memberList?.some(member => member.key === _id)
         return { 
           key: _id, 
           title: item.user?.username,
@@ -90,13 +90,13 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
     }catch(er) {
       return []
     }
-  }, [formRef, memberList])
+  }, [memberList])
 
   return (
     <ModalForm
       title="新增成员"
       visible={visible}
-      //@ts-ignore
+      // @ts-ignore
       formRef={formRef}
       onFinish={onFinish}
       onVisibleChange={onVisibleChange}

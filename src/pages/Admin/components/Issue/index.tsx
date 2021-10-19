@@ -8,11 +8,7 @@ import AvatarList from './components/AvatarList'
 import { GetAdminIssueList } from '@/services'
 import styles from './index.less'
 
-export interface IProps {
-
-}
-
-const Issue = (props: IProps) => {
+const Issue = () => {
   
   const [ currPage, setCurrPage ] = useState<number>(1)
   const [ list, setList ] = useState<API_ADMIN.IGetAdminIssueListData[]>([])
@@ -66,10 +62,10 @@ const Issue = (props: IProps) => {
                   autoplay
                 >
                   {
-                    (item.images || []).map(item => {
+                    (item.images || []).map(src => {
                       return (
                         <div>
-                          <img style={{width: '100%', height: 200}} src={item} />
+                          <img style={{width: '100%', height: 200}} src={src} />
                         </div>
                       )
                     })
@@ -77,13 +73,13 @@ const Issue = (props: IProps) => {
                 </Carousel>
               }
             >
-              <div onClick={getUserDetail.bind(this, item._id)}>
+              <div onClick={getUserDetail.bind(null, item["_id"])}>
                 <Card.Meta title={<a>{item.name}</a>} description={item.description} />
                 <div className={styles.cardItemContent}>
                   <span>{moment(item.updatedAt).fromNow()}</span>
                   <div className={styles.avatarList}>
                     <AvatarList
-                      id={item._id}
+                      id={item["_id"]}
                     />
                   </div>
                 </div>

@@ -24,7 +24,7 @@ const InputSearch: React.FC<IProps> = ({
   onChange=noop
 }: IProps) => {
 
-  const [ colorList, setColorList ] = useState<string[]>(value.map(_ => generateColor()))
+  const [ colorList, setColorList ] = useState<string[]>(value.map(() => generateColor()))
 
   const inputRef = useRef<Input | null>(null)
 
@@ -33,14 +33,14 @@ const InputSearch: React.FC<IProps> = ({
   }
 
   const search = (newValue: string) => {
-    let _value = newValue.slice(0, 20)
-    if(value.includes(_value)) {
+    const realValue = newValue.slice(0, 20)
+    if(value.includes(realValue)) {
       message.info('名称已经存在')
       return
     }
     onChange([
       ...value,
-      _value
+      realValue
     ])
     inputRef.current?.setValue('')
   }
@@ -51,10 +51,10 @@ const InputSearch: React.FC<IProps> = ({
     if(len > 0) {
       setColorList([
         ...colorList,
-        ...new Array(len).fill(0).map(_ => generateColor())
+        ...new Array(len).fill(0).map(() => generateColor())
       ])
     }
-  }, [ value ])
+  }, [ value, colorList ])
 
   return (
     <Fragment>

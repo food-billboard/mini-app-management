@@ -23,10 +23,29 @@ export default memo((props: IProps) => {
   const fetchData = useCallback(async (params: Partial<API_DATA.IGetMovieCommentParams>={}) => {
     if(!_id) return 
     setLoading(true)
-    const data = await getMovieCommentList({ _id, currPage, pageSize: 10, ...params }) || {}
+    const commentList = await getMovieCommentList({ _id, currPage, pageSize: 10, ...params }) || {}
     unstable_batchedUpdates(() => {
-      setData(data?.list || [])
-      setTotal(data?.total || 0)
+      setData([
+        {
+          _id: "1",
+          user_info: {
+            _id: "2",
+            username: "222222"
+          },
+          createdAt: "2021-11-11",
+          updatedAt: "2021-11-11",
+          comment_count: 100,
+          like_person_count: 100,
+          total_like: 100,
+          content: {
+            text: "111",
+            image: [],
+            video: []
+          }
+        }
+      ])
+      // setData(commentList?.list || [])
+      setTotal(commentList?.total || 0)
       setLoading(false)
     })
   }, [_id, currPage])
@@ -60,7 +79,7 @@ export default memo((props: IProps) => {
         render: (_: any, record: API_DATA.IGetMovieCommentData) => {
           return (
             <Space>
-              <a style={{color: '#1890ff'}} onClick={edit.bind(this, record._id)}>
+              <a style={{color: '#1890ff'}} onClick={edit.bind(null, record["_id"])}>
                 详情
               </a>
           </Space>
@@ -105,7 +124,7 @@ export default memo((props: IProps) => {
       dataSource={data}
       loading={loading}
       pagination={{ total, pageSize: 10, current: currPage, onChange: onPageChange }}
-      rowKey={record => record._id}
+      rowKey={record => record["_id"]}
       scroll={{x: 'max-content'}}
     />
   )

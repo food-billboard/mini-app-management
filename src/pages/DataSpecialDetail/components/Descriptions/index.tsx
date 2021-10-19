@@ -36,9 +36,9 @@ export default memo((props: IProps) => {
         valueType: 'switch',
         key: 'valid',
         span: 1,
-        render: (value: any) => {
+        render: (valid: any) => {
           return (
-            <Tag color={!!value ? 'lime' : 'red'}>{!!value ? '启用' : '禁用'}</Tag>
+            <Tag color={valid ? 'lime' : 'red'}>{valid ? '启用' : '禁用'}</Tag>
           )
         }
       },
@@ -69,10 +69,10 @@ export default memo((props: IProps) => {
         ...values,
         valueTypeMap: {
           poster: {
-            render: (value: string) => {
-              return <PreImage value={value} />
+            render: (poster: string) => {
+              return <PreImage value={poster} />
             },
-            renderFormItem: (value: any, props: any) => {
+            renderFormItem: (poster: any, posterProps: any) => {
               return (
                 <div
                   style={{
@@ -82,8 +82,8 @@ export default memo((props: IProps) => {
                   }}
                 >
                   <Upload
-                    value={value}
-                    props={props}
+                    value={poster}
+                    props={posterProps}
                   />
                 </div>
               )

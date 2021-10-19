@@ -101,27 +101,27 @@ class Center extends Component<IProps> {
                     <div className={styles.detailTitle}>详情</div>
                     <Row gutter={36}>
                       <Col lg={24} xl={12}>
-                        <Link to={`/member/${userInfo._id}`}>
+                        <Link to={`/member/${userInfo["_id"]}`}>
                           粉丝数量: {userInfo.fans}
                         </Link>
                       </Col>
                       <Col lg={24} xl={12}>
-                        <Link to={`/member/${userInfo._id}`}>
+                        <Link to={`/member/${userInfo["_id"]}`}>
                           评论数量: {userInfo.comment}
                         </Link>
                       </Col>
                       <Col lg={24} xl={12}>
-                        <Link to={`/member/${userInfo._id}`}>
+                        <Link to={`/member/${userInfo["_id"]}`}>
                           收藏数量: {userInfo.store}
                         </Link>
                       </Col>
                       <Col lg={24} xl={12}>
-                        <Link to={`/member/${userInfo._id}`}>
+                        <Link to={`/member/${userInfo["_id"]}`}>
                           关注数量: {userInfo.attentions}
                         </Link>
                       </Col>
                       <Col lg={24} xl={12}>
-                        <Link to={`/member/${userInfo._id}`}>
+                        <Link to={`/member/${userInfo["_id"]}`}>
                           人气: {userInfo.hot}
                         </Link>
                       </Col>

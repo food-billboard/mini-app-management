@@ -21,9 +21,9 @@ export default memo((props: IProps) => {
     setList(data.list || [])
   }, [id])
 
-  const getUserDetail = useCallback((id: string, e) => {
+  const getUserDetail = useCallback((memberId: string, e) => {
     e.stopPropagation()
-    return history.push(`/member/${id}`)
+    return history.push(`/member/${memberId}`)
   }, [])
 
   useEffect(() => {
@@ -38,11 +38,11 @@ export default memo((props: IProps) => {
       {
         list.map(item => (
           <AvatarList.Item
-            key={`${item._id}-avatar-${item._id}`}
+            key={`${item["_id"]}-avatar-${item["_id"]}`}
             src={item.avatar}
             tips={item.username}
             size={"small"}
-            onClick={getUserDetail.bind(this, item._id)}
+            onClick={getUserDetail.bind(null, item["_id"])}
           />
         ))
       }

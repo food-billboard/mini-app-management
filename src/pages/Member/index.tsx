@@ -1,7 +1,8 @@
 import React, { useRef, createRef, useCallback, memo, useMemo } from 'react'
-import { Button, Dropdown, message, Menu, Space, Modal } from 'antd'
+import { Button, Dropdown, message, Menu, Space } from 'antd'
 import { PageHeaderWrapper } from '@ant-design/pro-layout'
-import ProTable, { ActionType } from '@ant-design/pro-table'
+import ProTable from '@ant-design/pro-table'
+import type { ActionType } from '@ant-design/pro-table'
 import { DownOutlined, PlusOutlined, EllipsisOutlined } from '@ant-design/icons'
 import { connect } from 'umi'
 import pickBy from 'lodash/pickBy'
@@ -26,7 +27,7 @@ const MemberManage = memo(() => {
    */
   const handleAdd = useCallback(async (fields: any) => {
     const hide = message.loading('正在添加')
-    const method = !!fields._id ? putUser : postUser
+    const method = fields["_id"] ? putUser : postUser
 
     const { avatar, roles, ...nextFields } = fields
 
@@ -62,6 +63,10 @@ const MemberManage = memo(() => {
     }, actionRef.current?.reloadAndRest)
   }, [actionRef])
 
+  const handleModalVisible = (id?: string) => {
+    modalRef.current?.open(id)
+  }
+
   const columns: any[] = useMemo(() => {
     return [
       ...column ,
@@ -74,7 +79,7 @@ const MemberManage = memo(() => {
           return (
             <Space>
               <a
-                onClick={() => handleModalVisible(record._id)}
+                onClick={() => handleModalVisible(record["_id"])}
               >
                 编辑
               </a>
@@ -87,7 +92,7 @@ const MemberManage = memo(() => {
               <Dropdown overlay={
                 <Menu>
                   <Menu.Item key="detail">
-                    <a style={{color: '#1890ff'}} onClick={() => history.push(`/member/${record._id}`)}>
+                    <a style={{color: '#1890ff'}} onClick={() => history.push(`/member/${record["_id"]}`)}>
                     详情
                     </a>
                   </Menu.Item>
@@ -105,15 +110,11 @@ const MemberManage = memo(() => {
   
   }, [])
 
-  const handleModalVisible = (id?: string) => {
-    modalRef.current?.open(id)
-  }
-
   const onSubmit = useCallback(async value => {
     const { avatar } = value
-    let newParams = omit(value, ['avatar'])
-    if(Array.isArray(avatar) && avatar.length) newParams.avatar = avatar[0]
-    if(typeof avatar == 'string') newParams.avatar = avatar
+    const newParams = omit(value, ['avatar'])
+    if(Array.isArray(avatar) && avatar.length) [newParams.avatar] = avatar
+    if(typeof avatar === 'string') newParams.avatar = avatar
     const success = await handleAdd(newParams)
 
     if (success) {
@@ -132,7 +133,7 @@ const MemberManage = memo(() => {
     newParams = pickBy(newParams, identity)
     return getUserList(newParams)
     .then(({ list, total }) => ({ data: list, total }) )
-    .catch(_ => ({ data: [], total: 0 }))
+    .catch(() => ({ data: [], total: 0 }))
   }, [])
 
   return (
@@ -168,7 +169,7 @@ const MemberManage = memo(() => {
             </Dropdown>
           ),
         ]}
-        tableAlertRender={({ selectedRowKeys, selectedRows } : { selectedRowKeys: React.ReactText[], selectedRows: any[] }) => (
+        tableAlertRender={({ selectedRowKeys }: { selectedRowKeys: React.ReactText[], selectedRows: any[] }) => (
           <div>
             已选择{' '}
             <a

@@ -1,11 +1,11 @@
 import { Form, Input } from 'antd'
-import { FormInstance } from 'antd/lib/form'
+import type { FormInstance } from 'antd/lib/form'
 import {
   ModalForm,
   ProFormTextArea,
   ProFormSelect
 } from '@ant-design/pro-form'
-import { Store } from 'antd/lib/form/interface'
+import type { Store } from 'antd/lib/form/interface'
 import React, { useCallback, useMemo, useRef, useState, forwardRef, useImperativeHandle } from 'react'
 import { MEDIA_AUTH_MAP, MEDIA_UPLOAD_STATUS } from '@/utils'
 
@@ -38,12 +38,12 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   const onCancel = useCallback(() => {
     setVisible(false)
     formRef.current?.resetFields()
-    propsCancel && propsCancel()
-  }, [formRef])
+    propsCancel?.()
+  }, [formRef, propsCancel])
 
   const onVisibleChange = useCallback((nowVisible: boolean) => {
     if(!nowVisible) onCancel()
-    if(nowVisible != visible) setVisible(nowVisible)
+    if(nowVisible !== visible) setVisible(nowVisible)
   }, [onCancel, visible])
 
   const onFinish = useCallback(async (values: Store) => {
@@ -82,7 +82,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
     <ModalForm
       title="媒体资源修改"
       visible={visible}
-      //@ts-ignore
+      // @ts-ignore
       formRef={formRef}
       onFinish={onFinish}
       onVisibleChange={onVisibleChange}

@@ -1,7 +1,8 @@
-import React, { useState, FC, useCallback, memo } from 'react'
+import React, { useState, useCallback, memo } from 'react'
+import type {  FC } from 'react'
 import { Button } from 'antd'
 import { FileImageOutlined } from '@ant-design/icons'
-import { AffixProps } from 'antd/es/affix'
+import type { AffixProps } from 'antd/es/affix'
 
 import styles from './affix.less'
 

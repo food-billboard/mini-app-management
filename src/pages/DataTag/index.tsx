@@ -1,7 +1,8 @@
 import React, { useRef, useCallback, memo, useMemo } from 'react'
-import { Button, Dropdown, message, Menu, Space, Modal } from 'antd'
+import { Button, Dropdown, message, Menu, Space } from 'antd'
 import { PageHeaderWrapper } from '@ant-design/pro-layout'
-import ProTable, { ActionType } from '@ant-design/pro-table'
+import ProTable from '@ant-design/pro-table'
+import type { ActionType } from '@ant-design/pro-table'
 import { DownOutlined } from '@ant-design/icons'
 import { connect } from 'umi'
 import pickBy from 'lodash/pickBy'
@@ -23,7 +24,7 @@ const TagManage = memo(() => {
     const hide = message.loading('正在修改')
 
     try {
-      await putMovieTag({ _id: record._id, valid: !record.valid })
+      await putMovieTag({ _id: record["_id"], valid: !record.valid })
       hide()
       message.success('操作成功')
       return true
@@ -95,7 +96,7 @@ const TagManage = memo(() => {
     newParams = pickBy(newParams, identity)
     return getMovieTagList(newParams)
     .then(({ list, total }) => ({ data: list, total }) )
-    .catch(_ => ({ data: [], total: 0 }))
+    .catch(() => ({ data: [], total: 0 }))
   }, [])
 
   return (
@@ -129,7 +130,7 @@ const TagManage = memo(() => {
             </Dropdown>
           ),
         ]}
-        tableAlertRender={({ selectedRowKeys, selectedRows } : { selectedRowKeys: React.ReactText[], selectedRows: any[] }) => (
+        tableAlertRender={({ selectedRowKeys }: { selectedRowKeys: React.ReactText[], selectedRows: any[] }) => (
           <div>
             已选择{' '}
             <a

@@ -1,12 +1,13 @@
 // https://umijs.org/config/
 import { defineConfig } from 'umi';
+import { merge } from 'lodash'
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routerConfig from './router-config';
 
 const { REACT_APP_ENV } = process.env;
 
-export default defineConfig({
+const commonConfig = {
   hash: true,
   antd: {},
   dva: {
@@ -47,13 +48,23 @@ export default defineConfig({
   manifest: {
     basePath: '/',
   },
+}
+
+const developmentConfig: any = merge({}, commonConfig, {
   define: {
     'process.env.REACT_APP_ENV': 'dev',
-    // 'process.env.REACT_APP_ENV': 'prod'
   },
-  ...(REACT_APP_ENV === 'prod' ? {
-    //-----打包配置
-    base: '/api/backend/',
-    publicPath: "/api/backend/"
-  } : {})
-});
+})
+
+const productionConfig: any = merge({}, commonConfig, {
+  define: {
+    'process.env.REACT_APP_ENV': 'prod'
+  },
+  //-----打包配置
+  base: '/api/backend/',
+  publicPath: "/api/backend/"
+})
+
+export default defineConfig(
+  REACT_APP_ENV === "prod" ? productionConfig : developmentConfig
+);

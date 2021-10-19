@@ -3,10 +3,10 @@ import { Result, Button } from 'antd'
 import { history } from 'umi'
 import Video from '@/components/Video'
 
-export function PreView(videos: string | string[], event: any) {
+export function PreView(videos: string | string[]) {
   if(!videos) return 
-  let list = Array.isArray(videos) ? videos : [videos]
-  return history.push({
+  const list = Array.isArray(videos) ? videos : [videos]
+  history.push({
     pathname: '/media/video',
     query: {
       url: list[0],

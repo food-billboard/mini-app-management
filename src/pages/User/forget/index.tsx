@@ -32,7 +32,7 @@ class Register extends Component<any> {
     this.setState({ type })
   }
 
-  public setSubmitting = (submitting:boolean) => {
+  public setSubmitting = (submitting: boolean) => {
     this.setState({
       submitting
     })
@@ -72,7 +72,7 @@ class Register extends Component<any> {
               countDown={120}
               getCaptchaButtonText=""
               getCaptchaSecondText="秒"
-              captchaType={'forget'}
+              captchaStatus={'forget'}
             />
             <Password
               name="password"

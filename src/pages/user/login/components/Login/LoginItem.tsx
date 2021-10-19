@@ -1,11 +1,12 @@
 import { Button, Col, Input, Row, Form, message } from 'antd';
 import React, { useState, useCallback, useEffect } from 'react';
 import omit from 'omit.js';
-import { FormItemProps } from 'antd/es/form/FormItem';
+import type { FormItemProps } from 'antd/es/form/FormItem';
 import { getCaptcha } from '@/services/login';
 
 import ItemMap from './map';
-import LoginContext, { LoginContextProps } from './LoginContext';
+import LoginContext from './LoginContext';
+import type { LoginContextProps } from './LoginContext';
 import styles from './index.less';
 
 export type WrappedLoginItemProps = LoginItemProps;
@@ -32,7 +33,7 @@ export interface LoginItemProps extends Partial<FormItemProps> {
   customProps?: { [key: string]: unknown };
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   tabUtil?: LoginContextProps['tabUtil'];
-  captchaType?: 'register' | 'forget'
+  captchaStatus?: 'register' | 'forget'
 }
 
 const FormItem = Form.Item;
@@ -78,7 +79,7 @@ const LoginItem: React.FC<LoginItemProps> = (props) => {
   } = props;
 
   const onGetCaptcha = useCallback(async (email: string) => {
-    const result = await getCaptcha(email, props.captchaType || 'register');
+    const result = await getCaptcha(email, props.captchaStatus || 'register');
     if (result === false) {
       return
     }

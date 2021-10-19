@@ -6,7 +6,8 @@ import { getMediaList } from '@/services'
 import { formatUrl } from '@/utils'
 import { isObjectId } from '@/components/Upload/util'
 import Affix from './components/Affix'
-import { ImageConfig, IImageConfigRef } from './components/Config'
+import { ImageConfig } from './components/Config'
+import type { IImageConfigRef } from './components/Config'
 import 'viewerjs/dist/viewer.css'
 import styles from './index.less'
 
@@ -61,28 +62,23 @@ class ImagePreview extends PureComponent<any> {
   }
 
   public fetchData = async (urls: TSrc[]) => {
-    let newValues = []
-    for(let i = 0; i < urls.length; i ++) {
-      const target = urls[i]
-      const { src } = target 
+    const newValues = await Promise.allSettled(urls.map(item => {
+      const { src } = item 
       if(typeof src === 'string' && !isObjectId(src)) {
-        newValues.push({
+        return {
           src: formatUrl(src)
-        })
-      }else {
-        try {
-          const data = await getMediaList({
-            type: 0,
-            _id: src
-          })
-          newValues.push({
-            src: formatUrl(data.list[0].src)
-          })
-        }catch(err) {
-          // return ''
         }
       }
-    }
+      return getMediaList({
+        type: 0,
+        _id: src
+      })
+      .then(data => {
+        return {
+          src: formatUrl(data.list[0].src)
+        }
+      })
+    }))
     this.setState({
       values: newValues
     })
@@ -91,8 +87,8 @@ class ImagePreview extends PureComponent<any> {
 
   public getUrl = () => {
     const { location: { query } } = history
-    const { url=[] } = query as { url: string[] | undefined } || {}
-    return (Array.isArray(url) ? url : [url])?.map(url => {
+    const { url: videoUrl=[] } = query as { url: string[] | undefined } || {}
+    return (Array.isArray(videoUrl) ? videoUrl : [videoUrl])?.map(url => {
       return {
         src: url
       }

@@ -1,6 +1,7 @@
 import { Avatar, Tooltip } from 'antd'
-import { AvatarProps } from 'antd/es/avatar'
-import React, { useMemo, ReactElement, JSXElementConstructor, ReactChildren } from 'react'
+import type { AvatarProps } from 'antd/es/avatar'
+import React, { useMemo } from 'react'
+import type { ReactElement, JSXElementConstructor, ReactChildren } from 'react'
 import classNames from 'classnames'
 import styles from './index.less'
 

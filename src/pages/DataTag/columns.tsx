@@ -46,7 +46,7 @@ export default [
     hideInSearch: true,
     render: (source: API_DATA.IGetMovieTagResData["source"]) => {
       return (
-        <a onClick={() => history.push(`/data/main/${source._id}`)}>{source.name}</a>
+        <a onClick={() => history.push(`/data/main/${source["_id"]}`)}>{source.name}</a>
       )
     }
   },
@@ -56,7 +56,7 @@ export default [
     sorter: true,
     valueType: 'date',
     hideInSearch: true,
-    renderFormItem: (_: any, { type, defaultRender, ...rest }: any, form: any) => {
+    renderFormItem: (_: any, { type, defaultRender, ...rest }: any) => {
       return <RangePicker {...rest} />
     },
     renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
@@ -97,7 +97,7 @@ export default [
     hideInSearch: true,
     renderText: (value: boolean) => {
       return (
-        <Tag color={!!value ? 'green' : 'red'}>{!!value ? '启用' : '禁用'}</Tag>
+        <Tag color={value ? 'green' : 'red'}>{value ? '启用' : '禁用'}</Tag>
       )
     }
   },

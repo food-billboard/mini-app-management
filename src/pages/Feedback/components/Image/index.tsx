@@ -1,7 +1,7 @@
 import React, { memo, useMemo } from 'react'
 import { Tooltip, Carousel, Image } from 'antd'
 import { history } from 'umi'
-import { ImageProps } from 'antd/es/image'
+import type { ImageProps } from 'antd/es/image'
 import { IMAGE_FALLBACK } from '@/utils'
 
 export interface IImageProps {

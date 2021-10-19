@@ -17,7 +17,7 @@ export default [
     dataIndex: 'username',
     hideInSearch: true,
     render: (_: string, record: API_CHAT.IGetMemberListResData) => <a onClick={() => {
-      if(record.user?._id) history.push(`/member/${record.user?._id}`)
+      if(record.user?.["_id"]) history.push(`/member/${record.user?.["_id"]}`)
     }}>{record.user?.username || `[临时游客]`}</a>
   },
   {
@@ -67,7 +67,7 @@ export default [
     sorter: true,
     valueType: 'date',
     hideInSearch: true,
-    renderFormItem: (_: any, { type, defaultRender, ...rest }: any, form: any) => {
+    renderFormItem: (_: any, { type, defaultRender, ...rest }: any) => {
       return <RangePicker {...rest} />
     },
     renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')

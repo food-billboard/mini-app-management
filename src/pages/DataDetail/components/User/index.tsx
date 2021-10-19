@@ -24,10 +24,10 @@ export default memo((props: IProps) => {
   const fetchData = useCallback(async (params: Partial<API_DATA.IGetGlanceUserListParams>={}) => {
     if(!_id) return 
     setLoading(true)
-    const data = await getGlanceUserList({ _id, currPage, pageSize: 10, ...params }) || {}
+    const userList = await getGlanceUserList({ _id, currPage, pageSize: 10, ...params }) || {}
     unstable_batchedUpdates(() => {
-      setData(data?.list || [])
-      setTotal(data?.total || 0)
+      setData(userList?.list || [])
+      setTotal(userList?.total || 0)
       setLoading(false)
     })
   }, [_id, currPage])
@@ -43,12 +43,12 @@ export default memo((props: IProps) => {
   const onPageChange = useCallback((page) => {
     setCurrPage(page)
     fetchData()
-  }, [currPage])
+  }, [fetchData])
 
   const init = useCallback(async (value) => {
     setCurrPage(1)
     await fetchData(value)
-  }, [])
+  }, [fetchData])
 
   const columns = useMemo(() => {
     return [
@@ -61,7 +61,7 @@ export default memo((props: IProps) => {
         render: (_: any, record: API_DATA.IGetGlanceUserListData) => {
           return (
             <Space>
-              <a style={{color: '#1890ff'}} onClick={edit.bind(this, record._id)}>
+              <a style={{color: '#1890ff'}} onClick={edit.bind(null, record["_id"])}>
                 详情
               </a>
           </Space>
@@ -73,7 +73,7 @@ export default memo((props: IProps) => {
   }, [])
 
   const title = useMemo(() => {
-    return function() {
+    return function render() {
       return (
         <LightFilter
           collapse
@@ -118,7 +118,7 @@ export default memo((props: IProps) => {
       dataSource={data}
       loading={loading}
       pagination={{ total, pageSize: 10, current: currPage, onChange: onPageChange }}
-      rowKey={record => record._id}
+      rowKey={record => record["_id"]}
       scroll={{x: 'max-content'}}
     />
   )

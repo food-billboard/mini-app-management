@@ -1,9 +1,9 @@
 import { history } from 'umi'
 
-export default function(images: string | string[], event: any) {
+export default function preview(images: string | string[]) {
   if(!images) return 
-  let list = Array.isArray(images) ? images : [images]
-  return history.push({
+  const list = Array.isArray(images) ? images : [images]
+  history.push({
     pathname: '/media/image',
     query: {
       url: list,

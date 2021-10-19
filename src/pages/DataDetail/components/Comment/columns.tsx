@@ -1,7 +1,9 @@
 import React from 'react'
 import { history } from 'umi'
 import moment from 'moment'
-import Content from './content'
+import { Typography } from 'antd'
+
+const { Text } = Typography
 
 export default [
   {
@@ -14,7 +16,7 @@ export default [
     title: '用户名',  
     key: 'user_info',
     render: (value: { _id: string, username: string }) => {
-      return <a onClick={() => history.push(`/member/${value._id}`)}>{value?.username}</a>
+      return <a onClick={() => history.push(`/member/${value["_id"]}`)}>{value?.username}</a>
     }
   },
   {
@@ -39,7 +41,7 @@ export default [
     key: 'content',
     render: (val: { text?: string, image?: string[], video?: string[] }) => {
       return (
-        <Content value={val} />
+        <Text ellipsis>{val.text || "该评论无文字内容"}</Text>
       )
     }
   },

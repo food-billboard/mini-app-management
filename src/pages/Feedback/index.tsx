@@ -1,14 +1,16 @@
 import React, { useRef, useCallback, memo, useMemo } from 'react'
-import { Button, Dropdown, message, Menu, Space, Modal } from 'antd'
+import { Button, Dropdown, message, Menu, Space } from 'antd'
 import { PageHeaderWrapper } from '@ant-design/pro-layout'
-import ProTable, { ActionType } from '@ant-design/pro-table'
+import ProTable from '@ant-design/pro-table'
+import type { ActionType } from '@ant-design/pro-table'
 import { DownOutlined } from '@ant-design/icons'
 import { connect } from 'umi'
 import merge from 'lodash/merge'
 import pickBy from 'lodash/pickBy'
 import pick from 'lodash/pick'
 import identity from 'lodash/identity'
-import FeedbackModal, { IFeedbackModalRef, TFeedbackEditData } from './components/FeedbackModal'
+import FeedbackModal from './components/FeedbackModal'
+import type { IFeedbackModalRef, TFeedbackEditData } from './components/FeedbackModal'
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import column from './columns'
 import { getUserFeedbackList, putUserFeedback, deleteUserFeedback } from '@/services'
@@ -29,16 +31,20 @@ const FeedbackManage = memo(() => {
     const params = pick(fields, ['_id', 'status', 'description']) as API_USER.IPutFeedbackParams
 
     return putUserFeedback(params)
-    .then(_ => {
+    .then(() => {
       message.success('操作成功')
       hide()
       actionRef.current?.reload()
     })
-    .catch(err => {
+    .catch(() => {
       message.success('操作失败，请重试')
       hide()
     })
 
+  }, [])
+
+  const edit = useCallback((data: API_USER.IGetFeedbackData) => {
+    feedbackRef.current?.open(merge({}, data, { description: '' }))
   }, [])
 
   /**
@@ -69,7 +75,7 @@ const FeedbackManage = memo(() => {
               {
                 record.status === 'DEALING' && (
                   <a
-                    onClick={edit.bind(this, record)}
+                    onClick={edit.bind(null, record)}
                   >
                     完成处理
                   </a>
@@ -87,7 +93,7 @@ const FeedbackManage = memo(() => {
       }
     ]
   
-  }, [])
+  }, [edit, handleRemove])
 
   const fetchData = useCallback(async (params: any) => {
     const { current, ...nextParams } = params
@@ -98,17 +104,13 @@ const FeedbackManage = memo(() => {
     newParams = pickBy(newParams, identity)
     return getUserFeedbackList(newParams)
     .then(({ list, total }) => ({ data: list, total }) )
-    .catch(_ => ({ data: [], total: 0 }))
-  }, [])
-
-  const edit = useCallback((data: API_USER.IGetFeedbackData) => {
-    feedbackRef.current?.open(merge({}, data, { description: '' }))
+    .catch(() => ({ data: [], total: 0 }))
   }, [])
 
   const onInputOk = useCallback((value: TFeedbackEditData) => {
     return handleAdd(value)
-    .then(_ => true)
-    .catch(_ => false)
+    .then(() => true)
+    .catch(() => false)
   }, [handleAdd])
 
   return (
@@ -141,7 +143,7 @@ const FeedbackManage = memo(() => {
             </Dropdown>
           ),
         ]}
-        tableAlertRender={({ selectedRowKeys, selectedRows } : { selectedRowKeys: React.ReactText[], selectedRows: any[] }) => (
+        tableAlertRender={({ selectedRowKeys }: { selectedRowKeys: React.ReactText[], selectedRows: any[] }) => (
           <div>
             已选择{' '}
             <a

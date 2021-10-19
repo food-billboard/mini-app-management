@@ -1,7 +1,7 @@
 import { Alert } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'umi';
-import { LoginParamsType } from '@/services/login';
+import type { LoginParamsType } from '@/services/login';
 import LoginForm from '../login/components/Login';
 import styles from './index.less';
 
@@ -32,7 +32,7 @@ class Register extends Component<any> {
     this.setState({ type })
   }
 
-  public setSubmitting = (submitting:boolean) => {
+  public setSubmitting = (submitting: boolean) => {
     this.setState({
       submitting
     })
@@ -84,7 +84,7 @@ class Register extends Component<any> {
               countDown={120}
               getCaptchaButtonText=""
               getCaptchaSecondText="秒"
-              captchaType={'register'}
+              captchaStatus={'register'}
             />
           </Tab>
           <Submit loading={submitting}>注册</Submit>

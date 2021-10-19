@@ -61,11 +61,11 @@ const Comments = memo((props: IProps) => {
 
   const renderMedia = useCallback((content: API_ADMIN.IGetAdminCommentData["content"]) => {
     const { image=[], video=[] } = content || {}
-    let result = [...image.map(item => ({ src: item, video: false }))]
+    const result = [...image.map(item => ({ src: item, video: false }))]
     result.push(...video.map(item => ({ src: item, video: true })))
     return result.map((item) => {
       const { video: isVideo, src } = item 
-      const method = isVideo ? VideoPreView.bind(this, video) : Preview.bind(this, image)
+      const method = isVideo ? VideoPreView.bind(null, video) : Preview.bind(null, image)
       return (
         <Col 
           span={8}
@@ -99,7 +99,7 @@ const Comments = memo((props: IProps) => {
         dataSource={list}
         renderItem={item => (
           <List.Item
-            key={item._id}
+            key={item["_id"]}
             actions={[
               // <IconText key="star" type="star" text={item.total_like} />,
               <IconText key="like" type="like" text={item.total_like.toString()} />,

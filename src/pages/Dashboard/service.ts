@@ -10,7 +10,7 @@ export interface INavUserCount {
 
 export interface INavVisitDay extends Pick<INavUserCount, 'total'> {
   day_count: number
-  data: Array<IDataStatisticsData>
+  data: IDataStatisticsData[]
 } 
 
 export interface INavDataCount extends Pick<INavUserCount & INavVisitDay, 'total' | 'week_add' | 'day_add' | 'day_count' | 'data'> {}
@@ -60,37 +60,37 @@ export interface IGetDataTypeStatisticsData {
 }
 
 export interface IGetDataStatisticsList {
-  data: Array<IDataStatisticsData>
-  rank: Array<IDataStatisticsRank>
+  data: IDataStatisticsData[]
+  rank: IDataStatisticsRank[]
 }
 
 export interface IGetUserStatisticsList {
-  data: Array<IUserStatisticsData>
-  rank: Array<IUserStatisticsRank>
+  data: IUserStatisticsData[]
+  rank: IUserStatisticsRank[]
 }
 
-export type IGetVisitStatisticsList = Array<IVisitStatisticsData>
+export type IGetVisitStatisticsList = IVisitStatisticsData[]
 
 export interface IGetKeywordStatisticsList {
   total: number
   average: number
   count_total_day: number
   count_average_day: number
-  total_chart: Array<IKyewordStatisticsTotalChart>
-  average_chart: Array<IKyewordStatisticsAverageChart>
-  data: Array<IKyewordStatisticsData>
+  total_chart: IKyewordStatisticsTotalChart[]
+  average_chart: IKyewordStatisticsAverageChart[]
+  data: IKyewordStatisticsData[]
 }
 
-export type IGetDataTypeStatisticsList = Array<{ value: number } & Pick<IDataStatisticsRank, '_id' | 'name'>>
+export type IGetDataTypeStatisticsList = ({ value: number } & Pick<IDataStatisticsRank, '_id' | 'name'>)[]
 
-//导航卡
+// 导航卡
 export const getNavCardList = () => {
   return request<IGetNavCardList>('/api/manage/dashboard/nav', {
     method: 'GET'
   })
 }
 
-//电影上传数据
+// 电影上传数据
 export const getDataStatisticsList = (params: {
   date_type?: 'year' | 'month' | 'week' | 'day'
   start_date?: string
@@ -102,7 +102,7 @@ export const getDataStatisticsList = (params: {
   })
 }
 
-//注册用户数据
+// 注册用户数据
 export const getUserStatisticsList = (params: {
   date_type?: 'year' | 'month' | 'week' | 'day'
   start_date?: string
@@ -114,7 +114,7 @@ export const getUserStatisticsList = (params: {
   })
 }
 
-//用户活跃数据
+// 用户活跃数据
 export const getVisitStatisticsList = (params: {
   date_type?: 'year' | 'month' | 'week' | 'day'
   start_date?: string
@@ -126,7 +126,7 @@ export const getVisitStatisticsList = (params: {
   })
 }
 
-//关键词搜索数据
+// 关键词搜索数据
 export const getKeywordStatisticsList = (params: {
   currPage?: number
   pageSize?: number
@@ -138,7 +138,7 @@ export const getKeywordStatisticsList = (params: {
   })
 }
 
-//电影分类数据
+// 电影分类数据
 export const getDataTypeStatisticsList = () => {
   return request<IGetDataTypeStatisticsList>('/api/manage/dashboard/search/type', {
     method: 'GET'

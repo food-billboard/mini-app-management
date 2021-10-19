@@ -1,13 +1,16 @@
 import React, { useRef, useCallback, memo, useMemo, useState } from 'react'
 import { Button, Dropdown, message, Menu, Space, Modal } from 'antd'
 import { PageContainer } from '@ant-design/pro-layout'
-import ProTable, { ActionType } from '@ant-design/pro-table'
+import ProTable from '@ant-design/pro-table'
+import type { ActionType } from '@ant-design/pro-table'
 import { DownOutlined, EllipsisOutlined } from '@ant-design/icons'
 import { connect, history } from 'umi'
 import { noop } from 'lodash'
 import { mapStateToProps, mapDispatchToProps } from './connect'
-import CreateForm, { IFormRef } from './components/CreateForm'
-import ListModal, { ListModalRef, formatData } from './components/ListModal'
+import CreateForm from './components/CreateForm'
+import type { IFormRef } from './components/CreateForm'
+import ListModal, { formatData } from './components/ListModal'
+import type { ListModalRef } from './components/ListModal'
 import column from './columns'
 import { MEDIA_TYPE_MAP, sleep } from '@/utils'
 import { getMediaList, updateMedia, deleteMedia, getMediaValid } from '@/services'
@@ -25,7 +28,7 @@ const MediaManage = memo(() => {
   const handleAdd = useCallback(async (fields: any) => {
     const hide = message.loading('正在修改')
 
-    let params = {
+    const params = {
       ...fields,
       type: MEDIA_TYPE_MAP[activeKey]
     }
@@ -99,17 +102,21 @@ const MediaManage = memo(() => {
       }
       hide()
     })
-    .then(_ => {
+    .then(() => {
       actionRef.current?.reloadAndRest?.()
     })
-    .catch(err => {
+    .catch(() => {
       hide()
       message.info('操作失败，请重试')
     })
   }, [activeKey, actionRef, listModalRef])
 
+  const handleModalVisible = (value: API_MEDIA.IGetMediaListData) => {
+    modalRef.current?.open(value)
+  }
+
   const columns: any[] = useMemo(() => {
-    const newColumn = activeKey === 'video' ? column : column.filter(item => item.dataIndex != 'poster')
+    const newColumn = activeKey === 'video' ? column : column.filter(item => item.dataIndex !== 'poster')
     return [
       ...newColumn ,
       {
@@ -134,12 +141,12 @@ const MediaManage = memo(() => {
               <Dropdown overlay={
                 <Menu>
                   <Menu.Item>
-                    <a style={{color: '#1890ff'}} onClick={getDetail.bind(this, record.src)}>
+                    <a style={{color: '#1890ff'}} onClick={getDetail.bind(null, record.src)}>
                     详情
                     </a>
                   </Menu.Item>
                   <Menu.Item>
-                    <a style={{color: '#1890ff'}} onClick={getProcess.bind(this, record._id)}>
+                    <a style={{color: '#1890ff'}} onClick={getProcess.bind(null, record["_id"])}>
                       完成度检测
                     </a>
                   </Menu.Item>
@@ -157,10 +164,6 @@ const MediaManage = memo(() => {
   
   }, [getDetail, handleRemove, getProcess, activeKey])
 
-  const handleModalVisible = (value: API_MEDIA.IGetMediaListData) => {
-    modalRef.current?.open(value)
-  }
-
   const onSubmit = useCallback(async value => {
     const success = await handleAdd(value)
     if (success) {
@@ -172,19 +175,19 @@ const MediaManage = memo(() => {
 
   const fetchData = useCallback(async (params: any) => {
     const { current, size, minSize, maxSize, ...nextParams } = params
-    let newParams = {
+    const newParams = {
       ...nextParams,
       type: MEDIA_TYPE_MAP[activeKey] as any,
       currPage: current - 1,
     }
-    if(typeof size === 'number' || typeof minSize === 'number' || typeof maxSize === 'number') params.size = size ? size : `${minSize},${maxSize}`
+    if(typeof size === 'number' || typeof minSize === 'number' || typeof maxSize === 'number') newParams.size = size ?? `${minSize},${maxSize}`
     return getMediaList(newParams)
     .then(({ list, total }) => ({ data: list, total }) )
-    .catch(_ => ({ data: [], total: 0 }))
+    .catch(() => ({ data: [], total: 0 }))
   }, [activeKey])
 
-  const onTabChange = useCallback(async (activeKey: string) => {
-    setActiveKey(activeKey as keyof typeof MEDIA_TYPE_MAP)
+  const onTabChange = useCallback(async (newActiveKey: string) => {
+    setActiveKey(newActiveKey as keyof typeof MEDIA_TYPE_MAP)
     await sleep(100)
     actionRef.current?.reload()
   }, [actionRef])
@@ -223,7 +226,7 @@ const MediaManage = memo(() => {
                     if (e.key === 'remove') {
                       await handleRemove(selectedRows)
                     }else if(e.key === "valid") {
-                      await getProcess(selectedRows.map(item => item._id))
+                      await getProcess(selectedRows.map(item => item["_id"]))
                     }
                   }}
                   selectedKeys={[]}
@@ -239,7 +242,7 @@ const MediaManage = memo(() => {
             </Dropdown>
           ),
         ]}
-        tableAlertRender={({ selectedRowKeys, selectedRows } : { selectedRowKeys: React.ReactText[], selectedRows: any[] }) => (
+        tableAlertRender={({ selectedRowKeys }: { selectedRowKeys: React.ReactText[], selectedRows: any[] }) => (
           <div>
             已选择{' '}
             <a

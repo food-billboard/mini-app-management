@@ -1,11 +1,11 @@
 import { Form, Input } from 'antd'
-import { FormInstance } from 'antd/lib/form'
-import ProForm, {
+import type { FormInstance } from 'antd/lib/form'
+import {
   ModalForm,
   ProFormTextArea,
   ProFormSwitch
 } from '@ant-design/pro-form'
-import { Store } from 'antd/lib/form/interface'
+import type { Store } from 'antd/lib/form/interface'
 import React, { useCallback, useMemo, useRef, useState, forwardRef, useImperativeHandle } from 'react'
 
 type FormData = API_INSTANCE.IPutInstanceInfoParams | API_INSTANCE.IPostInstanceInfoParams 
@@ -37,7 +37,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
     }
 
     if(isEdit) {
-      //获取修改的数据
+      // 获取修改的数据
       formRef.current?.setFieldsValue(values)
       show()
     }
@@ -48,12 +48,12 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   const onCancel = useCallback(() => {
     setVisible(false)
     formRef.current?.resetFields()
-    propsCancel && propsCancel()
-  }, [formRef])
+    propsCancel?.()
+  }, [formRef, propsCancel])
 
   const onVisibleChange = useCallback((nowVisible: boolean) => {
     if(!nowVisible) onCancel()
-    if(nowVisible != visible) setVisible(nowVisible)
+    if(nowVisible !== visible) setVisible(nowVisible)
   }, [onCancel, visible])
 
   const onFinish = useCallback(async (values: Store) => {
@@ -70,7 +70,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
     <ModalForm
       title="新增实例"
       visible={visible}
-      //@ts-ignore
+      // @ts-ignore
       formRef={formRef}
       onFinish={onFinish}
       onVisibleChange={onVisibleChange}

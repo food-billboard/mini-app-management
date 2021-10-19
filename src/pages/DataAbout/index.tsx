@@ -1,14 +1,14 @@
-import React, { FC, memo, useCallback, useEffect, useState } from 'react'
+import React, { memo, useCallback, useEffect, useState } from 'react'
+import type { FC } from 'react'
 import { unstable_batchedUpdates } from 'react-dom'
 import { Row, Col, Card } from 'antd'
 import { PageHeaderWrapper } from '@ant-design/pro-layout'
 import { history } from 'umi'
-import TagCloud, { ICloudData } from '../Dashboard/components/Charts/TagCloud'
+import TagCloud from '../Dashboard/components/Charts/TagCloud'
+import type { ICloudData } from '../Dashboard/components/Charts/TagCloud'
 import { getActorInfo, getDirectorInfo, getDistrictInfo, getLanguageInfo, getClassifyInfo } from '@/services'
 import { localFetchData4Array } from '../DataEdit/utils'
 import styles from './style.less'
-
-interface IProps {}
 
 interface IList {
   title: string
@@ -16,7 +16,7 @@ interface IList {
   action: () => void
 }
 
-const DataAbout: FC<IProps> = () => {
+const DataAbout: FC<any> = () => {
 
   const [ loading, setLoading ] = useState<boolean>(true)
   const [ list, setList ] = useState<IList[]>([])
@@ -44,8 +44,8 @@ const DataAbout: FC<IProps> = () => {
     }
   }, [])
 
-  const wrapperRandomData: (list?: any[]) => ICloudData[] = useCallback((list) => {
-    return (list ?? []).map(item => {
+  const wrapperRandomData: (list?: any[]) => ICloudData[] = useCallback((dataList) => {
+    return (dataList ?? []).map(item => {
       const value = (Math.random() * 100).toFixed(0) + 20
       return { ...item, text: item.name, value }
     })

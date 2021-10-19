@@ -23,17 +23,13 @@ export default memo((props: IProps) => {
   const fetchData = useCallback(async () => {
     setLoading(true)
     const ids = value.join(',')
-    const data = await getMovieList({ _id: ids }) || {}
+    const movieList = await getMovieList({ _id: ids }) || {}
     unstable_batchedUpdates(() => {
-      setData(data?.list || [])
-      setTotal(data?.total || 0)
+      setData(movieList?.list || [])
+      setTotal(movieList?.total || 0)
       setLoading(false)
     })
   }, [value])
-
-  const onTableChange = useCallback((pagination) => {
-
-  }, [])
 
   const edit = useCallback((id: string) => {
     return history.push(`/data/main/${id}`)
@@ -61,20 +57,20 @@ export default memo((props: IProps) => {
           return (
             <Space>
             <a
-              onClick={edit.bind(this, record._id)}
+              onClick={edit.bind(null, record["_id"])}
             >
               编辑
             </a>
             <a
               style={{color: 'red'}}
-              onClick={handleRemove.bind(this, record._id)}
+              onClick={handleRemove.bind(null, record["_id"])}
             >
               删除
             </a>
             <Dropdown overlay={
               <Menu>
                 <Menu.Item>
-                  <a style={{color: '#1890ff'}} onClick={edit.bind(this, record._id)}>
+                  <a style={{color: '#1890ff'}} onClick={edit.bind(null, record["_id"])}>
                   详情
                   </a>
                 </Menu.Item>
@@ -99,8 +95,7 @@ export default memo((props: IProps) => {
       dataSource={data}
       loading={loading}
       pagination={{ total, pageSize: 10 }}
-      rowKey={record => record._id}
-      onChange={onTableChange}
+      rowKey={record => record["_id"]}
       scroll={{x: 'max-content'}}
     />
   )

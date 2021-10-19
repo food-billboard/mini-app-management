@@ -1,15 +1,17 @@
 import React, { useRef, useCallback, memo } from 'react'
 import { Button, Dropdown, message, Menu, Space } from 'antd'
 import { PageHeaderWrapper } from '@ant-design/pro-layout'
-import ProTable, { ActionType } from '@ant-design/pro-table'
+import ProTable from '@ant-design/pro-table'
+import type { ActionType } from '@ant-design/pro-table'
 import { DownOutlined, PlusOutlined } from '@ant-design/icons'
 import { connect } from 'umi'
 import pick from 'lodash/pick'
-import Form, { IFormRef } from './components/form'
+import Form from './components/form'
+import type { IFormRef } from './components/form'
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import column from './columns'
 import { getInstanceInfoList, deleteInstanceInfo, postInstanceInfo, putInstanceInfo } from '@/services'
-import { commonDeleteMethod } from '@/utils'
+import { commonDeleteMethod, withTry } from '@/utils'
 
 const InstanceManage: React.FC<any> = () => {
 
@@ -19,7 +21,7 @@ const InstanceManage: React.FC<any> = () => {
 
   const handleAdd = useCallback(async (values: API_INSTANCE.IPostInstanceInfoParams | API_INSTANCE.IPutInstanceInfoParams) => {
     try {
-      if((values as API_INSTANCE.IPutInstanceInfoParams)._id) {
+      if((values as API_INSTANCE.IPutInstanceInfoParams)["_id"]) {
         await putInstanceInfo(values as API_INSTANCE.IPutInstanceInfoParams)
       }else {
         await postInstanceInfo(values as API_INSTANCE.IPostInstanceInfoParams)
@@ -27,9 +29,8 @@ const InstanceManage: React.FC<any> = () => {
       message.success('操作成功')
       return Promise.resolve() 
     }catch(err) {
-      console.error(err)
       message.error('操作失败')
-      return Promise.reject(false) 
+      return Promise.reject(new Error("false")) 
     }
   }, [])
 
@@ -38,8 +39,8 @@ const InstanceManage: React.FC<any> = () => {
       ...pick(record, ['info', 'notice', '_id']),
       valid: value
     })
-    actionRef.current?.reload()
-  }, [])
+    actionRef.current?.reloadAndRest?.()
+  }, [actionRef, handleAdd])
 
   const handleModalVisible = useCallback((values?: API_INSTANCE.IGetInstanceInfoData) => {
     modalRef.current?.open(values)
@@ -78,14 +79,14 @@ const InstanceManage: React.FC<any> = () => {
             </a>
             {
               (valid) && (
-                <a onClick={putInfo.bind(this, false, record)} style={{color: 'red'}}>
+                <a onClick={putInfo.bind(null, false, record)} style={{color: 'red'}}>
                   禁用
                 </a>
               )
             }
             {
               (!valid) && (
-                <a style={{color: '#1890ff'}} onClick={putInfo.bind(this, true, record)}>
+                <a style={{color: '#1890ff'}} onClick={putInfo.bind(null, true, record)}>
                   启用
                 </a>
               )
@@ -130,7 +131,7 @@ const InstanceManage: React.FC<any> = () => {
             </Dropdown>
           ),
         ]}
-        tableAlertRender={({ selectedRowKeys, selectedRows } : { selectedRowKeys: React.ReactText[], selectedRows: any[] }) => (
+        tableAlertRender={({ selectedRowKeys }: { selectedRowKeys: React.ReactText[], selectedRows: any[] }) => (
           <div>
             已选择{' '}
             <a
@@ -146,22 +147,18 @@ const InstanceManage: React.FC<any> = () => {
             </span>
           </div>
         )}
-        request={async (_: any) => {
+        request={async () => {
           return getInstanceInfoList()
           .then(({ list, total }) => ({ data: list, total }) )
-          .catch(_ => ({ data: [], total: 0 }))
+          .catch(() => ({ data: [], total: 0 }))
         }}
         columns={columns}
         rowSelection={{}}
       />
       <Form
         onSubmit={async value => {
-          try {
-            await handleAdd(value)
-            actionRef.current?.reload()
-          }catch(err) {
-
-          }
+          await withTry(handleAdd)(value)
+          actionRef.current?.reload()
         }}
         ref={modalRef}
       />

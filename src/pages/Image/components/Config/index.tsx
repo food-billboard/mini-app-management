@@ -1,6 +1,6 @@
 import React, { useImperativeHandle, useState, forwardRef, useCallback, memo } from 'react'
 import { Drawer, Result, InputNumber, Button, Descriptions } from 'antd'
-import { DrawerProps } from 'antd/es/drawer'
+import type { DrawerProps } from 'antd/es/drawer'
 import ViewerInstance from 'viewerjs'
 
 export interface IImageConfigRef {
@@ -20,8 +20,8 @@ const Config = forwardRef<IImageConfigRef, IProps>((props, ref) => {
 
   const close = useCallback((e) => {
     setVisible(false)
-    props.onClose && props.onClose(e)
-  }, [props.onClose])
+    props.onClose?.(e)
+  }, [props])
 
   useImperativeHandle(ref, () => ({
     open: () => setVisible(true),
