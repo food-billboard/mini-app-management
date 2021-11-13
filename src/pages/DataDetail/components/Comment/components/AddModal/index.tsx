@@ -1,73 +1,74 @@
-import { message } from 'antd'
-import type { FormInstance } from 'antd/lib/form'
-import {
-  ModalForm,
-  ProFormTextArea,
-  ProFormText
-} from '@ant-design/pro-form'
-import type { Store } from 'antd/lib/form/interface'
-import React, { useCallback, useRef, useState, forwardRef, useImperativeHandle } from 'react'
-import Upload from '@/components/Upload'
+import { message } from 'antd';
+import type { FormInstance } from 'antd/lib/form';
+import { ModalForm, ProFormTextArea, ProFormText } from '@ant-design/pro-form';
+import type { Store } from 'antd/lib/form/interface';
+import React, { useCallback, useRef, useState, forwardRef, useImperativeHandle } from 'react';
+import Upload from '@/components/Upload';
 
-type FormData = Omit<API_DATA.IPostMovieCommentParams, "source_type">
+type FormData = Omit<API_DATA.IPostMovieCommentParams, 'source_type'>;
 
 interface IProps {
-  onCancel?: () => any
-  onSubmit?: (data: FormData) => any
+  onCancel?: () => any;
+  onSubmit?: (data: FormData) => any;
 }
 
 export interface IFormRef {
-  open: (id: string) => void
+  open: (id: string) => void;
 }
 
 const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
+  const [visible, setVisible] = useState<boolean>(false);
 
-  const [ visible, setVisible ] = useState<boolean>(false)
+  const { onCancel: propsCancel, onSubmit } = props;
 
-  const { onCancel: propsCancel, onSubmit } = props
-
-  const formRef = useRef<FormInstance | null>(null)
+  const formRef = useRef<FormInstance | null>(null);
 
   const open = useCallback(async (id: string) => {
     formRef.current?.setFieldsValue({
-      _id: id
-    })
-    setVisible(true)
-  }, [])
+      _id: id,
+    });
+    setVisible(true);
+  }, []);
 
   const onCancel = useCallback(() => {
-    setVisible(false)
-    formRef.current?.resetFields()
-    propsCancel?.()
-  }, [formRef, propsCancel])
+    setVisible(false);
+    formRef.current?.resetFields();
+    propsCancel?.();
+  }, [formRef, propsCancel]);
 
-  const onVisibleChange = useCallback((nowVisible: boolean) => {
-    if(!nowVisible) onCancel()
-    if(nowVisible !== visible) setVisible(nowVisible)
-  }, [onCancel, visible])
+  const onVisibleChange = useCallback(
+    (nowVisible: boolean) => {
+      if (!nowVisible) onCancel();
+      if (nowVisible !== visible) setVisible(nowVisible);
+    },
+    [onCancel, visible],
+  );
 
-  const onFinish = useCallback(async (values: Store) => {
-    const { image, video, text, ...nextProps } = values
-    if(!image.length && !video.length && !text.length) {
-      return message.info("评论内容不能完全为空，至少填写一项")
-    }
-    const formData = {
-      ...nextProps,
-      content: {
-        image,
-        video,
-        text
+  const onFinish = useCallback(
+    async (values: Store) => {
+      const { image, video, text, ...nextProps } = values;
+      if (!image.length && !video.length && !text.length) {
+        return message.info('评论内容不能完全为空，至少填写一项');
       }
-    }
-    await (onSubmit && onSubmit(formData as FormData))
-    setVisible(false)
-    formRef.current?.resetFields()
-    return Promise.resolve()
-  }, [onSubmit])
+      const formData = {
+        ...nextProps,
+        content: {
+          image,
+          video,
+          text,
+        },
+      };
+      await (onSubmit && onSubmit(formData as FormData));
+      setVisible(false);
+      formRef.current?.resetFields();
+      return Promise.resolve();
+    },
+    [onSubmit],
+  );
 
   useImperativeHandle(ref, () => ({
-    open
-  }))
+    open,
+  }));
 
   return (
     <ModalForm
@@ -78,43 +79,42 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       onFinish={onFinish}
       onVisibleChange={onVisibleChange}
     >
-      <ProFormTextArea 
-        name="text" 
-        label="文本" 
+      <ProFormTextArea
+        name="text"
+        label="文本"
         fieldProps={{
-          autoSize: true
+          autoSize: true,
         }}
       />
-      <Upload 
+      <Upload
         wrapper={{
           label: '图片',
-          name: 'image'
+          name: 'image',
         }}
         item={{
           acceptedFileTypes: ['image/*'],
-          allowMultiple: false
+          allowMultiple: false,
         }}
       />
-      <Upload 
+      <Upload
         wrapper={{
           label: '视频',
-          name: 'video'
+          name: 'video',
         }}
         item={{
           acceptedFileTypes: ['video/*'],
-          allowMultiple: false
+          allowMultiple: false,
         }}
       />
-      <ProFormText 
-        name="_id" 
-        label="_id" 
+      <ProFormText
+        name="_id"
+        label="_id"
         fieldProps={{
-          type: "hidden"
+          type: 'hidden',
         }}
       />
     </ModalForm>
-  )
+  );
+});
 
-})
-
-export default CreateForm
+export default CreateForm;
