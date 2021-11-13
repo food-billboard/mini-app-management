@@ -343,6 +343,20 @@ declare namespace API_DATA {
     comment?: 1 | -1
   }
 
+  export interface IPostMovieCommentParams {
+    source_type: TSourceType
+    _id: string 
+    content: {
+      text?: string 
+      image?: string[]
+      video?: string[]
+    }
+  }
+
+  export interface IDeleteMovieCommentParams {
+    _id: string 
+  }
+
   export interface IGetMovieCommentRes {
     total: number
     list: IGetMovieCommentData[]

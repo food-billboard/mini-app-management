@@ -67,6 +67,22 @@ export const getMovieCommentList = (params: API_DATA.IGetMovieCommentParams) => 
   })
 }
 
+// 新增评论
+export const postMovieCommentList = (data: API_DATA.IPostMovieCommentParams) => {
+  return request('/api/manage/movie/detail/comment', {
+    method: 'POST',
+    data
+  })
+}
+
+// 删除评论
+export const deleteMovieCommentList = (params: API_DATA.IDeleteMovieCommentParams) => {
+  return request('/api/manage/movie/detail/comment', {
+    method: 'DELETE',
+    params
+  })
+}
+
 // 收藏用户列表
 export const getGlanceUserList = (params: API_DATA.IGetGlanceUserListParams) => {
   return request<API_DATA.IGetGlanceUserListRes>('/api/manage/movie/detail/user', {
