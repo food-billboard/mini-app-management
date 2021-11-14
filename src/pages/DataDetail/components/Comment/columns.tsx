@@ -1,9 +1,7 @@
 import React from 'react'
 import { history } from 'umi'
 import moment from 'moment'
-import { Typography } from 'antd'
-
-const { Text } = Typography
+import { commentView } from '../../../Feedback/columns'
 
 export default [
   {
@@ -20,9 +18,19 @@ export default [
     }
   },
   {
-    dataIndex: 'like_person_count',
+    dataIndex: 'total_like',
     title: '点赞数',  
     key: 'like_person_count',
+  },
+  {
+    dataIndex: 'comment_users',
+    title: '总评论用户',  
+    key: 'comment_users',
+  },
+  {
+    dataIndex: 'comment_count',
+    title: '总评论量',  
+    key: 'comment_count',
   },
   {
     title: '创建时间',
@@ -35,14 +43,5 @@ export default [
     key: 'updatedAt',
     render: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
   },
-  {
-    title: '文字内容',
-    dataIndex: 'content',
-    key: 'content',
-    render: (val: { text?: string, image?: string[], video?: string[] }) => {
-      return (
-        <Text ellipsis>{val.text || "该评论无文字内容"}</Text>
-      )
-    }
-  },
+  ...commentView()
 ]

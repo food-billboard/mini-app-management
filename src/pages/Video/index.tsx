@@ -3,13 +3,14 @@ import { Result, Button } from 'antd'
 import { history } from 'umi'
 import Video from '@/components/Video'
 
-export function PreView(videos: string | string[]) {
+export function PreView(videos: string | string[], toList:boolean=true) {
   if(!videos) return 
   const list = Array.isArray(videos) ? videos : [videos]
+  const path = toList  ? '/media/video/list' : '/media/video'
   history.push({
-    pathname: '/media/video',
+    pathname: path,
     query: {
-      url: list[0],
+      url: list,
     },
   })
 }
@@ -19,7 +20,7 @@ const VideoPreview: FC<any> = () => {
   const videoId: string | undefined = useMemo(() => {
     const { location: { query } } = history
     const { url } = query as { url: string | undefined }
-    return url
+    return Array.isArray(url) ? url[0] || "" : url 
   }, [])
 
   const goback = useCallback(() => {

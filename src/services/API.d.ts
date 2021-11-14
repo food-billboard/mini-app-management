@@ -358,7 +358,12 @@ declare namespace API_DATA {
 
   export interface IGetMovieCommentRes {
     total: number;
-    list: IGetMovieCommentData[];
+    list: IGetMovieCommentDetailData[];
+  }
+
+  export interface IGetMovieCommentDetail {
+    total: number 
+    list: IGetMovieCommentDetailData[]
   }
 
   export interface IGetMovieCommentData {
@@ -372,11 +377,23 @@ declare namespace API_DATA {
     comment_count: number;
     like_person_count: number;
     total_like: number;
+    source: string
+    source_type: API_USER.TSourceType
     content: {
       text: string;
       image: string[];
       video: string[];
     };
+  }
+
+  export interface IGetMovieCommentDetailData extends Pick<IGetMovieCommentData, "_id" | "createdAt" | "updatedAt" | "total_like" | "content" | "source" | "source_type"> {
+    user_info: {
+      _id: string 
+      username: string 
+      avatar: string 
+      description: string 
+    }
+    comment_users: number 
   }
 
   export interface IGetGlanceUserListParams

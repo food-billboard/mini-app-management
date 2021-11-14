@@ -74,6 +74,13 @@ export default [
                 component: '@/pages/Media',
               },
               {
+                path: '/media/video/list',
+                component: '@/pages/VideoList',
+                title: '视频列表',
+                name: 'mediadetailvideolist',
+                hideInMenu: true,
+              },
+              {
                 path: '/media/video',
                 component: '@/pages/Video',
                 title: '视频详情',

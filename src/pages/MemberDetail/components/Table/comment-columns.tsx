@@ -1,8 +1,9 @@
 import moment from 'moment'
 import React from 'react'
 import { history } from 'umi'
-import ImageView from '../../../Feedback/components/Image'
+import ImageView from '@/components/TableImageView'
 import { COMMENT_SOURCE_TYPE } from '@/utils'
+import { PreView } from '@/pages/Video'
 
 export default [
   {
@@ -68,12 +69,7 @@ export default [
       return (
         <a onClick={(e) => {
           e.stopPropagation()
-          history.push({
-            pathname: '/media/video',
-            query: {
-              url: record?.content?.video
-            }
-          })
+          return PreView(record?.content?.video)
         }} style={{color: '#1890ff'}}>(预览)</a>
       )
     }

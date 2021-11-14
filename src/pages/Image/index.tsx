@@ -20,6 +20,42 @@ export type TSrc = {
 
 interface IState {
   values: TSrc[]
+}
+
+export const ImageList = ({ value, onClick }: {
+  value: TSrc[]
+  onClick?: (target: TSrc) => void 
+}) => {
+
+  return (
+    <div id="image-viewer">
+      <Row gutter={24}>
+        {
+          value.map((item: TSrc, index: number) => {
+            return (
+              <Col
+                xs={12}
+                md={8}
+                lg={6}
+                key={item?.src || index}
+                style={{marginBottom: 24}}
+                onClick={onClick?.bind(null, item)}
+              >
+                <div
+                  className={styles["image-viewer-item-wrapper"]}
+                >
+                  <img
+                    className={styles["image-viewer-item-content"]}
+                    {...item}
+                  />
+                </div>
+              </Col>
+            )
+          })
+        }
+      </Row>
+    </div>
+  )
 
 }
 
@@ -103,43 +139,22 @@ class ImagePreview extends PureComponent<any> {
 
     const { values } = this.state 
 
-    if(!values || !values.length) return <Result
-    status="404"
-    title="404"
-    subTitle="对不起，当前无图片资源"
-    extra={
-      <Button onClick={this.goback} type="primary">回到上一页</Button>
-    }
-  />
+    if(!values || !values.length) return (
+      <Result
+        status="404"
+        title="404"
+        subTitle="对不起，当前无图片资源"
+        extra={
+          <Button onClick={this.goback} type="primary">回到上一页</Button>
+        }
+      />
+    )
 
   return (
     <div className={styles["image-viewer-wrapper"]}>
-      <div id="image-viewer">
-        <Row gutter={24}>
-          {
-            values.map((item: TSrc, index: number) => {
-              return (
-                <Col
-                  xs={12}
-                  md={8}
-                  lg={6}
-                  key={item?.src || index}
-                  style={{marginBottom: 24}}
-                >
-                  <div
-                    className={styles["image-viewer-item-wrapper"]}
-                  >
-                    <img
-                      className={styles["image-viewer-item-content"]}
-                      {...item}
-                    />
-                  </div>
-                </Col>
-              )
-            })
-          }
-        </Row>
-      </div>
+      <ImageList
+        value={values}
+      />
       <Affix onClick={this.handleOpenConfig} />
       <ImageConfig 
         ref={this.configRef}

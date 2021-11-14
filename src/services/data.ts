@@ -56,6 +56,14 @@ export const getMovieCommentList = (params: API_DATA.IGetMovieCommentParams) => 
   });
 };
 
+// 评论详情
+export const getMovieCommentDetail = (params: API_DATA.IGetMovieCommentParams) => {
+  return request<API_DATA.IGetMovieCommentDetail>('/api/manage/movie/detail/comment/detail', {
+    method: 'GET',
+    params,
+  });
+};
+
 // 新增评论
 export const postMovieCommentList = (data: API_DATA.IPostMovieCommentParams) => {
   return request('/api/manage/movie/detail/comment', {

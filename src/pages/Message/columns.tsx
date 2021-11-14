@@ -3,6 +3,7 @@ import { DatePicker, Image, Tooltip, Tag } from 'antd'
 import { history } from 'umi'
 import moment from 'moment'
 import { IMAGE_FALLBACK, SOURCE_TYPE, MESSAGE_MEDIA_TYPE } from '@/utils'
+import { PreView } from '../Video'
 
 const { RangePicker } = DatePicker
 
@@ -139,12 +140,7 @@ export default [
         return (
           <a onClick={(e) => {
             e.stopPropagation()
-            history.push({
-              pathname: '/media/video',
-              query: {
-                url: value.video || ''
-              }
-            })
+            return PreView(value.video || "", false)
           }} style={{color: '#1890ff'}}>(预览)</a>
         )
       }

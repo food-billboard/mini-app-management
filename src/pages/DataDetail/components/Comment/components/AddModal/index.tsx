@@ -1,4 +1,4 @@
-import { message } from 'antd';
+import { message, Input, Form } from 'antd';
 import type { FormInstance } from 'antd/lib/form';
 import { ModalForm, ProFormTextArea, ProFormText } from '@ant-design/pro-form';
 import type { Store } from 'antd/lib/form/interface';
@@ -46,9 +46,12 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
 
   const onFinish = useCallback(
     async (values: Store) => {
-      const { image, video, text, ...nextProps } = values;
+      const { image, video, text="", ...nextProps } = values;
+      console.log(text, image, video, 5555)
       if (!image.length && !video.length && !text.length) {
-        return message.info('评论内容不能完全为空，至少填写一项');
+        console.log(7777)
+        message.info('评论内容不能完全为空，至少填写一项');
+        return false 
       }
       const formData = {
         ...nextProps,
@@ -106,13 +109,13 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
           allowMultiple: false,
         }}
       />
-      <ProFormText
-        name="_id"
-        label="_id"
-        fieldProps={{
-          type: 'hidden',
-        }}
-      />
+      <Form.Item
+        name="_id" 
+      >
+        <Input
+          type="hidden"
+        />
+      </Form.Item>
     </ModalForm>
   );
 });

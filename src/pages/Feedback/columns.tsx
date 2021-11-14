@@ -1,11 +1,55 @@
 import React from 'react'
-import { DatePicker, Tag } from 'antd'
-import { history } from 'umi'
+import { DatePicker, Tag, Button } from 'antd'
 import moment from 'moment'
-import ImageView from './components/Image'
+import ImageView from '@/components/TableImageView'
+import { PreView } from '../Video'
 import { FEEDBACK_STATUS } from '@/utils'
 
 const { RangePicker } = DatePicker
+
+export const commentView = () => {
+  return [
+    {
+      title: '文字内容',
+      dataIndex: 'text',
+      ellipsis: true,
+      hideInSearch: true,
+      renderText: (_: any, record: API_USER.IGetFeedbackData) => {
+        return record.content.text
+      }
+    },
+    {
+      title: '图片内容',
+      dataIndex: 'image',
+      hideInSearch: true,
+      render: (_: any, record: API_USER.IGetFeedbackData) => {
+        return (
+          <ImageView
+            value={record.content.image}
+          />
+        )
+      }
+    },
+    {
+      title: '视频内容',
+      dataIndex: 'video',
+      hideInSearch: true,
+      renderText: (_: any, record: API_USER.IGetFeedbackData) => {
+        if(!record.content.video?.length) return ("[视频]")
+        return (
+          <Button
+            type="link"
+            onClick={() => {
+              return PreView(record.content.video)
+            }}
+          >
+            (预览)
+          </Button>
+        )
+      }
+    },
+  ]
+}
 
 export default [
   {
@@ -39,46 +83,7 @@ export default [
     }, {}),
     initialValue: "DEALING"
   },
-  {
-    title: '文字内容',
-    dataIndex: 'text',
-    ellipsis: true,
-    hideInSearch: true,
-    renderText: (_: any, record: API_USER.IGetFeedbackData) => {
-      return record.content.text
-    }
-  },
-  {
-    title: '图片内容',
-    dataIndex: 'image',
-    hideInSearch: true,
-    render: (_: any, record: API_USER.IGetFeedbackData) => {
-      return (
-        <ImageView
-          value={record.content.image}
-        />
-      )
-    }
-  },
-  {
-    title: '视频内容',
-    dataIndex: 'video',
-    hideInSearch: true,
-    renderText: (_: any, record: API_USER.IGetFeedbackData) => {
-      if(!record.content.video?.length) return ("[视频]")
-      return (
-        <a onClick={(e) => {
-          e.stopPropagation()
-          history.push({
-            pathname: '/media/video',
-            query: {
-              url: record.content.video
-            }
-          })
-        }} style={{color: '#1890ff'}}>(预览)</a>
-      )
-    }
-  },
+  ...commentView(),
   {
     title: '创建时间',
     dataIndex: 'createdAt',

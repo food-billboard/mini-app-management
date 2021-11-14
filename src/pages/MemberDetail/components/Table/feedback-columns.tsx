@@ -1,9 +1,9 @@
 import React from 'react'
 import { DatePicker, Tag } from 'antd'
-import { history } from 'umi'
 import moment from 'moment'
-import ImageView from '../../../Feedback/components/Image'
+import ImageView from '@/components/TableImageView'
 import { FEEDBACK_STATUS } from '@/utils'
+import { PreView } from '@/pages/Video'
 
 const { RangePicker } = DatePicker
 
@@ -50,12 +50,7 @@ export default [
       return (
         <a onClick={(e) => {
           e.stopPropagation()
-          history.push({
-            pathname: '/media/video',
-            query: {
-              url: record?.content?.video
-            }
-          })
+          return PreView(record?.content?.video)
         }} style={{color: '#1890ff'}}>(预览)</a>
       )
     }

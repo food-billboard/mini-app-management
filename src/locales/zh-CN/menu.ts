@@ -68,6 +68,7 @@ export default {
   'menu.media': '媒体资源管理',
   'menu.media.mediadetailimage': '图片详情',
   'menu.media.mediadetailvideo': '视频详情',
+  'menu.media.mediadetailvideolist': '视频列表',
   'menu.chat': '聊天管理',
   'menu.chat.room': '聊天室管理',
   'menu.chat.message': '消息管理',
