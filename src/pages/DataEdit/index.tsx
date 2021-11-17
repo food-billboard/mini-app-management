@@ -15,6 +15,7 @@ import SearchForm from '@/components/TransferSelect'
 import type { ISelectItem } from '@/components/TransferSelect'
 import InputAlias from './components/InputSearch'
 import Upload from '@/components/Upload'
+import VideoUpload from '@/components/VideoUpload'
 import { getActorInfo, getDirectorInfo, getDistrictInfo, getLanguageInfo, getClassifyInfo, getMovieInfo, putMovie, postMovie } from '@/services'
 import { fileValidator, localFetchData4Array } from './utils'
 import { withTry } from '@/utils'
@@ -208,7 +209,7 @@ const CreateForm = memo(() => {
             }]}
           />
         </ProForm.Group>
-        <Upload 
+        <VideoUpload 
           wrapper={{
             label: '视频',
             name: 'video',

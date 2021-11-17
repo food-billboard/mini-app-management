@@ -1,10 +1,10 @@
 import { Form, Input } from 'antd'
-import { FormInstance } from 'antd/lib/form'
+import type { FormInstance } from 'antd/lib/form'
 import ProForm,{
   ModalForm,
   ProFormTextArea,
 } from '@ant-design/pro-form'
-import { Store } from 'antd/lib/form/interface'
+import type { Store } from 'antd/lib/form/interface'
 import React, { useCallback, useMemo, useRef, useState, forwardRef, useImperativeHandle } from 'react'
 import SearchForm from '@/components/TransferSelect'
 import Upload from '@/components/Upload'
@@ -58,12 +58,27 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
     return isPut ? PUT_REQUIRED_MAP : POST_REQUIRED_MAP
   }, [isPut])
 
+  const fetchMemberList = useCallback(async (nextParams: (Partial<API_CHAT.IGetMemberListParams> & { update?: boolean })={}) => {
+    const params: API_CHAT.IGetMemberListParams = {
+      currPage: 0,
+      pageSize: 99999,
+      ...omit(nextParams, ['update'])
+    } 
+    if(isPut || !!nextParams.update) params.room = nextParams.room || formRef.current?.getFieldValue('_id')
+    try {
+      const data = await getMemberList(params)
+      return data.list.map(item => ({ key: item["_id"], title: item.user?.username }))
+    }catch(er) {
+      return []
+    }
+  }, [isPut])
+
   const open = useCallback(async (values?: API_CHAT.IGetRoomListResData) => {
     setIsPut(!!values)
     setVisible(true)
     if(!values) return 
 
-    const { info: { avatar, name, description }, _id, create_user } = values || {}
+    const { info: { avatar, name, description }, _id } = values || {}
     const data = await fetchMemberList({ room: _id, update: true })
     formRef.current?.setFieldsValue({
       avatar: Array.isArray(avatar) ? avatar : [avatar],
@@ -72,17 +87,17 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       _id,
       members: data.map(item => item.key)
     })
-  }, [formRef])
+  }, [fetchMemberList])
 
   const onCancel = useCallback(() => {
     setVisible(false)
     formRef.current?.resetFields()
-    propsCancel && propsCancel()
-  }, [formRef])
+    propsCancel?.()
+  }, [formRef, propsCancel])
 
   const onVisibleChange = useCallback((nowVisible: boolean) => {
     if(!nowVisible) onCancel()
-    if(nowVisible != visible) setVisible(nowVisible)
+    if(nowVisible !== visible) setVisible(nowVisible)
   }, [onCancel, visible])
 
   const onFinish = useCallback(async (values: Store) => {
@@ -100,26 +115,11 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
     open
   }))
 
-  const fetchMemberList = useCallback(async (nextParams: (Partial<API_CHAT.IGetMemberListParams> & { update?: boolean })={}) => {
-    let params: API_CHAT.IGetMemberListParams = {
-      currPage: 0,
-      pageSize: 99999,
-      ...omit(nextParams, ['update'])
-    } 
-    if(isPut || !!nextParams.update) params.room = nextParams.room || formRef.current?.getFieldValue('_id')
-    try {
-      const data = await getMemberList(params)
-      return data.list.map(item => ({ key: item._id, title: item.user?.username }))
-    }catch(er) {
-      return []
-    }
-  }, [isPut])
-
   return (
     <ModalForm
       title="新建聊天室"
       visible={visible}
-      //@ts-ignore
+      // @ts-ignore
       formRef={formRef}
       onFinish={onFinish}
       onVisibleChange={onVisibleChange}

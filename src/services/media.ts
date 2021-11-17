@@ -31,3 +31,11 @@ export const getMediaValid = (params: API_MEDIA.IGetMediaValidParams) => {
     params
   })
 }
+
+// 海报生成
+export const generateVideoPoster = (data: API_MEDIA.IPutVideoPoster) => {
+  return request('/api/media/video/poster', {
+    method: "PUT",
+    data
+  })
+}

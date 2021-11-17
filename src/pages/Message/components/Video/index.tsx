@@ -1,14 +1,14 @@
 import React, { memo } from "react"
-import Upload from '@/components/Upload'
+import VideoUpload from '@/components/VideoUpload'
 
-export default memo(({ rules }:any) => {
+export default memo(({ rules }: any) => {
 
   return (
-    <Upload 
+    <VideoUpload 
       wrapper={{
         label: '视频',
         name: 'video',
-        rules: rules
+        rules
       }}
       item={{
         maxFiles: 1,

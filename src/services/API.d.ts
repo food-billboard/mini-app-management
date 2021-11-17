@@ -833,6 +833,14 @@ declare namespace API_MEDIA {
     isdelete?: boolean;
   }
 
+  export interface IPutVideoPoster {
+    _id: string 
+    time?: string 
+    auth?: "PRIVATE" | "PUBLIC"
+    origin_type?: "ORIGIN" | "USER"
+    name?: string 
+  }
+
   export type IGetMediaValidData = {
     complete: boolean;
     error: boolean;
