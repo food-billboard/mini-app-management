@@ -23,7 +23,7 @@ const VideoPreview: FC<any> = () => {
     return Array.isArray(url) ? url[0] || "" : url 
   }, [])
 
-  const goback = useCallback(() => {
+  const goBack = useCallback(() => {
     history.goBack()
   }, [])
 
@@ -32,9 +32,13 @@ const VideoPreview: FC<any> = () => {
     title="404"
     subTitle="对不起，未找到对应视频资源"
     extra={
-      <Button onClick={goback} type="primary">回到上一页</Button>
+      <Button onClick={goBack} type="primary">回到上一页</Button>
     }
   />
+
+  // return (
+  //   <div>另外一个页面</div>
+  // )
 
   return (
     <Video
