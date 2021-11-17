@@ -19,27 +19,28 @@ const VideoList: FC<any> = () => {
   }, [])
 
   const handleClick = useCallback((target: TSrc) => {
-    PreView(target.src, false)
+    PreView(target.origin, false)
   }, [])
 
   const fetchData = useCallback(async (list: string[]) => {
     setLoading(true)
-    const data = await pMap(list, async (item) => {
+    const result = await pMap(list, async (item) => {
+      const { pathname } = new URL(item)
       const [, data] = await withTry(getMediaList)({
         type: 1,
-        content: item 
+        content: pathname 
       })
       if(!data) return pMapSkip
-      const result = data.list[0]
-      return result ? {
-        src: result.poster,
-        _id: result._id,
-        origin: result.src 
+      const target = data.list[0]
+      return target ? {
+        src: target.poster,
+        _id: target["_id"],
+        origin: target.src 
       } : pMapSkip
     }, {
       concurrency: 3
     })
-    setImageList(data)
+    setImageList(result)
     setLoading(false)
   }, [])
 

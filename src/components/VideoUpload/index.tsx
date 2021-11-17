@@ -32,4 +32,4 @@ export const VideoUpload = (props: IProps) => {
   )
 }
 
-export default Wrapper<FilePondProps>(memo(Upload))
+export default Wrapper<FilePondProps>(memo(VideoUpload))

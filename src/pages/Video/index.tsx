@@ -3,7 +3,7 @@ import { Result, Button } from 'antd'
 import { history } from 'umi'
 import Video from '@/components/Video'
 
-export function PreView(videos: string | string[], toList:boolean=true) {
+export function PreView(videos: string | string[], toList: boolean=true) {
   if(!videos) return 
   const list = Array.isArray(videos) ? videos : [videos]
   const path = toList  ? '/media/video/list' : '/media/video'

@@ -1,9 +1,10 @@
 import { message, Input, Form } from 'antd';
 import type { FormInstance } from 'antd/lib/form';
-import { ModalForm, ProFormTextArea, ProFormText } from '@ant-design/pro-form';
+import { ModalForm, ProFormTextArea } from '@ant-design/pro-form';
 import type { Store } from 'antd/lib/form/interface';
 import React, { useCallback, useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import Upload from '@/components/Upload';
+import VideoUpload from '@/components/VideoUpload'
 
 type FormData = Omit<API_DATA.IPostMovieCommentParams, 'source_type'>;
 
@@ -99,7 +100,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
           allowMultiple: false,
         }}
       />
-      <Upload
+      <VideoUpload
         wrapper={{
           label: '视频',
           name: 'video',
