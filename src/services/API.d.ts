@@ -778,6 +778,33 @@ declare namespace Upload {
   }
 }
 
+declare namespace API_SCHEDULE {
+  export interface IGetScheduleListData {
+    name: string 
+    description: string 
+    status: "CANCEL" | "SCHEDULING"
+    time: string 
+  }
+
+  export interface IPostScheduleDealParams {
+    name: string 
+  }
+
+  export interface ICancelScheduleDealParams {
+    name: string
+  }
+
+  export interface IRestartScheduleDealParams {
+    name: string
+  }
+
+  export interface IPutScheduleTimeParams {
+    name: string 
+    time: string 
+  }
+
+}
+
 declare namespace API_MEDIA {
   type TStatus = 'ERROR' | 'COMPLETE' | 'UPLOADING';
   type TAuth = 'PRIVATE' | 'PUBLIC';

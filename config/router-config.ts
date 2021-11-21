@@ -132,6 +132,13 @@ export default [
             title: '反馈管理'
           },
           {
+            path: '/schedule',
+            component: '@/pages/Schedule',
+            name: 'schedule',
+            icon: 'clock-circle',
+            title: '反馈管理'
+          },
+          {
             path: '/instance',
             component: '@/pages/instance',
             title: '实例管理',
