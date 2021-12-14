@@ -1,0 +1,35 @@
+name: build
+on: 
+  push: 
+    branches: 
+      - main
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2 # If you're using actions/checkout@v2 you must set persist-credentials to false in most cases for the deployment to work correctly.
+        with:
+          persist-credentials: false
+
+      - name: Install and Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
+        run: |
+          npm install 
+          npm run build 
+      - name: Deploy 🚀
+        uses: cross-the-world/ssh-scp-ssh-pipelines@latest # 因为构建之后，需要把代码上传到服务器上，所以需要连接到ssh，并且做一个安全拷贝(security copy)操作
+        env:
+          WELCOME: "ssh scp ssh pipelines"
+          LASTSSH: "Doing something after copying"
+        with:
+         host: ${{ secrets.SSH_HOST }}
+         user: ${{ secrets.SSH_USERNAME }}
+         pass: ${{ secrets.SSH_PASSWORD }}
+         port: ${{ secrets.DR_PORT }}
+         connect_timeout: 10s
+         first_ssh: |
+            rm -rf /movie/server/public/manage
+            mkdir -p /movie/server/public/manage
+         scp: |
+           './dist/*' => /movie/server/public/manage
+           
