@@ -14,8 +14,9 @@ jobs:
 
       - name: Install and Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
         run: |
-          npm install 
-          npm run build 
+          npm install yarn -g 
+          yarn 
+          yarn build 
       - name: Deploy 🚀
         uses: cross-the-world/ssh-scp-ssh-pipelines@latest # 因为构建之后，需要把代码上传到服务器上，所以需要连接到ssh，并且做一个安全拷贝(security copy)操作
         env:
