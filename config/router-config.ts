@@ -7,18 +7,18 @@ export default [
       {
         name: 'login',
         path: '/user/login',
-        component: '@/pages/User/login',
+        component: '@/pages/User',
       },
       {
         name: 'register',
         path: '/user/register',
-        component: '@/pages/User/register',
+        component: '@/pages/Register',
         title: '注册',
       },
       {
         name: 'forget',
         path: '/user/forget',
-        component: '@/pages/User/forget',
+        component: '@/pages/Forget',
         title: '忘记密码',
       },
     ],

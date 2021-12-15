@@ -2,12 +2,12 @@ import { Alert } from 'antd';
 import React, { Component } from 'react';
 import { Link, history, History, connect } from 'umi';
 import { LoginParamsType } from '@/services/login';
-import LoginFrom from './components/Login';
+import LoginFrom from './components';
 import { mapStateToProps, mapDispatchToProps } from './connect'
 import styles from './style.less';
 import { withTry } from '@/utils'
 
-const { Tab, Username, Password, Submit, Mobile } = LoginFrom;
+const { Tab, Password, Submit, Mobile } = LoginFrom;
 
 const LoginMessage: React.FC<{
   content: string;

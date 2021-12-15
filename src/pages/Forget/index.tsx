@@ -2,7 +2,7 @@ import { Alert } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'umi';
 import { LoginParamsType } from '@/services/login';
-import LoginForm from '../login/components/Login';
+import LoginForm from '../User/components';
 import styles from './index.less';
 
 const LoginMessage: React.FC<{
