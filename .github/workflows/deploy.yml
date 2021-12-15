@@ -25,7 +25,8 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
+          # password: ${{ secrets.SSH_PASSWORD }}
+          password: "xzRuby123"
           host: ${{ secrets.SSH_HOST }}
           script: |
             rm -rf /movie/server/public/manage-prev
