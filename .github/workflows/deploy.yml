@@ -42,7 +42,7 @@ jobs:
       #     REMOTE_USER: ${{ secrets.SSH_USERNAME }}
       #     TARGET: "/movie/server/public/manage/"
 
-    - name: Deploy 🚀
+      - name: Deploy 🚀
         uses: garygrossgarten/github-action-scp@release
         with:
           local: "./dist/"
