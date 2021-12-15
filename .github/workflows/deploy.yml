@@ -26,9 +26,8 @@ jobs:
          host: ${{ secrets.SSH_HOST }}
          user: ${{ secrets.SSH_USERNAME }}
          pass: ${{ secrets.SSH_PASSWORD }}
-         port: ${{ secrets.DR_PORT }}
          connect_timeout: 10s
-         first_ssh: |
+         first_ssh: |-
             rm -rf /movie/server/public/manage
             mkdir -p /movie/server/public/manage
          scp: |
