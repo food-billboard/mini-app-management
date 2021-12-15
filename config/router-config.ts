@@ -4,23 +4,23 @@ export default [
     // layout: false,
     component: '@/layouts/UserLayout',
     routes: [
-      // {
-      //   name: 'login',
-      //   path: '/user/login',
-      //   component: '@/pages/user/login',
-      // },
-      // {
-      //   name: 'register',
-      //   path: '/user/register',
-      //   component: '@/pages/user/register',
-      //   title: '注册',
-      // },
-      // {
-      //   name: 'forget',
-      //   path: '/user/forget',
-      //   component: '@/pages/user/forget',
-      //   title: '忘记密码',
-      // },
+      {
+        name: 'login',
+        path: '/user/login',
+        component: '@/pages/User/login',
+      },
+      {
+        name: 'register',
+        path: '/user/register',
+        component: '@/pages/User/register',
+        title: '注册',
+      },
+      {
+        name: 'forget',
+        path: '/user/forget',
+        component: '@/pages/User/forget',
+        title: '忘记密码',
+      },
     ],
   },
   {
