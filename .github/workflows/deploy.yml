@@ -32,13 +32,22 @@ jobs:
       #       mkdir -p /movie/server/public/manage
       #    scp: |
       #      './dist/*' => /movie/server/public/manage
-      - name: Deploy
-        uses: easingthemes/ssh-deploy@v2.0.7
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.LOCAL_SSH_PRIVATE_KEY }}
-          ARGS: "-avz --delete"
-          SOURCE: "./dist/"
-          REMOTE_HOST: ${{ secrets.SSH_HOST }}
-          REMOTE_USER: ${{ secrets.SSH_USERNAME }}
-          TARGET: "/movie/server/public/manage/"
+      # - name: Deploy
+      #   uses: easingthemes/ssh-deploy@v2.0.7
+      #   env:
+      #     SSH_PRIVATE_KEY: ${{ secrets.LOCAL_SSH_PRIVATE_KEY }}
+      #     ARGS: "-avz --delete"
+      #     SOURCE: "./dist/"
+      #     REMOTE_HOST: ${{ secrets.SSH_HOST }}
+      #     REMOTE_USER: ${{ secrets.SSH_USERNAME }}
+      #     TARGET: "/movie/server/public/manage/"
+
+    - name: Deploy 🚀
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          local: "./dist/"
+          remote: "/movie/server/public"
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
            
