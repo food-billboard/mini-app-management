@@ -4,11 +4,11 @@ export default [
     // layout: false,
     component: '@/layouts/UserLayout',
     routes: [
-      {
-        name: 'login',
-        path: '/user/login',
-        component: '@/pages/user/login',
-      },
+      // {
+      //   name: 'login',
+      //   path: '/user/login',
+      //   component: '@/pages/user/login',
+      // },
       // {
       //   name: 'register',
       //   path: '/user/register',
