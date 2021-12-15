@@ -25,15 +25,15 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           host: ${{ secrets.SSH_HOST }}
           script: |
-            rm -rf /movie/server/public/manage-prev
-            mkdir -p /movie/server/public/manage
-            mv /movie/server/public/manage /movie/server/public/manage-prev
+            rm -rf /home/source/public/manage-prev
+            mkdir -p /home/source/public/manage
+            mv /home/source/public/manage /home/source/public/manage-prev
 
       - name: Deploy 🚀
         uses: garygrossgarten/github-action-scp@release
         with:
           local: "./dist/"
-          remote: "/movie/server/public/manage"
+          remote: "/home/source/public/manage"
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
