@@ -17,36 +17,22 @@ jobs:
           npm install yarn -g 
           yarn 
           yarn build 
-      # - name: Deploy 🚀
-      #   uses: cross-the-world/ssh-scp-ssh-pipelines@latest # 因为构建之后，需要把代码上传到服务器上，所以需要连接到ssh，并且做一个安全拷贝(security copy)操作
-      #   env:
-      #     WELCOME: "ssh scp ssh pipelines"
-      #     LASTSSH: "Doing something after copying"
-      #   with:
-      #    host: ${{ secrets.SSH_HOST }}
-      #    user: ${{ secrets.SSH_USERNAME }}
-      #    pass: ${{ secrets.SSH_PASSWORD }}
-      #    connect_timeout: 10s
-      #    first_ssh: |-
-      #       rm -rf /movie/server/public/manage
-      #       mkdir -p /movie/server/public/manage
-      #    scp: |
-      #      './dist/*' => /movie/server/public/manage
-      # - name: Deploy
-      #   uses: easingthemes/ssh-deploy@v2.0.7
-      #   env:
-      #     SSH_PRIVATE_KEY: ${{ secrets.LOCAL_SSH_PRIVATE_KEY }}
-      #     ARGS: "-avz --delete"
-      #     SOURCE: "./dist/"
-      #     REMOTE_HOST: ${{ secrets.SSH_HOST }}
-      #     REMOTE_USER: ${{ secrets.SSH_USERNAME }}
-      #     TARGET: "/movie/server/public/manage/"
+
+      - name: createTag 🚀 
+        uses: appleboy/ssh-action@master
+        with:
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          host: ${{ secrets.SSH_HOST }}
+          script: |
+            rm -rf /movie/server/public/manage-prev
+            mv /movie/server/public/manage /movie/server/public/manage-prev
 
       - name: Deploy 🚀
         uses: garygrossgarten/github-action-scp@release
         with:
           local: "./dist/"
-          remote: "/movie/server/public"
+          remote: "/movie/server/public/manage"
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
