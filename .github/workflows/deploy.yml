@@ -18,6 +18,15 @@ jobs:
           yarn 
           yarn build 
 
+      # 设置ssh文件
+      - name: Setup ssh
+        env:
+          LOCAL_SSH_PRIVATE_KEY: ${{ secrets.LOCAL_SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$LOCAL_SSH_PRIVATE_KEY" > ~/.ssh/id_rsa 
+          chmod 600 ~/.ssh/id_rsa
+
       - name: createTag 🚀 
         uses: appleboy/ssh-action@master
         with:
