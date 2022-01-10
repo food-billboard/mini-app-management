@@ -866,6 +866,7 @@ declare namespace API_MEDIA {
     auth?: "PRIVATE" | "PUBLIC"
     origin_type?: "ORIGIN" | "USER"
     name?: string 
+    overlap?: boolean 
   }
 
   export type IGetMediaValidData = {

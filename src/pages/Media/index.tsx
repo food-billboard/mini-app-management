@@ -11,6 +11,7 @@ import CreateForm from './components/CreateForm'
 import type { IFormRef } from './components/CreateForm'
 import ListModal, { formatData } from './components/ListModal'
 import type { ListModalRef } from './components/ListModal'
+import ConfirmModal from './components/PosterGenerate'
 import column from './columns'
 import { MEDIA_TYPE_MAP, sleep } from '@/utils'
 import { getMediaList, updateMedia, deleteMedia, getMediaValid } from '@/services'
@@ -22,6 +23,7 @@ const MediaManage = memo(() => {
 
   const modalRef = useRef<IFormRef>(null)
   const listModalRef = useRef<ListModalRef>(null)
+  const posterRef = useRef<any>(null)
 
   const [ activeKey, setActiveKey ] = useState<keyof typeof MEDIA_TYPE_MAP>('image')
 
@@ -115,6 +117,10 @@ const MediaManage = memo(() => {
     modalRef.current?.open(value)
   }
 
+  const generatePoster = useCallback(async (id: string) => {
+    posterRef.current?.open(id)
+  }, [])
+
   const columns: any[] = useMemo(() => {
     const newColumn = activeKey === 'video' ? column : column.filter(item => item.dataIndex !== 'poster')
     return [
@@ -150,6 +156,15 @@ const MediaManage = memo(() => {
                       完成度检测
                     </a>
                   </Menu.Item>
+                  {
+                    activeKey === 'video' && (
+                      <Menu.Item>
+                        <a style={{color: '#1890ff'}} onClick={generatePoster.bind(null, record["_id"])}>
+                          海报生成
+                        </a>
+                      </Menu.Item>
+                    )
+                  }
                 </Menu>
               }>
                 <a onClick={e => e.preventDefault()}>
@@ -265,6 +280,10 @@ const MediaManage = memo(() => {
       />
       <ListModal
         ref={listModalRef}
+      />
+      <ConfirmModal
+        ref={posterRef}
+        onOk={() => actionRef.current?.reloadAndRest}
       />
   </PageContainer>
   )
