@@ -362,8 +362,8 @@ declare namespace API_DATA {
   }
 
   export interface IGetMovieCommentDetail {
-    total: number 
-    list: IGetMovieCommentDetailData[]
+    total: number;
+    list: IGetMovieCommentDetailData[];
   }
 
   export interface IGetMovieCommentData {
@@ -377,8 +377,8 @@ declare namespace API_DATA {
     comment_count: number;
     like_person_count: number;
     total_like: number;
-    source: string
-    source_type: API_USER.TSourceType
+    source: string;
+    source_type: API_USER.TSourceType;
     content: {
       text: string;
       image: string[];
@@ -386,14 +386,18 @@ declare namespace API_DATA {
     };
   }
 
-  export interface IGetMovieCommentDetailData extends Pick<IGetMovieCommentData, "_id" | "createdAt" | "updatedAt" | "total_like" | "content" | "source" | "source_type"> {
+  export interface IGetMovieCommentDetailData
+    extends Pick<
+      IGetMovieCommentData,
+      '_id' | 'createdAt' | 'updatedAt' | 'total_like' | 'content' | 'source' | 'source_type'
+    > {
     user_info: {
-      _id: string 
-      username: string 
-      avatar: string 
-      description: string 
-    }
-    comment_users: number 
+      _id: string;
+      username: string;
+      avatar: string;
+      description: string;
+    };
+    comment_users: number;
   }
 
   export interface IGetGlanceUserListParams
@@ -780,29 +784,28 @@ declare namespace Upload {
 
 declare namespace API_SCHEDULE {
   export interface IGetScheduleListData {
-    name: string 
-    description: string 
-    status: "CANCEL" | "SCHEDULING"
-    time: string 
+    name: string;
+    description: string;
+    status: 'CANCEL' | 'SCHEDULING';
+    time: string;
   }
 
   export interface IPostScheduleDealParams {
-    name: string 
+    name: string;
   }
 
   export interface ICancelScheduleDealParams {
-    name: string
+    name: string;
   }
 
   export interface IRestartScheduleDealParams {
-    name: string
+    name: string;
   }
 
   export interface IPutScheduleTimeParams {
-    name: string 
-    time: string 
+    name: string;
+    time: string;
   }
-
 }
 
 declare namespace API_MEDIA {
@@ -861,12 +864,12 @@ declare namespace API_MEDIA {
   }
 
   export interface IPutVideoPoster {
-    _id: string 
-    time?: string 
-    auth?: "PRIVATE" | "PUBLIC"
-    origin_type?: "ORIGIN" | "USER"
-    name?: string 
-    overlap?: boolean 
+    _id: string;
+    time?: string;
+    auth?: 'PRIVATE' | 'PUBLIC';
+    origin_type?: 'ORIGIN' | 'USER';
+    name?: string;
+    overlap?: boolean;
   }
 
   export type IGetMediaValidData = {
