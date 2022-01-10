@@ -28,6 +28,7 @@ interface IExtraMetaData {
 export interface IProps extends FilePondProps {
   value: string[]
   onChange: (...args: any[]) => any
+  onLoad?: (id: string) => void 
 }
 
 interface ReactFC<TProps> extends React.FC<TProps> {
@@ -58,6 +59,7 @@ export type FilePondInitialFile = IInitFileType
 
 const Upload: ReactFC<IProps> = ({
   value: propsValue=[],
+  onLoad,
   ...props
 }) => {
 
@@ -107,6 +109,7 @@ const Upload: ReactFC<IProps> = ({
       chunk: CHUNK_SIZE,
       auth: 'PUBLIC',
     }
+    let uploadId: string = ''
 
     const upload = new TusUpload(file, {
       endpoint: "/api/customer/upload",
@@ -147,6 +150,7 @@ const Upload: ReactFC<IProps> = ({
         // 查询请求保存id
         if(method === 'head') {
           const id = res.getHeader('Upload-Id')
+          uploadId = id 
 
           setValue(prevValue => {
             const restValue = prevValue.filter(val => {
@@ -209,6 +213,7 @@ const Upload: ReactFC<IProps> = ({
       },
       onSuccess: function onSuccess() {
         load(fieldName)
+        onLoad?.(uploadId)
       }
     })
 

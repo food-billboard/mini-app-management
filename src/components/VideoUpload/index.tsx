@@ -9,25 +9,34 @@ import { withTry } from '@/utils'
 
 export const VideoUpload = (props: IProps) => {
 
-  const [ files, setFiles ] = useState<string[]>(props.value || [])
+  // const [ files, setFiles ] = useState<string[]>(props.value || [])
 
-  const { onChange, ...nextProps } = props 
+  const { onChange, onLoad, ...nextProps } = props 
 
-  const wrapperOnChange = useCallback(async (value: string[]) => {
-    const newValue = value.filter(item => !files.includes(item))
-    await pMap(newValue, async (item) => {
-      await withTry(generateVideoPoster)({
-        _id: item 
-      })
+  const wrapperOnLoad = useCallback(async (id: string) => {
+    await withTry(generateVideoPoster)({
+      _id: id 
     })
-    setFiles(value)
-    onChange?.(value)
-  }, [onChange, files])
+    onLoad?.(id)
+  }, [])
+
+  // ! 就目前来说暂时没什么用
+  // const wrapperOnChange = useCallback(async (value: string[]) => {
+  //   const newValue = value.filter(item => !files.includes(item))
+  //   await pMap(newValue, async (item) => {
+  //     await withTry(generateVideoPoster)({
+  //       _id: item 
+  //     })
+  //   })
+  //   setFiles(value)
+  //   onChange?.(value)
+  // }, [onChange, files])
 
   return (
     <Upload 
       {...nextProps}
-      onChange={wrapperOnChange}
+      onChange={onChange}
+      onLoad={wrapperOnLoad}
     />
   )
 }

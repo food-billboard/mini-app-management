@@ -22,7 +22,7 @@ interface IProps extends Partial<TransferProps<any>> {
   onSearch?: (direction: string, value: string) => void 
 }
 
-export default Wrapper<IProps>(memo(forwardRef<IMovieSelectRef, IProps>((props, ref) => {
+export default Wrapper<IProps>(memo(forwardRef<IMovieSelectRef, IProps>((props) => {
 
   const [ originData, setOriginData ] = useState<ISelectItem[]>([])
 
@@ -48,7 +48,7 @@ export default Wrapper<IProps>(memo(forwardRef<IMovieSelectRef, IProps>((props, 
   const internalFetchTargetKeysData = useCallback(async () => {
     if(fetchSelectData) {
       const data = await fetchSelectData()
-      propsChange && propsChange(data)
+      propsChange?.(data)
     }
   }, [value, fetchSelectData])
 
@@ -58,11 +58,11 @@ export default Wrapper<IProps>(memo(forwardRef<IMovieSelectRef, IProps>((props, 
   }, [internalFetchOriginData, internalFetchTargetKeysData])
 
   const onChange = useCallback((newTargetKeys: string[], direction: string, moveKeys: string[]) => {
-    propsChange && propsChange(newTargetKeys)
+    propsChange?.(newTargetKeys)
   }, [propsChange])
 
   const onSearch = useCallback((direction: string, value: string) => {
-    propsOnSearch && propsOnSearch(direction, value)
+    propsOnSearch?.(direction, value)
     if(direction == 'left') {
       internalFetchOriginData(value)
     }
