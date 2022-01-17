@@ -105,9 +105,9 @@ export default memo((props: IProps) => {
       },
       {
         title: '评分',
-        dataIndex: 'rate',
+        dataIndex: 'rate_person',
         valueType: 'number',
-        key: 'rate',
+        key: 'rate_person',
         span: 1,
         renderText: (rate_person: number, record: API_DATA.IGetMovieData) => {
           return `${record.total_rate}/${rate_person}人`
