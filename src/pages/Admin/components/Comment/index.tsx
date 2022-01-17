@@ -63,18 +63,20 @@ const Comments = memo((props: IProps) => {
     const { image=[], video=[] } = content || {}
     const result = [...image.map(item => ({ src: item, video: false }))]
     result.push(...video.map(item => ({ src: item, video: true })))
-    return result.map((item) => {
+    return result.map((item, index) => {
       const { video: isVideo, src } = item 
       const method = isVideo ? VideoPreView.bind(null, video) : Preview.bind(null, image)
       return (
         <Col 
+          key={index}
           span={8}
-          onClick={method}
+          onClick={() => method()}
         >
           <Image
             fallback={IMAGE_FALLBACK}
             src={isVideo ? '' : src}
             preview={false}
+            className={styles['media-image-list-item']}
           />
         </Col>
       )

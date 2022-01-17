@@ -15,7 +15,6 @@ export default [
   {
     title: '电影名称',
     dataIndex: 'name',
-    hideInSearch: true,
     render: (value: string, record: API_DATA.IGetMovieData) => <a onClick={() => history.push(`/data/main/${record["_id"]}`)}>{value}</a>
   },
   {
