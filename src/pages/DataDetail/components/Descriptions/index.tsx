@@ -1,29 +1,28 @@
-import React, { useMemo, memo, useCallback } from 'react'
-import { Card, Button } from 'antd'
-import { history } from 'umi'
-import ProDescriptions from '@ant-design/pro-descriptions'
-import { PreImage } from '../../../DataSpecialDetail/components/Descriptions/upload'
+import React, { useMemo, memo, useCallback } from 'react';
+import { Card, Button } from 'antd';
+import { history } from 'umi';
+import ProDescriptions from '@ant-design/pro-descriptions';
+import { PreImage } from '../../../DataSpecialDetail/components/Descriptions/upload';
 
 interface IProps {
-  loading?: boolean
-  value?: API_DATA.IGetMovieData
+  loading?: boolean;
+  value?: API_DATA.IGetMovieData;
 }
 
 export default memo((props: IProps) => {
-
   const { loading, value } = useMemo(() => {
-    return props 
-  }, [props])
+    return props;
+  }, [props]);
 
   const preview = useCallback((urlList: string | string[]) => {
-    const url = Array.isArray(urlList) ? urlList : [urlList]
-    return history.push({ 
+    const url = Array.isArray(urlList) ? urlList : [urlList];
+    return history.push({
       pathname: '/media/image',
       query: {
-        url
-      }
-     })
-  }, [])
+        url,
+      },
+    });
+  }, []);
 
   const columns = useMemo(() => {
     return [
@@ -48,10 +47,14 @@ export default memo((props: IProps) => {
         valueType: 'text',
         key: 'author',
         span: 1,
-        renderText: (author: API_DATA.IGetMovieData["author"]) => {
-          const { username, _id } = author || {}
-          return <Button type="link" onClick={() => history.push(`/member/${_id}`)}>{username}</Button>
-        }
+        renderText: (author: API_DATA.IGetMovieData['author']) => {
+          const { username, _id } = author || {};
+          return (
+            <Button type="link" onClick={() => history.push(`/member/${_id}`)}>
+              {username}
+            </Button>
+          );
+        },
       },
       {
         title: '海报',
@@ -60,8 +63,8 @@ export default memo((props: IProps) => {
         valueType: 'text',
         span: 2,
         renderText: (poster: string) => {
-          return <PreImage value={poster} onClick={preview.bind(null, poster)} />
-        }
+          return <PreImage value={poster} onClick={preview.bind(null, poster)} />;
+        },
       },
       {
         title: '截图',
@@ -70,10 +73,8 @@ export default memo((props: IProps) => {
         valueType: 'text',
         span: 3,
         renderText: (images: string[]) => {
-          return (
-            <PreImage value={images[0]} onClick={preview.bind(null, images)} />
-          )
-        }
+          return <PreImage value={images[0]} onClick={preview.bind(null, images)} />;
+        },
       },
       {
         title: '创建时间',
@@ -110,8 +111,8 @@ export default memo((props: IProps) => {
         key: 'rate_person',
         span: 1,
         renderText: (rate_person: number, record: API_DATA.IGetMovieData) => {
-          return `${record.total_rate}/${rate_person}人`
-        }
+          return `${record.total_rate}/${rate_person}人`;
+        },
       },
       {
         title: '来源类型',
@@ -172,26 +173,24 @@ export default memo((props: IProps) => {
         key: 'tag_count',
         span: 1,
       },
-    ]
-  }, [])
+    ];
+  }, []);
 
   return (
     <Card>
-      <ProDescriptions 
+      <ProDescriptions
         dataSource={value}
         column={{
           xs: 1,
           md: 3,
         }}
         style={{
-          backgroundColor: 'white'
+          backgroundColor: 'white',
         }}
         loading={loading}
         bordered
         columns={columns}
-      >
-      </ProDescriptions>
+      ></ProDescriptions>
     </Card>
-  )
-
-})
+  );
+});
