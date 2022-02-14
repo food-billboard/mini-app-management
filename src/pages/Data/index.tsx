@@ -3,15 +3,16 @@ import { Button, Dropdown, message, Menu, Space } from 'antd'
 import { PageHeaderWrapper } from '@ant-design/pro-layout'
 import ProTable from '@ant-design/pro-table'
 import type { ActionType } from '@ant-design/pro-table'
-import { DownOutlined, PlusOutlined, EllipsisOutlined } from '@ant-design/icons'
+import { DownOutlined, EllipsisOutlined } from '@ant-design/icons'
 import { connect } from 'umi'
 import pickBy from 'lodash/pickBy'
 import identity from 'lodash/identity'
 import { history } from 'umi'
-import { mapStateToProps, mapDispatchToProps } from './connect'
-import column from './columns'
 import { deleteMovie, getMovieList, putMovieStatus, deleteMovieStatus, updateMovieTag } from '@/services'
 import { commonDeleteMethod } from '@/utils'
+import { mapStateToProps, mapDispatchToProps } from './connect'
+import AddModal from './component/AddModal'
+import column from './columns'
 
 interface IProps {
   role: any
@@ -36,6 +37,7 @@ const CardList: React.FC<IProps> = () => {
   }, [])
 
   const handleModalVisible = (id?: string) => {
+
     return history.push({
       pathname: '/data/main/edit',
       query: {
@@ -142,9 +144,13 @@ const CardList: React.FC<IProps> = () => {
         pagination={{defaultPageSize: 10}}
         rowKey="_id"
         toolBarRender={(action, { selectedRows }) => [
-          <Button key={'add'} icon={<PlusOutlined />} type="primary" onClick={() => handleModalVisible()}>
-            新建
-          </Button>,
+          <AddModal
+            key={'add'}
+            onCancel={() => handleModalVisible()}
+            onConfirm={() => {
+              actionRef.current?.reloadAndRest?.()
+            }}
+          />,
           selectedRows && selectedRows.length > 0 && (
             <Dropdown
               overlay={

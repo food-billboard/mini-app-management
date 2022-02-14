@@ -1,5 +1,13 @@
 import { request } from '@/utils';
 
+// 获取豆瓣电影数据
+export const getDoubanMovieData = (params: { _id: string }) => {
+  return request('/api/manage/movie/detail/douban', {
+    method: 'GET',
+    params
+  })
+}
+
 // 电影列表
 export const getMovieList = (params: API_DATA.IGetMovieListParams = {}) => {
   return request<API_DATA.IGetMovieListRes>('/api/manage/movie', {
