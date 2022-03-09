@@ -4,7 +4,7 @@ import { PlusOutlined } from '@ant-design/icons'
 import { getDoubanMovieData } from '@/services'
 
 const AddModal = (props: {
-  onConfirm?: () => void 
+  onConfirm?: (id: string) => void 
   onCancel?: () => void 
 }) => {
 
@@ -32,11 +32,11 @@ const AddModal = (props: {
     }
 
     getDoubanMovieData({ _id: stateValue })
-    .then(() => {
+    .then((data) => {
       setStateValue('')
       setAddLoading(false)
       setVisible(false)
-      onConfirm?.()
+      onConfirm?.(data as string)
     })
     .catch(() => {
       message.info('网络错误，请重试')
@@ -66,7 +66,6 @@ const AddModal = (props: {
         <Input
           value={stateValue}
           onChange={(e) => {
-            console.log(e.target.value)
             setStateValue(e.target.value)
           }}
         />

@@ -147,8 +147,9 @@ const CardList: React.FC<IProps> = () => {
           <AddModal
             key={'add'}
             onCancel={() => handleModalVisible()}
-            onConfirm={() => {
+            onConfirm={(data) => {
               actionRef.current?.reloadAndRest?.()
+              handleModalVisible(data)
             }}
           />,
           selectedRows && selectedRows.length > 0 && (

@@ -15,8 +15,9 @@ import SearchForm from '@/components/TransferSelect'
 import type { ISelectItem } from '@/components/TransferSelect'
 import InputAlias from './components/InputSearch'
 import Upload from '@/components/Upload'
+import { isObjectId } from '@/components/Upload/util'
 import VideoUpload from '@/components/VideoUpload'
-import { getActorInfo, getDirectorInfo, getDistrictInfo, getLanguageInfo, getClassifyInfo, getMovieInfo, putMovie, postMovie } from '@/services'
+import { getDoubanMovieDataDetail, getActorInfo, getDirectorInfo, getDistrictInfo, getLanguageInfo, getClassifyInfo, getMovieInfo, putMovie, postMovie } from '@/services'
 import { fileValidator, localFetchData4Array } from './utils'
 import { withTry } from '@/utils'
 
@@ -26,13 +27,14 @@ const CreateForm = memo(() => {
 
   const formRef = useRef<FormInstance>()
 
-  const fetchData = useCallback(async () => {
+  const fetchData = async () => {
     const { location: { query } } = history
     const { id } = query as { id: string | undefined }
 
     if(id) {
+      const method = isObjectId(id) ? getMovieInfo : getDoubanMovieDataDetail
       // 获取修改的数据
-      return await getMovieInfo({
+      return await method({
         _id: id
       })
       .then((data: API_DATA.IGetMovieInfoRes) => {
@@ -52,7 +54,7 @@ const CreateForm = memo(() => {
 
     return Promise.resolve()
 
-  }, [])
+  }
 
   const handleAdd = useCallback(async (fields: any) => {
     const hide = message.loading('正在添加')
