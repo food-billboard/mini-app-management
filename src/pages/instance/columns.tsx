@@ -16,7 +16,7 @@ export default [
     dataIndex: 'notice',
     hideInSearch: true,
     key: 'notice',
-    ellipsis: true
+    ellipsis: true,
   },
   {
     title: '创建时间',

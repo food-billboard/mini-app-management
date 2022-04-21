@@ -21,7 +21,7 @@ export default {
     '/api/': {
       target: API_DOMAIN,
       changeOrigin: true,
-      pathRewrite: { '^': '' },
+      pathRewrite: { '^/api/static': '/static' },
     },
   },
   // dev: {

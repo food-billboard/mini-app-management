@@ -1,5 +1,5 @@
 import React from 'react'
-import { Tag, DatePicker, Avatar, Image } from 'antd'
+import { Tag, DatePicker, Image } from 'antd'
 import { history } from 'umi'
 import moment from 'moment'
 import { SOURCE_TYPE, MEDIA_AUTH_MAP, MEDIA_UPLOAD_STATUS, fileSize, IMAGE_FALLBACK } from '@/utils'
@@ -32,11 +32,15 @@ export default [
     dataIndex: 'src',
     hideInSearch: true,
     copyable: true,
+    ellipsis: true,
+    width: 100,
   },
   {
     title: '文件名',
     dataIndex: 'name',
     hideInSearch: true,
+    ellipsis: true,
+    width: 50,
   },
   {
     title: '白名单数量',
@@ -93,12 +97,6 @@ export default [
     sorter: true,
     hideInSearch: true,
     renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
-  },
-  {
-    title: '邮箱',
-    dataIndex: 'email',
-    hideInSearch: true,
-    copyable: true,
   },
   {
     title: '来源类型',

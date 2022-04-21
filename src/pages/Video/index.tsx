@@ -20,7 +20,13 @@ const VideoPreview: FC<any> = () => {
   const videoId: string | undefined = useMemo(() => {
     const { location: { query } } = history
     const { url } = query as { url: string | undefined }
-    return Array.isArray(url) ? url[0] || "" : url 
+    const target = Array.isArray(url) ? url[0] || "" : url 
+    try {
+      const { pathname } = new URL(target)
+      return pathname
+    }catch(err) {
+      return target 
+    }
   }, [])
 
   const goBack = useCallback(() => {
@@ -39,6 +45,13 @@ const VideoPreview: FC<any> = () => {
   // return (
   //   <div>另外一个页面</div>
   // )
+
+  // ? 有问题就用下面那个
+  return (
+    <Video
+      src={`/api${videoId}`}
+    />
+  )
 
   return (
     <Video

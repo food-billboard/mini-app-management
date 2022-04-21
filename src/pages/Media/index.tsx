@@ -6,6 +6,7 @@ import type { ActionType } from '@ant-design/pro-table';
 import { DownOutlined, EllipsisOutlined } from '@ant-design/icons';
 import { connect, history } from 'umi';
 import { noop } from 'lodash';
+import ImagePreview, { ImagePreviewRef } from '@/components/ImagePreview';
 import { mapStateToProps, mapDispatchToProps } from './connect';
 import CreateForm from './components/CreateForm';
 import type { IFormRef } from './components/CreateForm';
@@ -23,6 +24,7 @@ const MediaManage = memo(() => {
   const modalRef = useRef<IFormRef>(null);
   const listModalRef = useRef<ListModalRef>(null);
   const posterRef = useRef<any>(null);
+  const previewRef = useRef<ImagePreviewRef>(null)
 
   const [activeKey, setActiveKey] = useState<keyof typeof MEDIA_TYPE_MAP>('image');
 
@@ -50,14 +52,19 @@ const MediaManage = memo(() => {
   );
 
   const getDetail = useCallback(
-    (src: string | string[]) => {
-      const urls = Array.isArray(src) ? src : [src];
-      return history.push({
-        pathname: `/media/${activeKey}`,
-        query: {
-          url: urls,
-        },
-      });
+    (record: API_MEDIA.IGetMediaListData) => {
+      const { src } = record 
+      if(activeKey === 'image') {
+        previewRef.current?.open(src)
+      }else {
+        const urls = Array.isArray(src) ? src : [src];
+        return history.push({
+          pathname: `/media/${activeKey}`,
+          query: {
+            url: urls,
+          },
+        });
+      }
     },
     [activeKey],
   );
@@ -146,6 +153,7 @@ const MediaManage = memo(() => {
         key: 'option',
         dataIndex: 'option',
         valueType: 'option',
+        fixed: 'right',
         render: (_: any, record: API_MEDIA.IGetMediaListData) => {
           return (
             <Space>
@@ -157,8 +165,8 @@ const MediaManage = memo(() => {
                 overlay={
                   <Menu>
                     <Menu.Item>
-                      <a style={{ color: '#1890ff' }} onClick={getDetail.bind(null, record.src)}>
-                        详情
+                      <a style={{ color: '#1890ff' }} onClick={getDetail.bind(null, record)}>
+                        查看
                       </a>
                     </Menu.Item>
                     <Menu.Item>
@@ -305,7 +313,10 @@ const MediaManage = memo(() => {
       />
       <CreateForm onSubmit={onSubmit} ref={modalRef} />
       <ListModal ref={listModalRef} />
-      <ConfirmModal ref={posterRef} onOk={() => actionRef.current?.reloadAndRest} />
+      <ConfirmModal ref={posterRef} onOk={() => actionRef.current?.reloadAndRest?.()} />
+      <ImagePreview
+        ref={previewRef}
+      />
     </PageContainer>
   );
 });

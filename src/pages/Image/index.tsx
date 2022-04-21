@@ -71,8 +71,12 @@ class ImagePreview extends PureComponent<any> {
 
   public componentDidMount = async () => {
     const urls = this.getUrl()
-    const result = await this.fetchData(urls)
-    if(Array.isArray(result) && result.length) this.instanceInit()
+    this.setState({
+      values: urls
+    }, () => {
+      if(Array.isArray(urls) && urls.length) this.instanceInit()
+    })
+    // const result = await this.fetchData(urls)
   }
 
   public componentWillUnmount = () => {
@@ -81,6 +85,8 @@ class ImagePreview extends PureComponent<any> {
 
   public instanceInit = () => {
     const element = document.getElementById('image-viewer') as HTMLElement
+
+    if(!element) return 
 
     const viewer: Viewer = new Viewer(element, {
       inline: false,
@@ -125,8 +131,15 @@ class ImagePreview extends PureComponent<any> {
     const { location: { query } } = history
     const { url: videoUrl=[] } = query as { url: string[] | undefined } || {}
     return (Array.isArray(videoUrl) ? videoUrl : [videoUrl])?.map(url => {
-      return {
-        src: url
+      try {
+        const { pathname } = new URL(url)
+        return {
+          src: `/api${pathname}`
+        }
+      }catch(err) {
+        return {
+          src: url
+        } 
       }
     })
   }
