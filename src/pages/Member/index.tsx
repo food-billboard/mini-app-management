@@ -75,6 +75,7 @@ const MemberManage = memo(() => {
         key: 'option',
         dataIndex: 'option',
         valueType: 'option',
+        fixed: 'right',
         render: (_: any, record: API_USER.IGetUserListResData) => {
           return (
             <Space>

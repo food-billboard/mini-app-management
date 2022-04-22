@@ -15,7 +15,6 @@ const AddModal = (props: {
   const [ visible, setVisible ] = useState<boolean>(false)
 
   const handleConfirm = async () => {
-    setAddLoading(true)
     setVisible(true)
   }
 
@@ -31,6 +30,7 @@ const AddModal = (props: {
       return 
     }
 
+    setAddLoading(true)
     getDoubanMovieData({ _id: stateValue })
     .then((data) => {
       setStateValue('')
@@ -40,6 +40,9 @@ const AddModal = (props: {
     })
     .catch(() => {
       message.info('网络错误，请重试')
+    })
+    .then(() => {
+      setAddLoading(false)
     })
   }, [stateValue, onConfirm])
 
@@ -62,6 +65,7 @@ const AddModal = (props: {
         visible={visible}
         onOk={onOk}
         onCancel={onCancel}
+        confirmLoading={addLoading}
       >
         <Input
           value={stateValue}

@@ -1,5 +1,5 @@
 import React, { useRef, useCallback, memo, useMemo, useState } from 'react'
-import { Button, message, Input, Modal } from 'antd'
+import { Button, message, Input, Modal, Space } from 'antd'
 import { PageHeaderWrapper } from '@ant-design/pro-layout'
 import ProTable from '@ant-design/pro-table'
 import type { ActionType } from '@ant-design/pro-table'
@@ -16,10 +16,10 @@ const ScheduleManage = memo(() => {
     const { name } = record
 
     await cancelScheduleDeal({ name })
-    .then(_ => {
+    .then(() => {
       return actionRef.current?.reloadAndRest?.()
     })
-    .catch(err => {
+    .catch(() => {
       message.info("取消任务失败")
     })
 
@@ -29,10 +29,10 @@ const ScheduleManage = memo(() => {
     const { name } = record
 
     await restartScheduleDeal({ name })
-    .then(_ => {
+    .then(() => {
       return actionRef.current?.reloadAndRest?.()
     })
-    .catch(err => {
+    .catch(() => {
       message.info("重新启动任务失败")
     })
   }, [])
@@ -41,10 +41,10 @@ const ScheduleManage = memo(() => {
     const { name } = record
 
     await invokeScheduleDeal({ name })
-    .then(_ => {
+    .then(() => {
       return actionRef.current?.reloadAndRest?.()
     })
-    .catch(err => {
+    .catch(() => {
       message.info("立即执行任务失败")
     })
   }, [])
@@ -65,10 +65,10 @@ const ScheduleManage = memo(() => {
           name: record.name,
           time
         })
-        .then(_ => {
+        .then(() => {
           setTime("")
         })
-        .catch(_ => {
+        .catch(() => {
           message.info("修改时间失败")
         }) 
       }
@@ -86,8 +86,10 @@ const ScheduleManage = memo(() => {
         render: (_: any, record: API_SCHEDULE.IGetScheduleListData) => {
           const { status } = record
           return (
-            <>
+            <Space>
               <Button
+                style={{padding: 0}}
+                key='restart'
                 type="link"
                 danger={status === "SCHEDULING"}
                 onClick={status === "SCHEDULING" ? handleCancel.bind(null, record) : restartSchedule.bind(null, record)}
@@ -96,9 +98,9 @@ const ScheduleManage = memo(() => {
                   status === "SCHEDULING" ? "取消执行" : "重新启动"
                 }
               </Button>
-              <Button type="link" onClick={handleInvokeSchedule.bind(null, record)}>立即执行</Button>
-              <Button type="link" onClick={handlePutScheduleTime.bind(null, record)}>修改执行时间</Button>
-            </>
+              <Button style={{padding: 0}} key='deal' type="link" onClick={handleInvokeSchedule.bind(null, record)}>立即执行</Button>
+              <Button style={{padding: 0}} key='update' type="link" onClick={handlePutScheduleTime.bind(null, record)}>修改执行时间</Button>
+            </Space>
           )
         }
       }
@@ -119,13 +121,14 @@ const ScheduleManage = memo(() => {
         headerTitle="用户反馈列表"
         actionRef={actionRef}
         pagination={false}
-        rowKey="_id"
+        rowKey="name"
         toolBarRender={false}
         tableAlertRender={false}
         search={false}
         request={fetchData}
         columns={columns}
         rowSelection={false}
+        style={{padding: 24}}
       />
     </PageHeaderWrapper>
   )

@@ -69,6 +69,7 @@ const FeedbackManage = memo(() => {
         key: 'option',
         dataIndex: 'option',
         valueType: 'option',
+        fixed: 'right',
         render: (_: any, record: API_USER.IGetFeedbackData) => {
           return (
             <Space>

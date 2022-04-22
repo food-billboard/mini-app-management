@@ -62,6 +62,7 @@ const InstanceManage: React.FC<any> = () => {
       key: 'opera',
       dataIndex: 'opera',
       valueType: 'option',
+      fixed: 'right',
       render: (_: any, record: API_INSTANCE.IGetInstanceInfoData) => {
         const { valid } = record
         return (

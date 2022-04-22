@@ -135,7 +135,7 @@ export const postActorInfo = (data: API_DATA.IPostActorInfoParams) => {
 // 删除演员
 export const deleteActorInfo = (params: API_DATA.IDeleteActorParams) => {
   return request('/api/manage/movie/detail/info/actor', {
-    method: 'POST',
+    method: 'DELETE',
     params,
   });
 };

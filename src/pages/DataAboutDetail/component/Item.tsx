@@ -71,9 +71,9 @@ function addButton(operation: OperationType, children: string) {
 export const AboutInfo = {
   actor: {
     fetchData: async (values: API_DATA.IGetActorInfoParams) => {
-      const data = await getActorInfo(values)
+      const data = await getActorInfo(values) || {}
       if(!values || !values["_id"]) return data
-      const form: API_DATA.IGetActorInfoResData = Array.isArray(data) ? data[0] : data
+      const form: API_DATA.IGetActorInfoResData = Array.isArray(data.list) ? data.list[0] : data.list
       if(!form) return {}
       const { country, another_name, avatar, avatar_id, ...nextForm } = form
       return {
@@ -197,7 +197,7 @@ export const AboutInfo = {
     fetchData: async (values: API_DATA.IGetDirectorInfoResData) => {
       const data = await getDirectorInfo(values)
       if(!values || !values["_id"]) return data
-      const form: API_DATA.IGetDirectorInfoResData = Array.isArray(data) ? data[0] : data
+      const form: API_DATA.IGetDirectorInfoResData = Array.isArray(data.list) ? data.list[0] : data.list
       if(!form) return {}
       const { country, another_name, avatar, avatar_id, ...nextForm } = form
       return {
@@ -322,7 +322,7 @@ export const AboutInfo = {
     fetchData: async (values: API_DATA.IGetClassifyInfoParams) => {
       const data = await getClassifyInfo(values)
       if(!values || !values["_id"]) return data
-      const form: API_DATA.IGetClassifyInfoResData = Array.isArray(data) ? data[0] : data
+      const form: API_DATA.IGetClassifyInfoResData = Array.isArray(data.list) ? data.list[0] : data.list
       if(!form) return {}
       const { icon, icon_id, ...nextForm } = form
       return {
@@ -430,7 +430,12 @@ export const AboutInfo = {
     }
   },
   language: {
-    fetchData: getLanguageInfo,
+    fetchData: async (values: API_DATA.IGetLanguageInfoParams) => {
+      const data = await getLanguageInfo(values)
+      if(!values || !values["_id"]) return data
+      const form: API_DATA.IGetLanguageInfoResData = Array.isArray(data.list) ? data.list[0] : data.list
+      return form || {}
+    },
     delete: deleteLanguageInfo,
     edit: putLanguageInfo,
     add: postLanguageInfo,
@@ -501,7 +506,12 @@ export const AboutInfo = {
     }
   },
   district: {
-    fetchData: getDistrictInfo,
+    fetchData: async (values: API_DATA.IGetDistrictInfoParams) => {
+      const data = await getDistrictInfo(values)
+      if(!values || !values["_id"]) return data
+      const form: API_DATA.IGetDistrictInfoResData = Array.isArray(data.list) ? data.list[0] : data.list
+      return form || {}
+    },
     delete: deleteDistrictInfo,
     edit: putDistrictInfo,
     add: postDistrictInfo,

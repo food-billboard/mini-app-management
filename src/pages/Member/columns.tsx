@@ -24,6 +24,8 @@ export default [
     dataIndex: 'username',
     hideInSearch: true,
     fixed: "left",
+    width: 100,
+    ellipsis: true,
     render: (value: string, record: API_USER.IGetUserListResData) => <a onClick={() => history.push(`/member/${record._id}`)}>{value}</a>
   },
   {
@@ -53,7 +55,7 @@ export default [
     sorter: true,
     valueType: 'date',
     hideInSearch: true,
-    renderFormItem: (_: any, { type, defaultRender, ...rest }: any, form: any) => {
+    renderFormItem: (_: any, { type, defaultRender, ...rest }: any) => {
       return <RangePicker {...rest} />
     },
     renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')

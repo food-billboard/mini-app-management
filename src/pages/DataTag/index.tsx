@@ -57,6 +57,7 @@ const TagManage = memo(() => {
         key: 'option',
         dataIndex: 'option',
         valueType: 'option',
+        fixed: 'right',
         render: (_: any, record: API_DATA.IGetMovieTagResData) => {
           return (
             <Space>

@@ -119,7 +119,7 @@ const Data = forwardRef<DataAboutRef, IProps>((props, ref) => {
           showQuickJumper
           total={total}
           onChange={pageChange}
-        ></Pagination>
+        />
       )
     ]
   }, [ total, pageChange, currPage ])
