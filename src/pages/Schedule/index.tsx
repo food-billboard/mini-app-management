@@ -13,9 +13,9 @@ const ScheduleManage = memo(() => {
   const actionRef = useRef<ActionType>()
 
   const handleCancel = useCallback(async (record: API_SCHEDULE.IGetScheduleListData) => {
-    const { name } = record
+    const { _id } = record
 
-    await cancelScheduleDeal({ name })
+    await cancelScheduleDeal({ _id })
     .then(() => {
       return actionRef.current?.reloadAndRest?.()
     })
@@ -26,9 +26,9 @@ const ScheduleManage = memo(() => {
   }, [])
 
   const restartSchedule = useCallback(async (record: API_SCHEDULE.IGetScheduleListData) => {
-    const { name } = record
+    const { _id } = record
 
-    await restartScheduleDeal({ name })
+    await restartScheduleDeal({ _id })
     .then(() => {
       return actionRef.current?.reloadAndRest?.()
     })
@@ -38,9 +38,9 @@ const ScheduleManage = memo(() => {
   }, [])
 
   const handleInvokeSchedule = useCallback(async (record: API_SCHEDULE.IGetScheduleListData) => {
-    const { name } = record
+    const { _id } = record
 
-    await invokeScheduleDeal({ name })
+    await invokeScheduleDeal({ _id })
     .then(() => {
       return actionRef.current?.reloadAndRest?.()
     })
@@ -62,7 +62,7 @@ const ScheduleManage = memo(() => {
           return Promise.reject()
         }
         return putScheduleDealTime({
-          name: record.name,
+          _id: record._id,
           time
         })
         .then(() => {
@@ -128,7 +128,7 @@ const ScheduleManage = memo(() => {
         request={fetchData}
         columns={columns}
         rowSelection={false}
-        style={{padding: 24}}
+        style={{padding: 24, backgroundColor: '#fff'}}
       />
     </PageHeaderWrapper>
   )

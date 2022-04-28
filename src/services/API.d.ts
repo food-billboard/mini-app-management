@@ -788,22 +788,23 @@ declare namespace API_SCHEDULE {
     description: string;
     status: 'CANCEL' | 'SCHEDULING';
     time: string;
+    _id: string 
   }
 
   export interface IPostScheduleDealParams {
-    name: string;
+    _id: string;
   }
 
   export interface ICancelScheduleDealParams {
-    name: string;
+    _id: string;
   }
 
   export interface IRestartScheduleDealParams {
-    name: string;
+    _id: string;
   }
 
   export interface IPutScheduleTimeParams {
-    name: string;
+    _id: string;
     time: string;
   }
 }

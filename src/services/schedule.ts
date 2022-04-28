@@ -1,5 +1,4 @@
 import { request } from '@/utils';
-import { merge } from 'lodash'
 
 // 获取定时任务列表
 export async function getScheduleList() {
