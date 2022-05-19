@@ -43,7 +43,7 @@ const CreateForm = memo(() => {
           ...data,
           poster: [poster],
           video: [video],
-          _id: id
+          _id: isObjectId(id) ? id : undefined 
         })
       })
       .catch(err => {
