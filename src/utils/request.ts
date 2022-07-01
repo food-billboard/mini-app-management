@@ -1,6 +1,7 @@
-import { extend, ResponseError, RequestOptionsInit as RequestOptionsOrigin } from 'umi-request'
 import { notification, message } from 'antd';
 import { getDvaApp, history } from 'umi'
+import axios from 'axios';
+import type { AxiosRequestConfig } from 'axios'
 import { stringify } from 'querystring'
 import debounce from 'lodash/debounce'
 import { formatQuery } from './utils'
@@ -24,39 +25,10 @@ const codeMessage = {
   504: '网关超时。',
 };
 
-/**
- * 异常处理程序
- */
-const errorHandler = (error: ResponseError) => {
-  // const { response } = error;
-  // if (response && response.status) {
-  //   const errorText = codeMessage[response.status] || response.statusText;
-  //   const { status, url } = response;
-
-  //   notification.error({
-  //     message: `请求错误 ${status}: ${url}`,
-  //     description: errorText,
-  //   });
-  // }
-
-  // if (!response) {
-  //   notification.error({
-  //     description: '您的网络发生异常，无法连接服务器',
-  //     message: '网络异常',
-  //   });
-  // }
-  throw error;
-};
-
-interface RequestOptions extends RequestOptionsOrigin{
+interface RequestOptions extends AxiosRequestConfig{
   mis?: boolean
+  origin?: boolean 
 }
-
-const requestOrigin = extend({
-  errorHandler,
-  timeout: 300000,
-  credentials: 'include',
-})
 
 // 未登录的多次触发处理
 const dispatchLogin = debounce(function(err){
@@ -106,14 +78,14 @@ export const misManage = (error: any) => {
 const request = async <ResBody>(url: string, setting: RequestOptions = {} as RequestOptions)=>{
 
   // 过滤URL参数
-  const { params, mis=true, ...options } = setting
+  const { params, mis=true, origin, ...options } = setting
 
   let body: any
   let error: any
 
   try{
-    body = await requestOrigin(url, {
-      requestType: 'json',
+    body = await axios.request({
+      url,
       ...options,
       ...(params ? { params: formatQuery(params) } : {}),
     });
@@ -126,7 +98,7 @@ const request = async <ResBody>(url: string, setting: RequestOptions = {} as Req
   if( error ){
     error.errorType = 'system';
     error.messageType = 'response';
-    mis && misManage(error);
+    if(mis) misManage(error);
     throw error
   }
 
@@ -138,11 +110,12 @@ const request = async <ResBody>(url: string, setting: RequestOptions = {} as Req
   }
 
   // 返回真正的response body res 内容
-  if( !error ){
-    return (body?.res?.data || {}) as ResBody
+  if( !error ) {
+    if(origin) return body 
+    return (body?.data?.res?.data || {}) as ResBody
   }
   error.mis = mis
-  mis && misManage(error);
+  if(mis) misManage(error);
   throw error
 };
 

@@ -110,7 +110,6 @@ export default {
     //重置密码
     * forger({ payload }: { payload: ResetParamsType }, { call }: { call: any }) {
       const response = yield call(forgetPassword, payload)
-      console.log(response, '重置密码')
       //重置成功跳转至登录
       if (response.status === 'ok') {
         message.success({

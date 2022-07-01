@@ -73,5 +73,9 @@ export default {
   'menu.chat': '聊天管理',
   'menu.chat.room': '聊天室管理',
   'menu.chat.message': '消息管理',
-  'menu.chat.member': '成员管理'
+  'menu.chat.member': '成员管理',
+  'menu.screen': '大屏管理',
+  'menu.screen.list': '实例管理',
+  'menu.screen.model': '模板管理',
+  'menu.screen.mock': 'mock数据管理',
 };

@@ -239,6 +239,47 @@ export default [
           //   title: '错误管理',
           // },
           {
+            path: '/screen',
+            name: 'screen',
+            title: '大屏管理',
+            icon: 'fund',
+            routes: [
+              {
+                path: '/screen/list',
+                title: '实例管理',
+                name: 'list',
+                routes: [
+                  {
+                    path: '/screen/list',
+                    component: '@/pages/Screen',
+                  }
+                ],
+              },
+              {
+                path: '/screen/model',
+                title: '模板管理',
+                name: 'model',
+                routes: [
+                  {
+                    path: '/screen/model',
+                    component: '@/pages/ScreenModel',
+                  }
+                ],
+              },
+              {
+                path: '/screen/mock',
+                title: 'mock数据管理',
+                name: 'mock',
+                routes: [
+                  {
+                    path: '/screen/mock',
+                    component: '@/pages/ScreenMock',
+                  }
+                ],
+              },
+            ],
+          },
+          {
             path: '/admin',
             name: 'admin',
             title: '个人中心',

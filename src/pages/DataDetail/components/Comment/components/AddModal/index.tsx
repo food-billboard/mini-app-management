@@ -48,9 +48,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   const onFinish = useCallback(
     async (values: Store) => {
       const { image, video, text="", ...nextProps } = values;
-      console.log(text, image, video, 5555)
       if (!image.length && !video.length && !text.length) {
-        console.log(7777)
         message.info('评论内容不能完全为空，至少填写一项');
         return false 
       }

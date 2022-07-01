@@ -132,7 +132,6 @@ const LoginItem: React.FC<LoginItemProps> = (props) => {
                 size="large"
                 onClick={() => {
                   const value = getFieldValue('email')
-                  console.log(value)
                   onGetCaptcha(value);
                 }}
               >

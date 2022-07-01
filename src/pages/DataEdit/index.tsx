@@ -47,7 +47,6 @@ const CreateForm = memo(() => {
         })
       })
       .catch(err => {
-        console.log(err)
         message.info('数据获取错误，请重试')
       })
     }

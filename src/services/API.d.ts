@@ -780,6 +780,46 @@ declare namespace Upload {
   export interface ILooadParams {
     load: string;
   }
+
+  export interface UploadParams {
+    file: File;
+  }
+
+  export type TAuthType = 'PRIVATE' | 'PUBLIC';
+
+  export interface ICheckUploadFileParams {
+    'Tus-Resumable': '1.0.0';
+    md5: string;
+    auth: TAuthType;
+    size: number;
+    mime: string;
+    name?: string;
+    chunk: number;
+  }
+
+  export interface ICheckUploadFileRes {
+    'Tus-Resumable': '1.0.0';
+    location: string;
+    'Upload-Offset': number;
+    'Upload-Length': number;
+    'Upload-Id': string;
+  }
+
+  export interface UploadRes {
+    _id: string;
+    url: string;
+  }
+
+  export interface IUploadParams {
+    md5: string;
+    offset: number;
+    file: Blob;
+  }
+
+  export interface IGetUploadParams {
+    _id: string;
+    type?: 0 | 1 | 2;
+  }
 }
 
 declare namespace API_SCHEDULE {
@@ -788,7 +828,7 @@ declare namespace API_SCHEDULE {
     description: string;
     status: 'CANCEL' | 'SCHEDULING';
     time: string;
-    _id: string 
+    _id: string;
   }
 
   export interface IPostScheduleDealParams {
@@ -1041,5 +1081,77 @@ declare namespace API_CHAT {
     _id: string;
     room: string;
     is_delete?: 0 | 1;
+  }
+}
+
+declare namespace API_SCREEN {
+  export type IGetScreenMockData = {
+    data_kind: string;
+    _id: string;
+    description: string 
+    config_type: string 
+    config: any 
+    user: {
+      username: string;
+      avatar: string;
+      _id: string;
+    };
+    createdAt: string;
+    updatedAt: string;
+  };
+
+  export type IPostScreenMockDataParams = {
+    data_kind: string;
+    description?: string 
+    config_type: Required<IGetScreenMockParams['date_type']>
+    config: any 
+  };
+
+  export type IPutScreenMockDataParams = IPostScreenMockDataParams & {
+    _id: string;
+  };
+
+  export type IGetScreenMockRes = {
+    total: number;
+    list: IGetScreenMockData[];
+  };
+
+  export type IGetScreenListParams = {
+    currPage?: number;
+    pageSize?: number;
+    content?: string;
+    enable?: '0' | '1';
+    createdAt?: [string, string];
+  };
+
+  export type IGetScreenListData = {
+    _id: string;
+    flag: 'PC' | 'H5';
+    name: string;
+    description: string;
+    createdAt: string;
+    updatedAt: string;
+    user: {
+      username: string;
+      avatar: string;
+      _id: string;
+    };
+    enable: boolean;
+    poster: string;
+  };
+
+  export type IGetScreenListRes = {
+    total: number;
+    list: IGetScreenListData[];
+  };
+
+  export type ILeadInScreenParams = {
+    _id: string;
+    type: 'screen' | 'model';
+  };
+
+  export type IGetScreenMockParams = {
+    content?: string 
+    date_type?: 'color' | 'date' | 'address' | 'web' | 'text' | 'image' | 'number' | 'boolean' | 'name'
   }
 }
