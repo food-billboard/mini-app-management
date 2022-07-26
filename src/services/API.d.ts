@@ -1138,6 +1138,7 @@ declare namespace API_SCREEN {
     };
     enable: boolean;
     poster: string;
+    version: string 
   };
 
   export type IGetScreenListRes = {

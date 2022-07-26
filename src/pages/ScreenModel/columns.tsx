@@ -96,4 +96,9 @@ export default [
       )
     }
   },
+  {
+    title: '版本',
+    dataIndex: 'version',
+    hideInSearch: true,
+  },
 ]
