@@ -59,12 +59,14 @@ const Issue = () => {
               hoverable 
               cover={
                 <Carousel
-                  autoplay
+                  autoplay={false}
                 >
                   {
                     (item.images || []).map(src => {
                       return (
-                        <div>
+                        <div
+                          key={src}
+                        >
                           <img style={{width: '100%', height: 200}} src={src} />
                         </div>
                       )

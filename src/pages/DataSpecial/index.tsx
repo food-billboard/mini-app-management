@@ -167,8 +167,11 @@ const InstanceManage: React.FC<any> = () => {
 
   const onSearchChange = useCallback(async (params: any) => {
     let realParams: any = {}
-    const { valid, ...nextParams } = params
-    realParams = nextParams
+    const { valid, current, ...nextParams } = params
+    realParams = {
+      ...nextParams,
+      currPage: current - 1
+    }
     if(valid !== undefined) realParams.valid = !Number(valid)
     return getInstanceSpecialList(realParams)
     .then(({ list, total }) => ({ data: list, total }) )

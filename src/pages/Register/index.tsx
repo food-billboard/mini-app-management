@@ -41,13 +41,18 @@ class Register extends Component<any> {
   public handleSubmit = async (values: LoginParamsType) => {
     this.setSubmitting(true)
     const { dispatch } = this.props
-    await dispatch({
-      type: 'user/register',
-      payload: {
-        ...values,
-      }
-    })
-    this.setSubmitting(false);
+    try {
+      await dispatch({
+        type: 'user/register',
+        payload: {
+          ...values,
+        }
+      })
+    }catch(err) {
+
+    }finally {
+      this.setSubmitting(false);
+    }
   };
 
   public render = () => {
