@@ -280,6 +280,13 @@ export default [
             ],
           },
           {
+            path: '/third',
+            name: 'third',
+            title: '第三方接口',
+            icon: 'api',
+            component: '@/pages/ThirdParty',
+          },
+          {
             path: '/admin',
             name: 'admin',
             title: '个人中心',

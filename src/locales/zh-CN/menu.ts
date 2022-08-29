@@ -78,4 +78,5 @@ export default {
   'menu.screen.list': '实例管理',
   'menu.screen.model': '模板管理',
   'menu.screen.mock': 'mock数据管理',
+  'menu.third': '第三方接口',
 };

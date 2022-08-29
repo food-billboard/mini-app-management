@@ -7,7 +7,7 @@ import ProForm, {
 } from '@ant-design/pro-form'
 import { omit } from 'lodash'
 import type { Store } from 'antd/lib/form/interface'
-import React, { useCallback, useMemo, useRef, useState, forwardRef, useImperativeHandle } from 'react'
+import React, { useCallback, useRef, useState, forwardRef, useImperativeHandle } from 'react'
 import Upload from '@/components/Upload'
 import MovieSelect from '@/components/TransferSelect'
 import { fileValidator } from '../../../DataEdit/utils'
@@ -28,9 +28,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
 
   const [ visible, setVisible ] = useState<boolean>(false)
 
-  const { onCancel: propsCancel, onSubmit } = useMemo(() => {
-    return props
-  }, [props])
+  const { onCancel: propsCancel, onSubmit } = props
 
   const formRef = useRef<FormInstance | null>(null)
 
@@ -48,7 +46,6 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
         poster: Array.isArray(poster) ? poster : [ poster ],
         movie: movie.map(item => item["_id"])
       })
-      show()
     }
 
     show()
@@ -147,7 +144,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
           item={{
             fetchData: async () => {
               const data = await getMovieList()
-              return data.list?.map(item => {
+              return data.list?.map((item: any) => {
                 const { _id, name } = item
                 return {
                   key: _id,

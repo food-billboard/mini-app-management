@@ -1156,3 +1156,60 @@ declare namespace API_SCREEN {
     date_type?: 'color' | 'date' | 'address' | 'web' | 'text' | 'image' | 'number' | 'boolean' | 'name'
   }
 }
+
+declare namespace API_THIRD {
+
+  export type GetThirdListParams = {
+    currPage?: number 
+    pageSize?: number 
+    content?: string 
+  } 
+
+  export type GetThirdListRes = {
+    total: number 
+    list: GetThirdListData[]
+  }
+
+  export type GetThirdListData = {
+    _id: string 
+    name: string 
+    description: string 
+    url: string 
+    headers: string 
+    getter: string 
+    createdAt: string 
+    updatedAt: string 
+    params: any 
+    user: {
+      _id: string 
+      username: string 
+      avatar: string 
+    },
+    example: string 
+    method: string 
+  }
+
+  export type PostThirdDataParams = {
+    name: string 
+    description?: string 
+    url: string 
+    method: string 
+    headers?: string
+    getter?: string 
+    params?: any 
+  }
+
+  export type PutThirdDataParams = PostThirdDataParams & {
+    _id: string 
+  }
+
+  export type DeleteThirdDataParams = {
+    _id: string 
+  }
+
+  export type GetThirdDataParams = {
+    _id: string 
+    params?: any 
+  }
+
+}

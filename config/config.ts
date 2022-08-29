@@ -1,6 +1,7 @@
 // https://umijs.org/config/
 import { defineConfig } from 'umi';
 import { merge } from 'lodash'
+import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routerConfig from './router-config';
@@ -47,6 +48,13 @@ const commonConfig = {
   proxy: proxy[REACT_APP_ENV || 'prod'],
   manifest: {
     basePath: '/',
+  },
+  chainWebpack(config: any) {
+    config.plugin('monaco-editor').use(MonacoWebpackPlugin, [
+      {
+        languages: ['javascript', 'json'],
+      },
+    ]);
   },
 }
 
