@@ -1,10 +1,17 @@
 .component-code-viewer {
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
+  width: 400px;
+  height: 400px;
   overflow-x: hidden;
+  overflow-y: auto;
   & > div {
     width: 100%;
     min-height: 100%;
+  }
+}
+.component-code-viewer-overlay {
+  :global {
+    .ant-popover-inner-content {
+      padding: 4px;
+    }
   }
 }

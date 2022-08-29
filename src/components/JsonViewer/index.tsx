@@ -5,9 +5,8 @@ import ReactJson from 'react-json-view';
 import { BugOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
-export const CodeData = (props: { value: object, style?: CSSProperties }) => {
-
-  const { value, style } = props 
+export const CodeData = (props: { value: object; style?: CSSProperties }) => {
+  const { value, style } = props;
 
   return (
     <div
@@ -35,7 +34,11 @@ export const CodeData = (props: { value: object, style?: CSSProperties }) => {
   );
 };
 
-const StepDataButton = (props: { buttonProps?: ButtonProps; value: object, codeStyle?: CSSProperties }) => {
+const StepDataButton = (props: {
+  buttonProps?: ButtonProps;
+  value: object;
+  codeStyle?: CSSProperties;
+}) => {
   const [visible, setVisible] = useState<boolean>(false);
 
   const { buttonProps = {}, value, codeStyle } = props;
@@ -57,6 +60,7 @@ const StepDataButton = (props: { buttonProps?: ButtonProps; value: object, codeS
       visible={visible}
       onVisibleChange={onVisibleChange}
       placement="top"
+      overlayClassName={styles['component-code-viewer-overlay']}
     >
       <Button
         className="h-a m-r-4"
