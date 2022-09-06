@@ -16,7 +16,8 @@ const FEEDBACK_STATUS = {
 const MOVIE_STATUS = {
   VERIFY: "审核中", 
   COMPLETE: "完成审核", 
-  NOT_VERIFY: "未通过"
+  NOT_VERIFY: "未通过",
+  DRAFT: '草稿'
 }
 
 const USER_STATUS = {

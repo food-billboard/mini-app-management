@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
-import { Form, Rate, message, Input, Card } from 'antd'
+import { Form, Rate, message, Input, Card, Button } from 'antd'
 import type { FormInstance } from 'antd/lib/form'
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout'
 import ProForm, {
@@ -90,6 +90,16 @@ const CreateForm = memo(() => {
     }
   }, [formRef, handleAdd])
 
+  const handleSaveDraft = useCallback(async () => {
+    return formRef.current?.validateFields()
+    .then(value => {
+      return onFinish(value)
+    })
+    .catch(err => {
+
+    })
+  }, [onFinish])
+
   useEffect(() => {
     fetchData()
     .then(() => setLoading(false))
@@ -107,7 +117,15 @@ const CreateForm = memo(() => {
         formRef={formRef}
         onFinish={onFinish}
         submitter={{
-          render: (_, dom) => <FooterToolbar>{dom}</FooterToolbar>,
+          render: (_, dom) => {
+            return (
+              <FooterToolbar
+                extra={
+                  <Button type='primary' onClick={handleSaveDraft}>保存草稿</Button>
+                }
+              >{dom}</FooterToolbar>
+            )
+          },
         }}
       >
         <ProFormText 

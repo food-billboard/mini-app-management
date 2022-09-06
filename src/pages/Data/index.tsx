@@ -82,17 +82,21 @@ const CardList: React.FC<IProps> = () => {
       render: (_: any, record: API_DATA.IGetMovieData) => {
         return (
           <Space>
-            <a
+            <Button
               onClick={() => handleModalVisible(record["_id"])}
+              type='link'
+              disabled={record.status === 'DRAFT'}
             >
               编辑
-            </a>
-            <a
-              style={{color: 'red'}}
+            </Button>
+            <Button
+              danger
               onClick={() => handleRemove([record])}
+              type='link'
+              disabled={record.status === 'DRAFT'}
             >
               删除
-            </a>
+            </Button>
             <Dropdown overlay={
               <Menu>
                 <Menu.Item>

@@ -238,7 +238,7 @@ declare namespace API_USER {
 }
 
 declare namespace API_DATA {
-  export type IDataStatus = 'COMPLETE' | 'NOT_VERIFY' | 'VERIFY';
+  export type IDataStatus = 'COMPLETE' | 'NOT_VERIFY' | 'VERIFY' | 'DRAFT';
 
   export type IDataSourceType = 'ORIGIN' | 'USER';
 
