@@ -1088,9 +1088,9 @@ declare namespace API_SCREEN {
   export type IGetScreenMockData = {
     data_kind: string;
     _id: string;
-    description: string 
-    config_type: string 
-    config: any 
+    description: string;
+    config_type: string;
+    config: any;
     user: {
       username: string;
       avatar: string;
@@ -1102,9 +1102,9 @@ declare namespace API_SCREEN {
 
   export type IPostScreenMockDataParams = {
     data_kind: string;
-    description?: string 
-    config_type: Required<IGetScreenMockParams['date_type']>
-    config: any 
+    description?: string;
+    config_type: Required<IGetScreenMockParams['date_type']>;
+    config: any;
   };
 
   export type IPutScreenMockDataParams = IPostScreenMockDataParams & {
@@ -1138,7 +1138,7 @@ declare namespace API_SCREEN {
     };
     enable: boolean;
     poster: string;
-    version: string 
+    version: string;
   };
 
   export type IGetScreenListRes = {
@@ -1152,64 +1152,111 @@ declare namespace API_SCREEN {
   };
 
   export type IGetScreenMockParams = {
-    content?: string 
-    date_type?: 'color' | 'date' | 'address' | 'web' | 'text' | 'image' | 'number' | 'boolean' | 'name'
-  }
+    content?: string;
+    date_type?:
+      | 'color'
+      | 'date'
+      | 'address'
+      | 'web'
+      | 'text'
+      | 'image'
+      | 'number'
+      | 'boolean'
+      | 'name';
+  };
 }
 
 declare namespace API_THIRD {
-
   export type GetThirdListParams = {
-    currPage?: number 
-    pageSize?: number 
-    content?: string 
-  } 
+    currPage?: number;
+    pageSize?: number;
+    content?: string;
+  };
 
   export type GetThirdListRes = {
-    total: number 
-    list: GetThirdListData[]
-  }
+    total: number;
+    list: GetThirdListData[];
+  };
 
   export type GetThirdListData = {
-    _id: string 
-    name: string 
-    description: string 
-    url: string 
-    headers: string 
-    getter: string 
-    createdAt: string 
-    updatedAt: string 
-    params: any 
+    _id: string;
+    name: string;
+    description: string;
+    url: string;
+    headers: string;
+    getter: string;
+    createdAt: string;
+    updatedAt: string;
+    params: any;
     user: {
-      _id: string 
-      username: string 
-      avatar: string 
-    },
-    example: string 
-    method: string 
-  }
+      _id: string;
+      username: string;
+      avatar: string;
+    };
+    example: string;
+    method: string;
+  };
 
   export type PostThirdDataParams = {
-    name: string 
-    description?: string 
-    url: string 
-    method: string 
-    headers?: string
-    getter?: string 
-    params?: any 
-  }
+    name: string;
+    description?: string;
+    url: string;
+    method: string;
+    headers?: string;
+    getter?: string;
+    params?: any;
+  };
 
   export type PutThirdDataParams = PostThirdDataParams & {
-    _id: string 
-  }
+    _id: string;
+  };
 
   export type DeleteThirdDataParams = {
-    _id: string 
-  }
+    _id: string;
+  };
 
   export type GetThirdDataParams = {
-    _id: string 
-    params?: any 
-  }
+    _id: string;
+    params?: any;
+  };
+}
 
+declare namespace API_RASPBERRY {
+  export type GetListRes = {
+    list: GetListData[];
+  };
+
+  export type GetListData = {
+    _id: string;
+    name: string;
+    description: string;
+    url: string;
+    folder: string;
+    createdAt: string;
+    updatedAt: string;
+    user: {
+      _id: string;
+      username: string;
+      avatar: string;
+    };
+  };
+
+  export type PostDataParams = {
+    name: string;
+    description?: string;
+    url: string;
+    folder: string;
+  };
+
+  export type PutDataParams = PostDataParams & {
+    _id: string;
+  };
+
+  export type DeleteDataParams = {
+    _id: string;
+  };
+
+  export type RebuildParams = {
+    _id: string;
+  };
 }

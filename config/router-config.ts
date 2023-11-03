@@ -1,3 +1,5 @@
+const { REACT_APP_ENV } = process.env;
+
 export default [
   {
     path: '/user',
@@ -113,31 +115,42 @@ export default [
                 component: '@/pages/Message',
                 title: '消息管理',
                 name: 'message',
-                hideInMenu: true 
+                hideInMenu: true,
               },
               {
                 path: '/chat/member/:room',
                 component: '@/pages/ChatMembers',
                 title: '成员管理',
                 name: 'member',
-                hideInMenu: true 
-              }
-            ]
+                hideInMenu: true,
+              },
+            ],
           },
           {
             path: '/feedback',
             component: '@/pages/Feedback',
             name: 'feedback',
             icon: 'tool',
-            title: '反馈管理'
+            title: '反馈管理',
           },
           {
             path: '/schedule',
             component: '@/pages/Schedule',
             name: 'schedule',
             icon: 'clock-circle',
-            title: '反馈管理'
+            title: '定时任务管理',
           },
+          ...(REACT_APP_ENV === 'prod-local'
+            ? [
+                {
+                  path: '/raspberry',
+                  component: '@/pages/RaspberryPiPackage',
+                  name: 'raspberry',
+                  icon: 'reddit',
+                  title: '树莓派本地仓库管理',
+                },
+              ]
+            : []),
           {
             path: '/instance',
             component: '@/pages/instance',
@@ -202,7 +215,7 @@ export default [
                   {
                     path: '/data/tag',
                     component: '@/pages/DataTag',
-                  }
+                  },
                 ],
               },
               {
@@ -252,7 +265,7 @@ export default [
                   {
                     path: '/screen/list',
                     component: '@/pages/Screen',
-                  }
+                  },
                 ],
               },
               {
@@ -263,7 +276,7 @@ export default [
                   {
                     path: '/screen/model',
                     component: '@/pages/ScreenModel',
-                  }
+                  },
                 ],
               },
               {
@@ -274,7 +287,7 @@ export default [
                   {
                     path: '/screen/mock',
                     component: '@/pages/ScreenMock',
-                  }
+                  },
                 ],
               },
             ],

@@ -66,6 +66,7 @@ export default {
   'menu.instance': '实例管理',
   'menu.feedback': '反馈管理',
   'menu.schedule': '定时任务管理',
+  'menu.raspberry': '树莓派本地仓库管理',
   'menu.media': '媒体资源管理',
   'menu.media.mediadetailimage': '图片详情',
   'menu.media.mediadetailvideo': '视频详情',
