@@ -51,7 +51,7 @@ const commonConfig = {
   // @ts-ignore
   title: false,
   ignoreMomentLocale: true,
-  proxy: proxy[REACT_APP_ENV || 'prod'],
+  proxy: (proxy as any)[REACT_APP_ENV || 'prod'],
   manifest: {
     basePath: '/',
   },
@@ -146,4 +146,25 @@ const productionConfig: any = merge({}, commonConfig, {
   },
 });
 
-export default defineConfig(REACT_APP_ENV === 'prod' ? productionConfig : developmentConfig);
+const productionLocalConfig: any = merge({}, productionConfig, {
+  define: {
+    'process.env.REACT_APP_ENV': 'prod-local',
+  },
+  base: '/api/backend/',
+  publicPath: '/api/backend/',
+});
+
+let realConfig;
+
+switch (REACT_APP_ENV) {
+  case 'prod':
+    realConfig = productionConfig;
+    break;
+  case 'prod-local':
+    realConfig = productionLocalConfig;
+    break;
+  default:
+    realConfig = developmentConfig;
+}
+
+export default defineConfig(realConfig);

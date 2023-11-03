@@ -15,15 +15,16 @@ const ENVTagColor = {
   dev: 'orange',
   test: 'green',
   pre: '#87d068',
+  prod: '#87d068',
+  'prod-local': '#87d068',
 };
 
 const GlobalHeaderRight: React.FC<GlobalHeaderRightProps> = (props) => {
-
-  const { theme, layout } = props
-  let className = styles.right
+  const { theme, layout } = props;
+  let className = styles.right;
 
   if (theme === 'dark' && layout === 'top') {
-    className = `${styles.right}  ${styles.dark}`
+    className = `${styles.right}  ${styles.dark}`;
   }
 
   return (

@@ -6,6 +6,7 @@
   "scripts": {
     "analyze": "cross-env ANALYZE=1 REACT_APP_ENV=prod umi build",
     "build": "REACT_APP_ENV=prod umi build",
+    "build:local": "REACT_APP_ENV=prod-local umi build",
     "deploy": "npm run site && npm run gh-pages",
     "dev": "npm run start:dev",
     "gh-pages": "gh-pages -d dist",
