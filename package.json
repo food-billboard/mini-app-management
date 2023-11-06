@@ -7,6 +7,8 @@
     "analyze": "cross-env ANALYZE=1 REACT_APP_ENV=prod umi build",
     "build": "REACT_APP_ENV=prod umi build",
     "build:raspberry": "REACT_APP_ENV=prod-local umi build",
+    "deploy:raspberry": "node ../node-server/scripts/publishLocalFile.js",
+    "build-deploy:raspberry": "npm run build:raspberry && npm run deploy:raspberry",
     "deploy": "npm run site && npm run gh-pages",
     "dev": "npm run start:dev",
     "gh-pages": "gh-pages -d dist",
