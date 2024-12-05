@@ -60,6 +60,7 @@ const commonConfig = {
 const developmentConfig: any = merge({}, commonConfig, {
   define: {
     'process.env.REACT_APP_ENV': 'dev',
+    'process.env.REQUEST_API': process.env.REQUEST_API,
   },
   chainWebpack(config: any) {
     config.plugin('monaco-editor').use(MonacoWebpackPlugin, [
@@ -73,6 +74,7 @@ const developmentConfig: any = merge({}, commonConfig, {
 const productionConfig: any = merge({}, commonConfig, {
   define: {
     'process.env.REACT_APP_ENV': 'prod',
+    'process.env.REQUEST_API': process.env.REQUEST_API,
   },
   chunks: ['antdesigns', 'vendors', 'commons', 'umi'],
   //-----打包配置
@@ -149,6 +151,7 @@ const productionConfig: any = merge({}, commonConfig, {
 const productionLocalConfig: any = merge({}, productionConfig, {
   define: {
     'process.env.REACT_APP_ENV': 'prod-local',
+    'process.env.REQUEST_API': process.env.REQUEST_API,
   },
   base: '/api/backend/',
   publicPath: '/api/backend/',

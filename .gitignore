@@ -39,3 +39,4 @@ screenshot
 build
 
 deploy.config.json
+.env 

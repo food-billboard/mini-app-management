@@ -2,7 +2,7 @@ name: build
 on: 
   push: 
     branches: 
-      - master
+      - master-deprecated # ? 没有服务器了，暂时不需要自动部署了
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
