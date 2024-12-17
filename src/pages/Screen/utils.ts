@@ -51,40 +51,62 @@ export async function upload(file: File) {
     });
 }
 
-// 导入
-export async function LeadIn(
-  type: API_SCREEN.ILeadInScreenParams['type'],
-  callback?: () => void,
-) {
-  if (LEAD_IN_LOADING) return;
+export function uploadFile(config: {
+  beforeUpload?: () => boolean;
+  upload?: (file: File) => void;
+  uploadEnd?: (fileId: string) => any;
+  callback?: () => void;
+  accept: string;
+}) {
+  const { beforeUpload, upload: configUpload, uploadEnd, accept, callback } = config;
+  if (beforeUpload && !beforeUpload()) return;
   const input = document.createElement('input');
   input.setAttribute('type', 'file');
-  input.setAttribute('accept', 'application/json');
+  input.setAttribute('accept', accept);
   input.addEventListener('change', (e: any) => {
     const file = e.target?.files[0];
     if (file) {
-      LEAD_IN_LOADING = true;
-      message.info('导入中...');
+      configUpload?.(file);
       upload(file)
         .then((data) => {
-          return leadInScreen({
-            type,
-            _id: data,
-          });
+          return uploadEnd?.(data);
         })
         .then(() => {
-          message.info('文件导入成功');
-        })
-        .catch(() => {
-          message.info('文件导入失败');
-        })
-        .then(() => {
-          LEAD_IN_LOADING = false;
           callback?.();
         });
     }
   });
   input.click();
+}
+
+// 导入
+export async function LeadIn(type: API_SCREEN.ILeadInScreenParams['type'], callback?: () => void) {
+  return uploadFile({
+    accept: 'application/json',
+    beforeUpload: () => {
+      return !LEAD_IN_LOADING;
+    },
+    upload: () => {
+      LEAD_IN_LOADING = true;
+      message.info('导入中...');
+    },
+    uploadEnd: async (fileId) => {
+      return leadInScreen({
+        type,
+        _id: fileId,
+      })
+        .then(() => {
+          message.info('文件导入成功');
+        })
+        .catch(() => {
+          message.info('文件导入失败');
+        });
+    },
+    callback: () => {
+      LEAD_IN_LOADING = false;
+      callback?.();
+    },
+  });
 }
 
 // 导出

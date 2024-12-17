@@ -89,10 +89,10 @@ export function UploadImage(
               value.url = target.src || '';
               value.status = 'done';
             })
-            .catch((err) => {
+            .catch(() => {
               value.status = 'error';
             })
-            .then((_) => {
+            .then(() => {
               onChange?.(value);
             });
         }

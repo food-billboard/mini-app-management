@@ -6,8 +6,10 @@ import type { ActionType } from '@ant-design/pro-table';
 import { DownOutlined, EllipsisOutlined } from '@ant-design/icons';
 import { connect, history } from 'umi';
 import { noop } from 'lodash';
-import ImagePreview, { ImagePreviewRef } from '@/components/ImagePreview';
+import ImagePreview from '@/components/ImagePreview';
+import type { ImagePreviewRef } from '@/components/ImagePreview';
 import { mapStateToProps, mapDispatchToProps } from './connect';
+import AddModal from './components/AddModal';
 import CreateForm from './components/CreateForm';
 import type { IFormRef } from './components/CreateForm';
 import ListModal, { formatData } from './components/ListModal';
@@ -24,7 +26,7 @@ const MediaManage = memo(() => {
   const modalRef = useRef<IFormRef>(null);
   const listModalRef = useRef<ListModalRef>(null);
   const posterRef = useRef<any>(null);
-  const previewRef = useRef<ImagePreviewRef>(null)
+  const previewRef = useRef<ImagePreviewRef>(null);
 
   const [activeKey, setActiveKey] = useState<keyof typeof MEDIA_TYPE_MAP>('image');
 
@@ -53,10 +55,10 @@ const MediaManage = memo(() => {
 
   const getDetail = useCallback(
     (record: API_MEDIA.IGetMediaListData) => {
-      const { src } = record 
-      if(activeKey === 'image') {
-        previewRef.current?.open(src)
-      }else {
+      const { src } = record;
+      if (activeKey === 'image') {
+        previewRef.current?.open(src);
+      } else {
         const urls = Array.isArray(src) ? src : [src];
         return history.push({
           pathname: `/media/${activeKey}`,
@@ -252,6 +254,11 @@ const MediaManage = memo(() => {
           key: 'video',
           closable: false,
         },
+        {
+          tab: '其他资源',
+          key: 'other',
+          closable: false,
+        },
       ]}
       tabProps={{
         onChange: onTabChange,
@@ -265,6 +272,11 @@ const MediaManage = memo(() => {
         actionRef={actionRef}
         rowKey="_id"
         toolBarRender={(action, { selectedRows }) => [
+          <AddModal
+            key="add"
+            type={activeKey}
+            onAdd={() => actionRef.current?.reloadAndRest?.()}
+          />,
           selectedRows && selectedRows.length > 0 && (
             <Dropdown
               overlay={
@@ -314,9 +326,7 @@ const MediaManage = memo(() => {
       <CreateForm onSubmit={onSubmit} ref={modalRef} />
       <ListModal ref={listModalRef} />
       <ConfirmModal ref={posterRef} onOk={() => actionRef.current?.reloadAndRest?.()} />
-      <ImagePreview
-        ref={previewRef}
-      />
+      <ImagePreview ref={previewRef} />
     </PageContainer>
   );
 });
