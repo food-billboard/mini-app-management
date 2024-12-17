@@ -1,82 +1,96 @@
-import { Form, Input } from 'antd'
-import type { FormInstance } from 'antd/lib/form'
-import {
-  ModalForm,
-  ProFormTextArea,
-  ProFormSelect
-} from '@ant-design/pro-form'
-import type { Store } from 'antd/lib/form/interface'
-import React, { useCallback, useMemo, useRef, useState, forwardRef, useImperativeHandle } from 'react'
-import { MEDIA_AUTH_MAP, MEDIA_UPLOAD_STATUS } from '@/utils'
+import { Form, Input } from 'antd';
+import type { FormInstance } from 'antd/lib/form';
+import { ModalForm, ProFormTextArea, ProFormSelect } from '@ant-design/pro-form';
+import type { Store } from 'antd/lib/form/interface';
+import React, {
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+} from 'react';
+import { MEDIA_AUTH_MAP, MEDIA_UPLOAD_STATUS } from '@/utils';
 
-type FormData = API_MEDIA.IPutMediaParams
+type FormData = API_MEDIA.IPutMediaParams;
 
 interface IProps {
-  onCancel?: () => any
-  onSubmit?: (data: FormData) => any
+  onCancel?: () => any;
+  onSubmit?: (data: FormData) => any;
 }
 
 export interface IFormRef {
-  open: (values: API_MEDIA.IGetMediaListData) => void
+  open: (values: API_MEDIA.IGetMediaListData) => void;
 }
 
 const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
-
-  const [ visible, setVisible ] = useState<boolean>(false)
+  const [visible, setVisible] = useState<boolean>(false);
 
   const { onCancel: propsCancel, onSubmit } = useMemo(() => {
-    return props
-  }, [props])
+    return props;
+  }, [props]);
 
-  const formRef = useRef<FormInstance | null>(null)
+  const formRef = useRef<FormInstance | null>(null);
 
-  const open = useCallback(async (values: API_MEDIA.IGetMediaListData) => {
-    formRef.current?.setFieldsValue(values)
-    setVisible(true)
-  }, [formRef])
+  const open = useCallback(
+    async (values: API_MEDIA.IGetMediaListData) => {
+      formRef.current?.setFieldsValue({
+        ...values,
+        status: values?.info?.status,
+      });
+      setVisible(true);
+    },
+    [formRef],
+  );
 
   const onCancel = useCallback(() => {
-    setVisible(false)
-    formRef.current?.resetFields()
-    propsCancel?.()
-  }, [formRef, propsCancel])
+    setVisible(false);
+    formRef.current?.resetFields();
+    propsCancel?.();
+  }, [formRef, propsCancel]);
 
-  const onVisibleChange = useCallback((nowVisible: boolean) => {
-    if(!nowVisible) onCancel()
-    if(nowVisible !== visible) setVisible(nowVisible)
-  }, [onCancel, visible])
+  const onVisibleChange = useCallback(
+    (nowVisible: boolean) => {
+      if (!nowVisible) onCancel();
+      if (nowVisible !== visible) setVisible(nowVisible);
+    },
+    [onCancel, visible],
+  );
 
-  const onFinish = useCallback(async (values: Store) => {
-    await (onSubmit?.((values) as FormData))
-    setVisible(false)
-    formRef.current?.resetFields()
-  }, [onSubmit])
+  const onFinish = useCallback(
+    async (values: Store) => {
+      await onSubmit?.(values as FormData);
+      setVisible(false);
+      formRef.current?.resetFields();
+    },
+    [onSubmit],
+  );
 
   useImperativeHandle(ref, () => ({
-    open
-  }))
+    open,
+  }));
 
   const mediaAuth = useMemo(() => {
     return Object.entries(MEDIA_AUTH_MAP).reduce((acc, cur) => {
-      const [ key, value ] = cur
+      const [key, value] = cur;
       acc.push({
         label: value,
-        value: key
-      }) 
-      return acc 
-    }, [] as ({ label: string, value: string }[]))
-  }, [])
+        value: key,
+      });
+      return acc;
+    }, [] as { label: string; value: string }[]);
+  }, []);
 
   const mediaStatus = useMemo(() => {
     return Object.entries(MEDIA_UPLOAD_STATUS).reduce((acc, cur) => {
-      const [ key, value ] = cur
+      const [key, value] = cur;
       acc.push({
         label: value,
-        value: key
-      }) 
-      return acc 
-    }, [] as ({ label: string, value: string }[]))
-  }, [])
+        value: key,
+      });
+      return acc;
+    }, [] as { label: string; value: string }[]);
+  }, []);
 
   return (
     <ModalForm
@@ -87,11 +101,25 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       onFinish={onFinish}
       onVisibleChange={onVisibleChange}
     >
-      <ProFormTextArea 
-        name="name" 
-        label="名称" 
+      <ProFormTextArea
+        name="name"
+        label="名称"
         fieldProps={{
-          autoSize: true
+          autoSize: true,
+        }}
+      />
+      <ProFormTextArea
+        name="file_name"
+        label="文件名称"
+        fieldProps={{
+          autoSize: true,
+        }}
+      />
+      <ProFormTextArea
+        name="description"
+        label="文件描述"
+        fieldProps={{
+          autoSize: true,
         }}
       />
       <ProFormSelect
@@ -106,14 +134,11 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
         options={mediaStatus}
         rules={[{ required: true, message: '请选择文件状态' }]}
       />
-      <Form.Item
-        name="_id"
-      >
+      <Form.Item name="_id">
         <Input type="hidden" />
       </Form.Item>
     </ModalForm>
-  )
+  );
+});
 
-})
-
-export default CreateForm
+export default CreateForm;

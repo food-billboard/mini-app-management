@@ -874,6 +874,8 @@ declare namespace API_MEDIA {
     _id: string;
     src: string;
     name: string;
+    file_name: string;
+    description: string;
     poster?: string;
     createdAt: string;
     updatedAt: string;
