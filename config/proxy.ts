@@ -6,8 +6,8 @@
  * https://pro.ant.design/docs/deploy
  */
 
-//  export const API_DOMAIN = "http://localhost:4000"
-export const API_DOMAIN = process.env.REQUEST_API;
+export const API_DOMAIN = 'http://localhost:4000';
+// export const API_DOMAIN = process.env.REQUEST_API;
 
 export default {
   // 开发环境

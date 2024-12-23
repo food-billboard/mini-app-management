@@ -1,4 +1,34 @@
 declare namespace API {
+  export type EatMenuType = 'BREAKFAST' | 'LUNCH' | 'DINNER' | 'NIGHT_SNACK';
+
+  export type GetEatMenuListParams = Partial<{
+    content: string;
+    date: string;
+    menu_type: MenuType;
+    currPage: number;
+    pageSize: number;
+  }>;
+
+  export type GetEatMenuListData = {
+    title: string;
+    description: string;
+    content: string;
+    date: string;
+    menu_type: MenuType;
+    createdAt: string;
+    updateAt: string;
+    _id: string;
+  };
+
+  export type PostEatMenuData = Pick<
+    GetMenuListData,
+    'title' | 'description' | 'date' | 'content' | 'menu_type'
+  >;
+
+  export type PutEatMenuData = PostMenuData & {
+    _id: string;
+  };
+
   export interface CurrentUser {
     avatar?: string;
     name?: string;

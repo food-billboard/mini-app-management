@@ -10,3 +10,4 @@ export * from './schedule';
 export * from './screen';
 export * from './third';
 export * from './respberry';
+export * from './eatWhat';

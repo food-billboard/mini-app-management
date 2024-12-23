@@ -1,5 +1,6 @@
 import { Upload } from 'chunk-file-upload';
 import { nanoid } from 'nanoid';
+import mime from 'mime';
 import type { UploadFile, RcFile } from 'antd/es/upload/interface';
 import {
   checkUploadFile,
@@ -28,7 +29,12 @@ export function exitDataFn(onResponse: Function) {
       size,
       name: md5,
     });
-    onResponse(data);
+    onResponse(
+      data,
+      `${process.env.REQUEST_API}/static/${
+        suffix.startsWith('image') ? 'image' : 'video'
+      }/${md5}.${mime.getExtension(suffix)}`,
+    );
     return data;
   };
 }
@@ -134,3 +140,79 @@ export const createUploadedFile = (url: string) => {
     url,
   };
 };
+
+// 文件上传
+export async function upload(file: File) {
+  let fileId: string = '';
+  let filePath: string = '';
+
+  return new Promise((resolve, reject) => {
+    const [name] = UPLOAD_INSTANCE.add({
+      file: {
+        file,
+      },
+      request: {
+        exitDataFn: exitDataFn(function (data: any, path: string) {
+          fileId = data._id;
+          filePath = path;
+        }),
+        uploadFn: uploadFn(),
+        callback(err) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve({
+              id: fileId,
+              filePath,
+            });
+          }
+        },
+      },
+    });
+
+    if (!name) {
+      return Promise.reject();
+    } else {
+      UPLOAD_INSTANCE.deal(name);
+    }
+  })
+    .then(() => {
+      UPLOAD_INSTANCE.dispose();
+      return {
+        id: fileId,
+        filePath,
+      };
+    })
+    .catch((err) => {
+      UPLOAD_INSTANCE.dispose();
+      return Promise.reject(err);
+    });
+}
+
+export function fileUpload(config: {
+  beforeUpload?: () => boolean;
+  upload?: (file: File) => void;
+  uploadEnd?: (fileId: string) => any;
+  callback?: () => void;
+  accept: string;
+}) {
+  const { beforeUpload, upload: configUpload, uploadEnd, accept, callback } = config;
+  if (beforeUpload && !beforeUpload()) return;
+  const input = document.createElement('input');
+  input.setAttribute('type', 'file');
+  input.setAttribute('accept', accept);
+  input.addEventListener('change', (e: any) => {
+    const file = e.target?.files[0];
+    if (file) {
+      configUpload?.(file);
+      upload(file)
+        .then(({ filePath }: any) => {
+          return uploadEnd?.(filePath);
+        })
+        .then(() => {
+          callback?.();
+        });
+    }
+  });
+  input.click();
+}

@@ -66,6 +66,13 @@ export default [
             ],
           },
           {
+            path: '/eat-what',
+            name: 'eat_what',
+            icon: 'coffee',
+            title: '今天吃什么管理',
+            component: '@/pages/EatWhat',
+          },
+          {
             path: '/media',
             name: 'media',
             icon: 'picture',
