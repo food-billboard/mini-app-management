@@ -41,38 +41,27 @@ export default [
     ellipsis: true,
   },
   {
-    title: '分类描述',
-    dataIndex: 'classify_description',
-    hideInSearch: true,
-    key: 'classify_description',
-    ellipsis: true,
-  },
-  {
     title: '餐别类型',
     dataIndex: 'menu_type',
     valueType: 'option',
     key: 'menu_type',
-    renderText: (val: string) => {
-      const target = MENU_MAP.find((item) => item.value === val);
-      return <Tag color={target?.color}>{target?.label}</Tag>;
+    renderText: (val: string[]) => {
+      return val.map((data) => {
+        const target = MENU_MAP.find((item) => item.value === data);
+        return (
+          <Tag key={data} color={target?.color}>
+            {target?.label}
+          </Tag>
+        );
+      });
     },
   },
-  // {
-  //   title: '内容',
-  //   dataIndex: 'content',
-  //   hideInTable: true,
-  //   key: 'content',
-  //   ellipsis: true,
-  // },
   {
-    title: '时间',
-    dataIndex: 'date',
-    key: 'date',
-    render: (val: string) => {
-      return moment(val).format('YYYY-MM-DD');
-    },
-    valueType: 'dateRange',
-    initialValue: [moment(), moment()],
+    title: '内容',
+    dataIndex: 'content',
+    hideInTable: true,
+    key: 'content',
+    ellipsis: true,
   },
   {
     title: '创建时间',

@@ -70,7 +70,20 @@ export default [
             name: 'eat_what',
             icon: 'coffee',
             title: '今天吃什么管理',
-            component: '@/pages/EatWhat',
+            routes: [
+              {
+                path: '/eat-what/main',
+                component: '@/pages/EatWhat',
+                title: '数据信息管理',
+                name: '数据信息管理',
+              },
+              {
+                path: '/eat-what/classify',
+                component: '@/pages/EatWhatClassify',
+                title: '菜单分类',
+                name: '菜单分类',
+              },
+            ],
           },
           {
             path: '/media',

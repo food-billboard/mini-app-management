@@ -1,12 +1,6 @@
 import { Form, Input } from 'antd';
 import type { FormInstance } from 'antd/lib/form';
-import {
-  ModalForm,
-  ProFormTextArea,
-  ProFormSelect,
-  ProFormDatePicker,
-  ProFormDependency,
-} from '@ant-design/pro-form';
+import { ModalForm, ProFormTextArea, ProFormSelect, ProFormDatePicker } from '@ant-design/pro-form';
 import moment from 'moment';
 import type { Store } from 'antd/lib/form/interface';
 import React, {
@@ -17,10 +11,10 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react';
-import { getCurrentMenuClassifyList } from '@/services';
+import RichTextEditor from '@/components/RichTextEditor';
 import { MENU_MAP } from '../../columns';
 
-type FormData = API.PutEatMenuData | API.PostEatMenuData;
+type FormData = API.PutEatMenuClassifyData | API.PostEatMenuClassifyData;
 
 interface IProps {
   onCancel?: () => any;
@@ -89,60 +83,27 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
 
   return (
     <ModalForm
-      title="新增菜单"
+      title="新增菜单分类"
       visible={visible}
       // @ts-ignore
       formRef={formRef}
       onFinish={onFinish}
       onVisibleChange={onVisibleChange}
-      modalProps={{
-        destroyOnClose: true,
-      }}
     >
-      <ProFormSelect
-        name="menu_type"
-        label="餐别类型"
-        options={MENU_MAP}
-        initialValue={'BREAKFAST'}
-        fieldProps={{
-          onChange: () => {
-            formRef.current?.setFieldsValue({
-              classify: undefined,
-            });
+      <ProFormTextArea
+        name="title"
+        label="标题"
+        rules={[
+          {
+            required: true,
+            message: '请输入标题',
           },
+        ]}
+        placeholder="请输入标题"
+        fieldProps={{
+          autoSize: true,
         }}
       />
-      <ProFormDependency name={['menu_type']}>
-        {({ menu_type = '' }) => {
-          console.log(menu_type);
-          return (
-            <ProFormSelect
-              showSearch
-              params={{ menu_type }}
-              rules={[{ required: true }]}
-              placeholder={'输入关键字查询'}
-              request={async (params) => {
-                const { keyWords } = params;
-                return getCurrentMenuClassifyList({
-                  currPage: 0,
-                  pageSize: keyWords ? 999 : 50,
-                  content: keyWords || '',
-                  menu_type,
-                }).then((data) => {
-                  return data.list.map((item: any) => {
-                    return {
-                      label: item.title,
-                      value: item._id,
-                    };
-                  });
-                });
-              }}
-              name="classify"
-              label="菜单分类"
-            />
-          );
-        }}
-      </ProFormDependency>
       <ProFormTextArea
         name="description"
         placeholder="请输入描述信息"
@@ -151,12 +112,23 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
           autoSize: true,
         }}
       />
+      <ProFormSelect
+        mode="multiple"
+        placeholder={'请选择餐别类型'}
+        options={MENU_MAP}
+        name="menu_type"
+        label="餐别类型"
+        initialValue={['BREAKFAST']}
+      />
       <ProFormDatePicker
         placeholder={'请选择时间'}
         name="date"
         label="时间"
         initialValue={moment()}
       />
+      <Form.Item name="content" label="内容">
+        <RichTextEditor />
+      </Form.Item>
       <Form.Item name="_id">
         <Input type="hidden" />
       </Form.Item>

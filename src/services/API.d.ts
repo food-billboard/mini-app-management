@@ -12,6 +12,8 @@ declare namespace API {
   export type GetEatMenuListData = {
     title: string;
     description: string;
+    classify: string;
+    classify_description: string;
     content: string;
     date: string;
     menu_type: MenuType;
@@ -20,12 +22,37 @@ declare namespace API {
     _id: string;
   };
 
-  export type PostEatMenuData = Pick<
+  export type PostEatMenuData = Pick<GetMenuListData, 'date' | 'description' | 'classify'>;
+
+  export type PutEatMenuData = PostMenuData & {
+    _id: string;
+  };
+
+  export type GetEatMenuClassifyListParams = Partial<{
+    content: string;
+    date: string;
+    menu_type: MenuType;
+    currPage: number;
+    pageSize: number;
+  }>;
+
+  export type GetEatMenuClassifyListData = {
+    title: string;
+    description: string;
+    content: string;
+    date: string;
+    menu_type: MenuType;
+    createdAt: string;
+    updateAt: string;
+    _id: string;
+  };
+
+  export type PostEatMenuClassifyData = Pick<
     GetMenuListData,
     'title' | 'description' | 'date' | 'content' | 'menu_type'
   >;
 
-  export type PutEatMenuData = PostMenuData & {
+  export type PutEatMenuClassifyData = PostMenuClassifyData & {
     _id: string;
   };
 
