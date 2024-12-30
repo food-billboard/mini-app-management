@@ -114,7 +114,6 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       />
       <ProFormDependency name={['menu_type']}>
         {({ menu_type = '' }) => {
-          console.log(menu_type);
           return (
             <ProFormSelect
               showSearch

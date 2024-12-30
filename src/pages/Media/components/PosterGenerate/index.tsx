@@ -14,7 +14,7 @@ const ConfirmModal = forwardRef(
 
     const [visible, setVisible] = useState(false);
     const [activeKey, setActiveKey] = useState('');
-    const [ loading, setLoading ] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false);
 
     const onCancel = useCallback(() => {
       setVisible(false);
@@ -28,21 +28,19 @@ const ConfirmModal = forwardRef(
 
     const requestPoster = useCallback(
       async (cover: boolean) => {
-        setLoading(true)
+        setLoading(true);
         await generateVideoPoster({
           _id: activeKey,
           overlap: cover,
         })
-        .then(_ => {
-          setVisible(false);
-          onOk?.();
-        })
-        .catch(_ => {
-
-        })
-        .then(_ => {
-          setLoading(false)
-        })
+          .then(() => {
+            setVisible(false);
+            onOk?.();
+          })
+          .catch(() => {})
+          .then(() => {
+            setLoading(false);
+          });
       },
       [activeKey, onOk],
     );
@@ -59,7 +57,7 @@ const ConfirmModal = forwardRef(
 
     return (
       <Modal
-        visible={visible}
+        open={visible}
         onCancel={onCancel}
         footer={[
           <Button onClick={onCancel} key="cancel">
@@ -68,7 +66,12 @@ const ConfirmModal = forwardRef(
           <Button loading={loading} onClick={requestPoster.bind(null, false)} key="not">
             否
           </Button>,
-          <Button type='primary' loading={loading} onClick={requestPoster.bind(null, true)} key="yes">
+          <Button
+            type="primary"
+            loading={loading}
+            onClick={requestPoster.bind(null, true)}
+            key="yes"
+          >
             是
           </Button>,
         ]}

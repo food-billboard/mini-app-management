@@ -1,5 +1,5 @@
 import React, { useRef, useCallback } from 'react';
-import { Button, Dropdown, message, Menu, Space } from 'antd';
+import { Button, Dropdown, message, Space } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import type { ActionType } from '@ant-design/pro-table';
@@ -41,7 +41,7 @@ const EatWhatClassifyManage: React.FC<any> = () => {
   );
 
   const handleModalVisible = useCallback(
-    (values?: API.GetEatMenuListData) => {
+    async (values?: API.GetEatMenuListData) => {
       modalRef.current?.open(values);
     },
     [modalRef],
@@ -99,18 +99,17 @@ const EatWhatClassifyManage: React.FC<any> = () => {
           </Button>,
           selectedRows && selectedRows.length > 0 && (
             <Dropdown
-              overlay={
-                <Menu
-                  onClick={async (e) => {
-                    if (e.key === 'remove') {
-                      await handleRemove(selectedRows);
-                    }
-                  }}
-                  selectedKeys={[]}
-                >
-                  <Menu.Item key="remove">批量删除</Menu.Item>
-                </Menu>
-              }
+              menu={{
+                items: [
+                  {
+                    key: 'remove',
+                    label: '批量删除',
+                    onClick: () => {
+                      handleRemove(selectedRows);
+                    },
+                  },
+                ],
+              }}
             >
               <Button key="many">
                 批量操作 <DownOutlined />

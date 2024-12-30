@@ -40,3 +40,4 @@ build
 
 deploy.config.json
 .env 
+LOCAL_README.md

@@ -57,8 +57,8 @@ const StepDataButton = (props: {
       trigger={'click'}
       content={<CodeData value={value} style={codeStyle} />}
       mouseEnterDelay={1}
-      visible={visible}
-      onVisibleChange={onVisibleChange}
+      open={visible}
+      onOpenChange={onVisibleChange}
       placement="top"
       overlayClassName={styles['component-code-viewer-overlay']}
     >

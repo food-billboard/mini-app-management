@@ -49,8 +49,10 @@ declare namespace API {
 
   export type PostEatMenuClassifyData = Pick<
     GetMenuListData,
-    'title' | 'description' | 'date' | 'content' | 'menu_type'
-  >;
+    'title' | 'description' | 'content'
+  > & {
+    menu_type: EatMenuType[];
+  };
 
   export type PutEatMenuClassifyData = PostMenuClassifyData & {
     _id: string;

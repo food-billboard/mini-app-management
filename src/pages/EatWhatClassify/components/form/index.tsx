@@ -1,7 +1,6 @@
 import { Form, Input } from 'antd';
 import type { FormInstance } from 'antd/lib/form';
-import { ModalForm, ProFormTextArea, ProFormSelect, ProFormDatePicker } from '@ant-design/pro-form';
-import moment from 'moment';
+import { ModalForm, ProFormTextArea, ProFormSelect } from '@ant-design/pro-form';
 import type { Store } from 'antd/lib/form/interface';
 import React, {
   useCallback,
@@ -119,12 +118,6 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
         name="menu_type"
         label="餐别类型"
         initialValue={['BREAKFAST']}
-      />
-      <ProFormDatePicker
-        placeholder={'请选择时间'}
-        name="date"
-        label="时间"
-        initialValue={moment()}
       />
       <Form.Item name="content" label="内容">
         <RichTextEditor />

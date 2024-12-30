@@ -1,51 +1,48 @@
-import React, { useRef, useCallback, memo, useMemo } from 'react'
-import { Button, Dropdown, message, Menu, Space } from 'antd'
-import { PageHeaderWrapper } from '@ant-design/pro-layout'
-import ProTable from '@ant-design/pro-table'
-import type { ActionType } from '@ant-design/pro-table'
-import { DownOutlined } from '@ant-design/icons'
-import { connect } from 'umi'
-import merge from 'lodash/merge'
-import pickBy from 'lodash/pickBy'
-import pick from 'lodash/pick'
-import identity from 'lodash/identity'
-import FeedbackModal from './components/FeedbackModal'
-import type { IFeedbackModalRef, TFeedbackEditData } from './components/FeedbackModal'
-import { mapStateToProps, mapDispatchToProps } from './connect'
-import column from './columns'
-import { getUserFeedbackList, putUserFeedback, deleteUserFeedback } from '@/services'
-import { commonDeleteMethod } from '@/utils'
+import React, { useRef, useCallback, memo, useMemo } from 'react';
+import { Button, Dropdown, message, Space } from 'antd';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import ProTable from '@ant-design/pro-table';
+import type { ActionType } from '@ant-design/pro-table';
+import { DownOutlined } from '@ant-design/icons';
+import { connect } from 'umi';
+import merge from 'lodash/merge';
+import pickBy from 'lodash/pickBy';
+import pick from 'lodash/pick';
+import identity from 'lodash/identity';
+import FeedbackModal from './components/FeedbackModal';
+import type { IFeedbackModalRef, TFeedbackEditData } from './components/FeedbackModal';
+import { mapStateToProps, mapDispatchToProps } from './connect';
+import column from './columns';
+import { getUserFeedbackList, putUserFeedback, deleteUserFeedback } from '@/services';
+import { commonDeleteMethod } from '@/utils';
 
 const FeedbackManage = memo(() => {
-
-  const actionRef = useRef<ActionType>()
-  const feedbackRef = useRef<IFeedbackModalRef>(null)
+  const actionRef = useRef<ActionType>();
+  const feedbackRef = useRef<IFeedbackModalRef>(null);
 
   /**
    * 添加节点
    * @param fields
    */
   const handleAdd = useCallback(async (fields: TFeedbackEditData) => {
-
-    const hide = message.loading('正在修改')
-    const params = pick(fields, ['_id', 'status', 'description']) as API_USER.IPutFeedbackParams
+    const hide = message.loading('正在修改');
+    const params = pick(fields, ['_id', 'status', 'description']) as API_USER.IPutFeedbackParams;
 
     return putUserFeedback(params)
-    .then(() => {
-      message.success('操作成功')
-      hide()
-      actionRef.current?.reload()
-    })
-    .catch(() => {
-      message.success('操作失败，请重试')
-      hide()
-    })
-
-  }, [])
+      .then(() => {
+        message.success('操作成功');
+        hide();
+        actionRef.current?.reload();
+      })
+      .catch(() => {
+        message.success('操作失败，请重试');
+        hide();
+      });
+  }, []);
 
   const edit = useCallback((data: API_USER.IGetFeedbackData) => {
-    feedbackRef.current?.open(merge({}, data, { description: '' }))
-  }, [])
+    feedbackRef.current?.open(merge({}, data, { description: '' }));
+  }, []);
 
   /**
    *  删除节点
@@ -53,17 +50,21 @@ const FeedbackManage = memo(() => {
    */
 
   const handleRemove = useCallback(async (selectedRows: API_USER.IGetFeedbackData[]) => {
-    return commonDeleteMethod<API_USER.IGetFeedbackData>(selectedRows, (row: API_USER.IGetFeedbackData) => {
-      const { _id } = row
-      return deleteUserFeedback({
-        _id
-      })
-    }, actionRef.current?.reloadAndRest)
-  }, [])
+    return commonDeleteMethod<API_USER.IGetFeedbackData>(
+      selectedRows,
+      (row: API_USER.IGetFeedbackData) => {
+        const { _id } = row;
+        return deleteUserFeedback({
+          _id,
+        });
+      },
+      actionRef.current?.reloadAndRest,
+    );
+  }, []);
 
   const columns: any[] = useMemo(() => {
     return [
-      ...column ,
+      ...column,
       {
         title: '操作',
         key: 'option',
@@ -73,46 +74,37 @@ const FeedbackManage = memo(() => {
         render: (_: any, record: API_USER.IGetFeedbackData) => {
           return (
             <Space>
-              {
-                record.status === 'DEALING' && (
-                  <a
-                    onClick={edit.bind(null, record)}
-                  >
-                    完成处理
-                  </a>
-                )
-              }
-              <a
-                style={{color: 'red'}}
-                onClick={() => handleRemove([record])}
-              >
+              {record.status === 'DEALING' && <a onClick={edit.bind(null, record)}>完成处理</a>}
+              <a style={{ color: 'red' }} onClick={() => handleRemove([record])}>
                 删除
               </a>
             </Space>
-          )
-        }
-      }
-    ]
-  
-  }, [edit, handleRemove])
+          );
+        },
+      },
+    ];
+  }, [edit, handleRemove]);
 
   const fetchData = useCallback(async (params: any) => {
-    const { current, ...nextParams } = params
+    const { current, ...nextParams } = params;
     let newParams = {
       ...nextParams,
-      currPage: current - 1
-    }
-    newParams = pickBy(newParams, identity)
+      currPage: current - 1,
+    };
+    newParams = pickBy(newParams, identity);
     return getUserFeedbackList(newParams)
-    .then(({ list, total }) => ({ data: list, total }) )
-    .catch(() => ({ data: [], total: 0 }))
-  }, [])
+      .then(({ list, total }) => ({ data: list, total }))
+      .catch(() => ({ data: [], total: 0 }));
+  }, []);
 
-  const onInputOk = useCallback((value: TFeedbackEditData) => {
-    return handleAdd(value)
-    .then(() => true)
-    .catch(() => false)
-  }, [handleAdd])
+  const onInputOk = useCallback(
+    (value: TFeedbackEditData) => {
+      return handleAdd(value)
+        .then(() => true)
+        .catch(() => false);
+    },
+    [handleAdd],
+  );
 
   return (
     <PageHeaderWrapper>
@@ -120,23 +112,22 @@ const FeedbackManage = memo(() => {
         scroll={{ x: 'max-content' }}
         headerTitle="用户反馈列表"
         actionRef={actionRef}
-        pagination={{defaultPageSize: 10}}
+        pagination={{ defaultPageSize: 10 }}
         rowKey="_id"
         toolBarRender={(action, { selectedRows }) => [
           selectedRows && selectedRows.length > 0 && (
             <Dropdown
-              overlay={
-                <Menu
-                  onClick={async e => {
-                    if (e.key === 'remove') {
-                      await handleRemove(selectedRows)
-                    }
-                  }}
-                  selectedKeys={[]}
-                >
-                  <Menu.Item key="remove">批量删除</Menu.Item>
-                </Menu>
-              }
+              menu={{
+                items: [
+                  {
+                    key: 'remove',
+                    label: '批量删除',
+                    onClick: () => {
+                      handleRemove(selectedRows);
+                    },
+                  },
+                ],
+              }}
             >
               <Button key="many">
                 批量操作 <DownOutlined />
@@ -144,7 +135,12 @@ const FeedbackManage = memo(() => {
             </Dropdown>
           ),
         ]}
-        tableAlertRender={({ selectedRowKeys }: { selectedRowKeys: React.ReactText[], selectedRows: any[] }) => (
+        tableAlertRender={({
+          selectedRowKeys,
+        }: {
+          selectedRowKeys: React.ReactText[];
+          selectedRows: any[];
+        }) => (
           <div>
             已选择{' '}
             <a
@@ -164,12 +160,9 @@ const FeedbackManage = memo(() => {
         columns={columns}
         rowSelection={{}}
       />
-      <FeedbackModal
-        ref={feedbackRef}
-        onOk={onInputOk}
-      />
-  </PageHeaderWrapper>
-  )
-})
+      <FeedbackModal ref={feedbackRef} onOk={onInputOk} />
+    </PageHeaderWrapper>
+  );
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(FeedbackManage)
+export default connect(mapStateToProps, mapDispatchToProps)(FeedbackManage);

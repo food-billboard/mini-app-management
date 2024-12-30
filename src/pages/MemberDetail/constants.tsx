@@ -1,19 +1,19 @@
-import { history } from 'umi'
-import React from 'react'
-import { Space, message, Dropdown, Menu } from 'antd'
-import { EllipsisOutlined } from '@ant-design/icons'
-import { pick } from 'lodash'
-import issueColumns from './components/Table/issue-columns'
-import commentColumns from './components/Table/comment-columns'
-import rateColumns from './components/Table/rate-columns'
-import feedbackColumns from './components/Table/feedback-columns'
-import userColumns from './components/Table/user-columns'
-import { IFeedbackModalRef, TFeedbackEditData } from '../Feedback/components/FeedbackModal'
-import MemberEdit from '../Member/components/CreateForm'
-import { 
-  getUserCommentList, 
-  getUserFeedbackList, 
-  getUserRateList, 
+import { history } from 'umi';
+import React from 'react';
+import { Space, message, Dropdown } from 'antd';
+import { EllipsisOutlined } from '@ant-design/icons';
+import { pick } from 'lodash';
+import issueColumns from './components/Table/issue-columns';
+import commentColumns from './components/Table/comment-columns';
+import rateColumns from './components/Table/rate-columns';
+import feedbackColumns from './components/Table/feedback-columns';
+import userColumns from './components/Table/user-columns';
+import type { IFeedbackModalRef, TFeedbackEditData } from '../Feedback/components/FeedbackModal';
+import MemberEdit from '../Member/components/CreateForm';
+import {
+  getUserCommentList,
+  getUserFeedbackList,
+  getUserRateList,
   getUserIssueList,
   deleteUserComment,
   deleteUserFeedback,
@@ -22,13 +22,13 @@ import {
   getUserAttentionsList,
   getUserFansList,
   deleteUser,
-  putUser
-} from '@/services'
+  putUser,
+} from '@/services';
 
 export const ACTIVE_KEY_MAP = {
   upload: {
     fetchData: getUserIssueList,
-    detail: (record: API_USER.IGetUserIssueData, instance: any) => history.push(`/data/main/${record._id}`),
+    detail: (record: API_USER.IGetUserIssueData) => history.push(`/data/main/${record._id}`),
     columns: issueColumns,
     deleteOp: deleteMovie,
     editOp: {},
@@ -40,42 +40,41 @@ export const ACTIVE_KEY_MAP = {
               history.push({
                 pathname: '/data/main/edit',
                 query: {
-                  id: record._id
-                }
-              })
+                  id: record._id,
+                },
+              });
             }}
           >
             编辑
           </a>
-          <a
-            style={{color: 'red'}}
-            onClick={deleteOp.bind(this, record._id)}
-          >
+          <a style={{ color: 'red' }} onClick={deleteOp.bind(null, record._id)}>
             删除
           </a>
-          <Dropdown overlay={
-            <Menu>
-              <Menu.Item>
-                <a style={{color: '#1890ff'}} onClick={() => {
-                  history.push(`/data/main/${record._id}`)
-                }}>
-                详情
-                </a>
-              </Menu.Item>
-            </Menu>
-          }>
-            <a onClick={e => e.preventDefault()}>
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  key: 'detail',
+                  label: '详情',
+                  onClick: () => {
+                    history.push(`/data/main/${record._id}`);
+                  },
+                },
+              ],
+            }}
+          >
+            <a onClick={(e) => e.preventDefault()}>
               <EllipsisOutlined />
             </a>
           </Dropdown>
         </Space>
-      )
-    }
+      );
+    },
   },
   comment: {
     fetchData: getUserCommentList,
     detail: (record: API_USER.ICommentData, instance: any) => {
-      return instance.current?.open(record._id)
+      return instance.current?.open(record._id);
     },
     deleteOp: deleteUserComment,
     columns: commentColumns,
@@ -83,15 +82,12 @@ export const ACTIVE_KEY_MAP = {
     op: (record: API_USER.ICommentData, _: any, deleteOp: any) => {
       return (
         <Space>
-          <a
-            style={{color: 'red'}}
-            onClick={deleteOp.bind(this, record._id)}
-          >
+          <a style={{ color: 'red' }} onClick={deleteOp.bind(null, record._id)}>
             删除
           </a>
         </Space>
-      )
-    }
+      );
+    },
   },
   rate: {
     fetchData: getUserRateList,
@@ -100,186 +96,181 @@ export const ACTIVE_KEY_MAP = {
     deleteOp: () => Promise.resolve(),
     editOp: {},
     op: () => {
-      return (
-        '-'
-      )
-    }
+      return '-';
+    },
   },
   feedback: {
     fetchData: getUserFeedbackList,
     deleteOp: deleteUserFeedback,
     detail: (record: API_USER.IGetFeedbackData, instance: any) => {
-      return instance.current?.open(record._id)
+      return instance.current?.open(record._id);
     },
     columns: feedbackColumns,
     editOp: {
       onOk: async (reload: any, data: TFeedbackEditData) => {
-        const hide = message.loading('正在修改')
-        const params = pick(data, ['_id', 'status', 'description']) as API_USER.IPutFeedbackParams
+        const hide = message.loading('正在修改');
+        const params = pick(data, ['_id', 'status', 'description']) as API_USER.IPutFeedbackParams;
         return putUserFeedback(params)
-        .then(_ => {
-          message.success('操作成功')
-        })
-        .catch(_ => {
-          message.success('操作失败，请重试')
-        })
-        .then(_ => {
-          hide()
-          return reload()
-        })
-        .then(_ => true)
-      }
+          .then(() => {
+            message.success('操作成功');
+          })
+          .catch(() => {
+            message.success('操作失败，请重试');
+          })
+          .then(() => {
+            hide();
+            return reload();
+          })
+          .then(() => true);
+      },
     },
-    op: (record: API_USER.IGetFeedbackData, ref: React.RefObject<IFeedbackModalRef>, deleteOp: any) => {
+    op: (
+      record: API_USER.IGetFeedbackData,
+      ref: React.RefObject<IFeedbackModalRef>,
+      deleteOp: any,
+    ) => {
       return (
         <Space>
-          {
-            record.status === 'DEALING' && (
-              <a
-                onClick={() => {
-                  ref.current?.open(record)
-                }}
-              >
-                处理
-              </a>
-            )
-          }
-          <a
-            style={{color: 'red'}}
-            onClick={deleteOp.bind(this, record._id)}
-          >
+          {record.status === 'DEALING' && (
+            <a
+              onClick={() => {
+                ref.current?.open(record);
+              }}
+            >
+              处理
+            </a>
+          )}
+          <a style={{ color: 'red' }} onClick={deleteOp.bind(null, record._id)}>
             删除
           </a>
         </Space>
-      )
-    } 
+      );
+    },
   },
   fans: {
     fetchData: getUserFansList,
-    detail: (record: API_USER.IGetUserDetailRes, instance: any) => history.push(`/member/main/${record._id}`),
+    detail: (record: API_USER.IGetUserDetailRes) => history.push(`/member/main/${record._id}`),
     columns: userColumns,
     deleteOp: deleteUser,
     editOp: {
       onOk: async (reload: any, data: unknown) => {
-        const hide = message.loading('正在修改')
-        const { avatar, role, ...nextFields } = data as API_USER.IPutUserParams
+        const hide = message.loading('正在修改');
+        const { avatar, role, ...nextFields } = data as API_USER.IPutUserParams;
 
         const params = {
           ...nextFields,
           avatar: Array.isArray(avatar) ? avatar[0] : avatar,
-          role: (Array.isArray(role) ? role : [role]).join(',')
-        }
+          role: (Array.isArray(role) ? role : [role]).join(','),
+        };
         return putUser(params)
-        .then(_ => {
-          message.success('操作成功')
-        })
-        .catch(err => {
-          message.success('操作失败，请重试')
-        })
-        .then(_ => {
-          hide()
-          return reload()
-        })
-        .then(_ => true)
-      }
+          .then(() => {
+            message.success('操作成功');
+          })
+          .catch(() => {
+            message.success('操作失败，请重试');
+          })
+          .then(() => {
+            hide();
+            return reload();
+          })
+          .then(() => true);
+      },
     },
     op: (record: API_USER.IGetUserDetailRes, ref: React.RefObject<MemberEdit>, deleteOp: any) => {
       return (
         <Space>
           <a
             onClick={() => {
-              ref.current?.open(record._id)
+              ref.current?.open(record._id);
             }}
           >
             编辑
           </a>
-          <a
-            style={{color: 'red'}}
-            onClick={deleteOp.bind(this, record._id)}
-          >
+          <a style={{ color: 'red' }} onClick={deleteOp.bind(null, record._id)}>
             删除
           </a>
-          <Dropdown overlay={
-            <Menu>
-              <Menu.Item>
-                <a style={{color: '#1890ff'}} onClick={() => {
-                  history.push(`/member/${record._id}`)
-                }}>
-                详情
-                </a>
-              </Menu.Item>
-            </Menu>
-          }>
-            <a onClick={e => e.preventDefault()}>
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  key: 'detail',
+                  label: '详情',
+                  onClick: () => {
+                    history.push(`/member/${record._id}`);
+                  },
+                },
+              ],
+            }}
+          >
+            <a onClick={(e) => e.preventDefault()}>
               <EllipsisOutlined />
             </a>
           </Dropdown>
         </Space>
-      )
-    }
+      );
+    },
   },
   attentions: {
     fetchData: getUserAttentionsList,
-    detail: (record: API_USER.IGetUserDetailRes, instance: any) => history.push(`/member/main/${record._id}`),
+    detail: (record: API_USER.IGetUserDetailRes) => history.push(`/member/main/${record._id}`),
     columns: userColumns,
     deleteOp: deleteUser,
     editOp: {
       onOk: async (reload: any, data: unknown) => {
-        const hide = message.loading('正在修改')
-        const { avatar, role, ...nextFields } = data as API_USER.IPutUserParams
+        const hide = message.loading('正在修改');
+        const { avatar, role, ...nextFields } = data as API_USER.IPutUserParams;
 
         const params = {
           ...nextFields,
           avatar: Array.isArray(avatar) ? avatar[0] : avatar,
-          role: (Array.isArray(role) ? role : [role]).join(',')
-        }
+          role: (Array.isArray(role) ? role : [role]).join(','),
+        };
         return putUser(params)
-        .then(_ => {
-          message.success('操作成功')
-        })
-        .catch(err => {
-          message.success('操作失败，请重试')
-        })
-        .then(_ => {
-          hide()
-          return reload()
-        })
-        .then(_ => true)
-      }
+          .then(() => {
+            message.success('操作成功');
+          })
+          .catch(() => {
+            message.success('操作失败，请重试');
+          })
+          .then(() => {
+            hide();
+            return reload();
+          })
+          .then(() => true);
+      },
     },
     op: (record: API_USER.IGetUserDetailRes, ref: React.RefObject<MemberEdit>, deleteOp: any) => {
       return (
         <Space>
           <a
             onClick={() => {
-              ref.current?.open(record._id)
+              ref.current?.open(record._id);
             }}
           >
             编辑
           </a>
-          <a
-            style={{color: 'red'}}
-            onClick={deleteOp.bind(this, record._id)}
-          >
+          <a style={{ color: 'red' }} onClick={deleteOp.bind(null, record._id)}>
             删除
           </a>
-          <Dropdown overlay={
-            <Menu>
-              <Menu.Item>
-                <a style={{color: '#1890ff'}} onClick={() => {
-                  history.push(`/member/${record._id}`)
-                }}>
-                详情
-                </a>
-              </Menu.Item>
-            </Menu>
-          }>
-            <a onClick={e => e.preventDefault()}>
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  key: 'detail',
+                  label: '详情',
+                  onClick: () => {
+                    history.push(`/member/${record._id}`);
+                  },
+                },
+              ],
+            }}
+          >
+            <a onClick={(e) => e.preventDefault()}>
               <EllipsisOutlined />
             </a>
           </Dropdown>
         </Space>
-      )
-    }
-  }
-}
+      );
+    },
+  },
+};

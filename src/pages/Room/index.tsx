@@ -1,29 +1,47 @@
-import React, { useRef, useCallback } from 'react'
-import { Button, Dropdown, message, Menu, Space, Modal } from 'antd'
-import { PageHeaderWrapper } from '@ant-design/pro-layout'
-import ProTable, { ActionType } from '@ant-design/pro-table'
-import { DownOutlined, PlusOutlined } from '@ant-design/icons'
-import { connect } from 'umi'
-import pickBy from 'lodash/pickBy'
-import identity from 'lodash/identity'
-import Form, { IFormRef } from './components/CreateForm'
-import { mapStateToProps, mapDispatchToProps } from './connect'
-import column from './columns'
-import { deleteRoom, getRoomList, putRoom, postRoom } from '@/services'
-import { commonDeleteMethod } from '@/utils'
+import React, { useRef, useCallback } from 'react';
+import { Button, Dropdown, message, Space } from 'antd';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import ProTable from '@ant-design/pro-table';
+import type { ActionType } from '@ant-design/pro-table';
+import { DownOutlined, PlusOutlined } from '@ant-design/icons';
+import { connect } from 'umi';
+import pickBy from 'lodash/pickBy';
+import identity from 'lodash/identity';
+import Form from './components/CreateForm';
+import type { IFormRef } from './components/CreateForm';
+import { mapStateToProps, mapDispatchToProps } from './connect';
+import column from './columns';
+import { deleteRoom, getRoomList, putRoom, postRoom } from '@/services';
+import { commonDeleteMethod } from '@/utils';
 
 interface IProps {
-  role: any
+  role: any;
 }
 
-const CardList: React.FC<IProps> = (props: any) => {
+const CardList: React.FC<IProps> = () => {
+  const actionRef = useRef<ActionType>();
 
-  const actionRef = useRef<ActionType>()
+  const formRef = useRef<IFormRef>(null);
 
-  const formRef = useRef<IFormRef>(null)
+  const handleModalVisible = (data?: API_CHAT.IGetRoomListResData) => {
+    return formRef.current?.open(data);
+  };
+
+  const handleRemove = async (selectedRows: API_CHAT.IGetRoomListResData[]) => {
+    return commonDeleteMethod<API_CHAT.IGetRoomListResData>(
+      selectedRows,
+      (row: API_CHAT.IGetRoomListResData) => {
+        const { _id } = row;
+        return deleteRoom({
+          _id,
+        });
+      },
+      actionRef.current?.reloadAndRest,
+    );
+  };
 
   const columns: any[] = [
-    ...column ,
+    ...column,
     {
       title: '操作',
       key: 'option',
@@ -32,51 +50,31 @@ const CardList: React.FC<IProps> = (props: any) => {
       render: (_: any, record: API_CHAT.IGetRoomListResData) => {
         return (
           <Space>
-            <a
-              onClick={() => handleModalVisible(record)}
-            >
-              编辑
-            </a>
-            <a
-              style={{color: 'red'}}
-              onClick={() => handleRemove([record])}
-            >
+            <a onClick={() => handleModalVisible(record)}>编辑</a>
+            <a style={{ color: 'red' }} onClick={() => handleRemove([record])}>
               删除
             </a>
           </Space>
-        )
-      }
-    }
-  ]
-
-  const handleRemove = async (selectedRows: API_CHAT.IGetRoomListResData[]) => {
-    return commonDeleteMethod<API_CHAT.IGetRoomListResData>(selectedRows, (row: API_CHAT.IGetRoomListResData) => {
-      const { _id } = row
-      return deleteRoom({
-        _id
-      })
-    }, actionRef.current?.reloadAndRest)  
-  }
+        );
+      },
+    },
+  ];
 
   const onSubmit = useCallback(async (value: API_CHAT.IPutRoomParams) => {
     try {
-      if(value._id) { 
-        await putRoom(value)
-      }else {
-        await postRoom(value as API_CHAT.IPostRoomParams)
+      if (value._id) {
+        await putRoom(value);
+      } else {
+        await postRoom(value as API_CHAT.IPostRoomParams);
       }
-      message.info('操作成功')
-      actionRef.current?.reloadAndRest?.()
-      return Promise.resolve()
-    }catch(err) {
-      message.info('操作失败，请重试')
-      return Promise.reject()
+      message.info('操作成功');
+      actionRef.current?.reloadAndRest?.();
+      return Promise.resolve();
+    } catch (err) {
+      message.info('操作失败，请重试');
+      return Promise.reject();
     }
-  }, [])
-
-  const handleModalVisible = (data?: API_CHAT.IGetRoomListResData) => {
-    return formRef.current?.open(data)
-  }
+  }, []);
 
   return (
     <PageHeaderWrapper>
@@ -84,26 +82,30 @@ const CardList: React.FC<IProps> = (props: any) => {
         headerTitle="聊天室列表"
         actionRef={actionRef}
         scroll={{ x: 'max-content' }}
-        pagination={{defaultPageSize: 10}}
+        pagination={{ defaultPageSize: 10 }}
         rowKey="_id"
         toolBarRender={(action, { selectedRows }) => [
-          <Button key={'add'} icon={<PlusOutlined />} type="primary" onClick={() => handleModalVisible()}>
+          <Button
+            key={'add'}
+            icon={<PlusOutlined />}
+            type="primary"
+            onClick={() => handleModalVisible()}
+          >
             新建
           </Button>,
           selectedRows && selectedRows.length > 0 && (
             <Dropdown
-              overlay={
-                <Menu
-                  onClick={async e => {
-                    if (e.key === 'remove') {
-                      await handleRemove(selectedRows)
-                    }
-                  }}
-                  selectedKeys={[]}
-                >
-                  <Menu.Item key="remove">批量删除</Menu.Item>
-                </Menu>
-              }
+              menu={{
+                items: [
+                  {
+                    key: 'remove',
+                    label: '批量删除',
+                    onClick: () => {
+                      handleRemove(selectedRows);
+                    },
+                  },
+                ],
+              }}
             >
               <Button key="many">
                 批量操作 <DownOutlined />
@@ -111,7 +113,12 @@ const CardList: React.FC<IProps> = (props: any) => {
             </Dropdown>
           ),
         ]}
-        tableAlertRender={({ selectedRowKeys, selectedRows } : { selectedRowKeys: React.ReactText[], selectedRows: any[] }) => (
+        tableAlertRender={({
+          selectedRowKeys,
+        }: {
+          selectedRowKeys: React.ReactText[];
+          selectedRows: any[];
+        }) => (
           <div>
             已选择{' '}
             <a
@@ -128,26 +135,22 @@ const CardList: React.FC<IProps> = (props: any) => {
           </div>
         )}
         request={async (params: any) => {
-          const { createdAt=[], current, ...nextParams } = params
+          const { createdAt, current, ...nextParams } = params;
           let newParams = {
             ...nextParams,
-            currPage: current - 1
-          }
-          newParams = pickBy(newParams, identity)
+            currPage: current - 1,
+          };
+          newParams = pickBy(newParams, identity);
           return getRoomList(newParams)
-          .then(({ list, total }) => ({ data: list, total }) )
-          .catch(_ => ({ data: [], total: 0 }))
+            .then(({ list, total }) => ({ data: list, total }))
+            .catch(() => ({ data: [], total: 0 }));
         }}
         columns={columns}
         rowSelection={{}}
       />
-      <Form
-        ref={formRef}
-        onSubmit={onSubmit}
-      />
-  </PageHeaderWrapper>
-  )
+      <Form ref={formRef} onSubmit={onSubmit} />
+    </PageHeaderWrapper>
+  );
+};
 
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(CardList)
+export default connect(mapStateToProps, mapDispatchToProps)(CardList);

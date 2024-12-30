@@ -8,12 +8,12 @@ import {
   Axis,
   Interaction,
   G2,
-  Coordinate
-} from 'bizcharts'
+  Coordinate,
+} from 'bizcharts';
 import React, { Component } from 'react';
 import DataSet from '@antv/data-set';
 import Debounce from 'lodash/debounce';
-import assign from 'lodash/assign'
+import assign from 'lodash/assign';
 import classNames from 'classnames';
 import autoHeight from '../autoHeight';
 import styles from './index.less';
@@ -24,26 +24,25 @@ import styles from './index.less';
 const imgUrl = 'https://gw.alipayobjects.com/zos/rmsportal/gWyeGLCdFFRavBGIDzWk.png';
 
 export interface ICloudData {
-  name: string,
-  text: string,
-  value: number
+  name: string;
+  text: string;
+  value: number;
 }
 
 interface IProps {
-  data: Array<ICloudData>
-  className?: string
-  height?: number
-  onClick?: (...args: any[]) => any
+  data: ICloudData[];
+  className?: string;
+  height?: number;
+  onClick?: (...args: any[]) => any;
 }
 
 interface IState {
-  dv: any
-  height: number
-  width: number
+  dv: any;
+  height: number;
+  width: number;
 }
 
 class TagCloud extends Component<IProps, IState> {
-
   public state: IState = {
     dv: null,
     height: 0,
@@ -94,38 +93,34 @@ class TagCloud extends Component<IProps, IState> {
 
   initTagCloud = () => {
     function getTextAttrs(cfg: any) {
-			return assign(
-				{},
-				cfg.style,
-				{
-					fontSize: cfg.data.size,
-					text: cfg.data.text,
-					textAlign: 'center',
-					fontFamily: cfg.data.font,
-					fill: cfg.color,
-					textBaseline: 'Alphabetic'
-				}
-			);
-		}
+      return assign({}, cfg.style, {
+        fontSize: cfg.data.size,
+        text: cfg.data.text,
+        textAlign: 'center',
+        fontFamily: cfg.data.font,
+        fill: cfg.color,
+        textBaseline: 'Alphabetic',
+      });
+    }
 
     registerShape('point', 'cloud', {
       draw(cfg: any, container) {
-				const attrs = getTextAttrs(cfg);
-				const textShape = container.addShape("text", {
-					attrs: assign(attrs, {
-						x: cfg.x,
-						y: cfg.y
-					})
-				});
-				if (cfg.data.rotate) {
-					G2.Util.rotate(textShape, cfg.data.rotate * Math.PI / 180);
-				}
-				return textShape;
+        const attrs = getTextAttrs(cfg);
+        const textShape = container.addShape('text', {
+          attrs: assign(attrs, {
+            x: cfg.x,
+            y: cfg.y,
+          }),
+        });
+        if (cfg.data.rotate) {
+          G2.Util.rotate(textShape, (cfg.data.rotate * Math.PI) / 180);
+        }
+        return textShape;
       },
     });
   };
 
-  renderChart = Debounce(nextProps => {
+  renderChart = Debounce((nextProps) => {
     // const colors = ['#1890FF', '#41D9C7', '#2FC25B', '#FACC14', '#9AE65C'];
     const { data, height } = nextProps || this.props;
 
@@ -210,12 +205,12 @@ class TagCloud extends Component<IProps, IState> {
               },
             }}
           >
-						<Tooltip showTitle={false} />
-						<Coordinate reflect="y" />
-						<Axis name='x' visible={false} />
-						<Axis name='y' visible={false} />
-						<Legend visible={false} />
-						<Geom
+            <Tooltip showTitle={false} />
+            <Coordinate reflect="y" />
+            <Axis name="x" visible={false} />
+            <Axis name="y" visible={false} />
+            <Legend visible={false} />
+            <Geom
               type="point"
               position="x*y"
               color="text"
@@ -230,7 +225,7 @@ class TagCloud extends Component<IProps, IState> {
                 },
               ]}
             />
-						<Interaction type='element-active' />
+            <Interaction type="element-active" />
           </Chart>
         )}
       </div>

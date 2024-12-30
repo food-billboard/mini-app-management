@@ -1,5 +1,5 @@
 import React, { useRef, useCallback } from 'react';
-import { Button, Dropdown, message, Menu } from 'antd';
+import { Button, Dropdown, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import type { ActionType } from '@ant-design/pro-table';
@@ -161,18 +161,17 @@ const CardList: React.FC<IProps> = () => {
           />,
           selectedRows && selectedRows.length > 0 && (
             <Dropdown
-              overlay={
-                <Menu
-                  onClick={async (e) => {
-                    if (e.key === 'remove') {
-                      await handleRemove(selectedRows);
-                    }
-                  }}
-                  selectedKeys={[]}
-                >
-                  <Menu.Item key="remove">批量删除</Menu.Item>
-                </Menu>
-              }
+              menu={{
+                items: [
+                  {
+                    key: 'remove',
+                    label: '批量删除',
+                    onClick: () => {
+                      handleRemove(selectedRows);
+                    },
+                  },
+                ],
+              }}
             >
               <Button key="many">
                 批量操作 <DownOutlined />

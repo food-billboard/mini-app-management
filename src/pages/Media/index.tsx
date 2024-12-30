@@ -1,5 +1,5 @@
 import React, { useRef, useCallback, memo, useMemo, useState } from 'react';
-import { Button, Dropdown, message, Menu, Space, Modal } from 'antd';
+import { Button, Dropdown, message, Space, Modal } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import type { ActionType } from '@ant-design/pro-table';
@@ -164,33 +164,29 @@ const MediaManage = memo(() => {
                 删除
               </a>
               <Dropdown
-                overlay={
-                  <Menu>
-                    <Menu.Item>
-                      <a style={{ color: '#1890ff' }} onClick={getDetail.bind(null, record)}>
-                        查看
-                      </a>
-                    </Menu.Item>
-                    <Menu.Item>
-                      <a
-                        style={{ color: '#1890ff' }}
-                        onClick={getProcess.bind(null, record['_id'])}
-                      >
-                        完成度检测
-                      </a>
-                    </Menu.Item>
-                    {activeKey === 'video' && (
-                      <Menu.Item>
-                        <a
-                          style={{ color: '#1890ff' }}
-                          onClick={generatePoster.bind(null, record['_id'])}
-                        >
-                          海报生成
-                        </a>
-                      </Menu.Item>
-                    )}
-                  </Menu>
-                }
+                menu={{
+                  items: [
+                    {
+                      key: 'look',
+                      label: '查看',
+                      onClick: getDetail.bind(null, record),
+                    },
+                    {
+                      key: 'complete',
+                      label: '完成度检测',
+                      onClick: getProcess.bind(null, record['_id']),
+                    },
+                    ...(activeKey === 'video'
+                      ? [
+                          {
+                            key: 'poster',
+                            label: '海报生成',
+                            onClick: generatePoster.bind(null, record['_id']),
+                          },
+                        ]
+                      : []),
+                  ],
+                }}
               >
                 <a onClick={(e) => e.preventDefault()}>
                   <EllipsisOutlined />
@@ -279,21 +275,24 @@ const MediaManage = memo(() => {
           />,
           selectedRows && selectedRows.length > 0 && (
             <Dropdown
-              overlay={
-                <Menu
-                  onClick={async (e) => {
-                    if (e.key === 'remove') {
-                      await handleRemove(selectedRows);
-                    } else if (e.key === 'valid') {
-                      await getProcess(selectedRows.map((item) => item['_id']));
-                    }
-                  }}
-                  selectedKeys={[]}
-                >
-                  <Menu.Item key="remove">批量删除</Menu.Item>
-                  <Menu.Item key="valid">批量检测</Menu.Item>
-                </Menu>
-              }
+              menu={{
+                items: [
+                  {
+                    label: '批量检测',
+                    key: 'check',
+                    onClick: () => {
+                      getProcess(selectedRows.map((item) => item['_id']));
+                    },
+                  },
+                  {
+                    label: '批量删除',
+                    key: 'delete',
+                    onClick: () => {
+                      handleRemove(selectedRows);
+                    },
+                  },
+                ],
+              }}
             >
               <Button key="many">
                 批量操作 <DownOutlined />

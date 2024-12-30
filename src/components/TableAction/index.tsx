@@ -1,9 +1,7 @@
 import React, { useMemo, Children, cloneElement } from 'react';
 import type { ReactNode } from 'react';
-import { Dropdown, Menu, Button, Space } from 'antd';
+import { Dropdown, Button, Space } from 'antd';
 import type { DropDownProps } from 'antd';
-
-const { Item } = Menu;
 
 const TableAction = (props: {
   children?: ReactNode;
@@ -34,22 +32,19 @@ const TableAction = (props: {
         })}
         <Dropdown
           {...dropDownProps}
-          overlay={
-            <Menu>
-              {list.slice(2).map((item: any, index) => {
-                return (
-                  <Item key={item.key || index}>
-                    {cloneElement(item, {
-                      style: {
-                        padding: 0,
-                        height: 'auto',
-                      },
-                    })}
-                  </Item>
-                );
-              })}
-            </Menu>
-          }
+          menu={{
+            items: list.slice(2).map((item: any, index) => {
+              return {
+                key: item.key || index.toString(),
+                label: cloneElement(item, {
+                  style: {
+                    padding: 0,
+                    height: 'auto',
+                  },
+                }) as any,
+              };
+            }),
+          }}
         >
           <Button style={{ padding: 0 }} type="link">
             更多
