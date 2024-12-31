@@ -25,6 +25,29 @@ export const MENU_MAP = [
   },
 ];
 
+export const FOOD_MAP = [
+  {
+    label: '荤菜',
+    value: 'MEAT',
+    color: 'error',
+  },
+  {
+    label: '素菜',
+    value: 'VEGETABLE',
+    color: 'processing',
+  },
+  {
+    label: '汤类',
+    value: 'SOUP',
+    color: 'success',
+  },
+  {
+    label: '其他',
+    value: 'OTHER',
+    color: 'warning',
+  },
+];
+
 export default [
   {
     title: '标题',
@@ -43,11 +66,43 @@ export default [
   {
     title: '餐别类型',
     dataIndex: 'menu_type',
-    valueType: 'option',
+    valueType: 'select',
     key: 'menu_type',
+    valueEnum: MENU_MAP.reduce((acc, cur) => {
+      return {
+        ...acc,
+        [cur.value]: {
+          text: cur.label,
+        },
+      };
+    }, {}),
     renderText: (val: string[]) => {
       return val.map((data) => {
         const target = MENU_MAP.find((item) => item.value === data);
+        return (
+          <Tag key={data} color={target?.color}>
+            {target?.label}
+          </Tag>
+        );
+      });
+    },
+  },
+  {
+    title: '菜单类型',
+    dataIndex: 'food_type',
+    valueType: 'select',
+    key: 'food_type',
+    valueEnum: FOOD_MAP.reduce((acc, cur) => {
+      return {
+        ...acc,
+        [cur.value]: {
+          text: cur.label,
+        },
+      };
+    }, {}),
+    renderText: (val: string[]) => {
+      return val.map((data) => {
+        const target = FOOD_MAP.find((item) => item.value === data);
         return (
           <Tag key={data} color={target?.color}>
             {target?.label}

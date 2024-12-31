@@ -1,5 +1,6 @@
 declare namespace API {
   export type EatMenuType = 'BREAKFAST' | 'LUNCH' | 'DINNER' | 'NIGHT_SNACK';
+  export type EatFoodType = 'MEAT' | 'VEGETABLE' | 'SOUP' | 'OTHER';
 
   export type GetEatMenuListParams = Partial<{
     content: string;
@@ -42,6 +43,7 @@ declare namespace API {
     content: string;
     date: string;
     menu_type: MenuType;
+    food_type: EatFoodType;
     createdAt: string;
     updateAt: string;
     _id: string;

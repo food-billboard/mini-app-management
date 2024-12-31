@@ -11,7 +11,7 @@ import React, {
   useImperativeHandle,
 } from 'react';
 import RichTextEditor from '@/components/RichTextEditor';
-import { MENU_MAP } from '../../columns';
+import { MENU_MAP, FOOD_MAP } from '../../columns';
 
 type FormData = API.PutEatMenuClassifyData | API.PostEatMenuClassifyData;
 
@@ -21,7 +21,7 @@ interface IProps {
 }
 
 export interface IFormRef {
-  open: (values?: API.GetEatMenuListData) => void;
+  open: (values?: API.GetEatMenuClassifyListData) => void;
 }
 
 const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
@@ -34,7 +34,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   const formRef = useRef<FormInstance | null>(null);
 
   const open = useCallback(
-    async (values?: API.GetEatMenuListData) => {
+    async (values?: API.GetEatMenuClassifyListData) => {
       const isEdit = !!values;
 
       const show = () => {
@@ -42,9 +42,12 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       };
 
       if (isEdit) {
-        const {} = values;
+        const { food_type } = values!;
         // 获取修改的数据
-        formRef.current?.setFieldsValue(values);
+        formRef.current?.setFieldsValue({
+          ...values,
+          food_type: food_type?.[0],
+        });
         show();
       }
 
@@ -69,9 +72,12 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
 
   const onFinish = useCallback(
     async (values: Store) => {
-      await onSubmit?.(values as FormData);
-      setVisible(false);
-      formRef.current?.resetFields();
+      await onSubmit?.(values as FormData)
+        .then(() => {
+          setVisible(false);
+          formRef.current?.resetFields();
+        })
+        .catch(() => {});
     },
     [onSubmit],
   );
@@ -88,6 +94,12 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       formRef={formRef}
       onFinish={onFinish}
       onVisibleChange={onVisibleChange}
+      modalProps={{
+        bodyStyle: {
+          height: 500,
+          overflowY: 'auto',
+        },
+      }}
     >
       <ProFormTextArea
         name="title"
@@ -103,14 +115,6 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
           autoSize: true,
         }}
       />
-      <ProFormTextArea
-        name="description"
-        placeholder="请输入描述信息"
-        label="描述信息"
-        fieldProps={{
-          autoSize: true,
-        }}
-      />
       <ProFormSelect
         mode="multiple"
         placeholder={'请选择餐别类型'}
@@ -119,9 +123,24 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
         label="餐别类型"
         initialValue={['BREAKFAST']}
       />
+      <ProFormSelect
+        placeholder={'请选择菜单类型'}
+        options={FOOD_MAP}
+        name="food_type"
+        label="菜单类型"
+        initialValue={['OTHER']}
+      />
       <Form.Item name="content" label="内容">
         <RichTextEditor />
       </Form.Item>
+      <ProFormTextArea
+        name="description"
+        placeholder="请输入描述信息"
+        label="描述信息"
+        fieldProps={{
+          autoSize: true,
+        }}
+      />
       <Form.Item name="_id">
         <Input type="hidden" />
       </Form.Item>

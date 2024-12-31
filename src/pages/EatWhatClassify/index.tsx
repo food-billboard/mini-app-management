@@ -11,11 +11,11 @@ import { mapStateToProps, mapDispatchToProps } from './connect';
 import column from './columns';
 import {
   getCurrentMenuClassifyList,
-  deleteCurrentMenu,
+  deleteCurrentMenuClassify,
   postCurrentMenuClassify,
   putCurrentMenuClassify,
 } from '@/services';
-import { commonDeleteMethod, withTry } from '@/utils';
+import { commonDeleteMethod } from '@/utils';
 
 const EatWhatClassifyManage: React.FC<any> = () => {
   const actionRef = useRef<ActionType>();
@@ -41,17 +41,17 @@ const EatWhatClassifyManage: React.FC<any> = () => {
   );
 
   const handleModalVisible = useCallback(
-    async (values?: API.GetEatMenuListData) => {
+    async (values?: API.GetEatMenuClassifyListData) => {
       modalRef.current?.open(values);
     },
     [modalRef],
   );
 
-  const handleRemove = useCallback(async (selectedRows: API.GetEatMenuListData[]) => {
-    return commonDeleteMethod<API.GetEatMenuListData>(
+  const handleRemove = useCallback(async (selectedRows: API.GetEatMenuClassifyListData[]) => {
+    return commonDeleteMethod<API.GetEatMenuClassifyListData>(
       selectedRows.slice(0, 1),
       () => {
-        return deleteCurrentMenu({
+        return deleteCurrentMenuClassify({
           _id: selectedRows.map((item) => item._id).join(','),
         });
       },
@@ -67,7 +67,7 @@ const EatWhatClassifyManage: React.FC<any> = () => {
       dataIndex: 'opera',
       valueType: 'option',
       fixed: 'right',
-      render: (_: any, record: API.GetEatMenuListData) => {
+      render: (_: any, record: API.GetEatMenuClassifyListData) => {
         return (
           <Space>
             <a onClick={() => handleModalVisible(record)}>编辑</a>
@@ -153,7 +153,7 @@ const EatWhatClassifyManage: React.FC<any> = () => {
       />
       <Form
         onSubmit={async (value) => {
-          await withTry(handleAdd)(value);
+          await handleAdd(value);
           actionRef.current?.reload();
         }}
         ref={modalRef}
