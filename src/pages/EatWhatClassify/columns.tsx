@@ -100,7 +100,7 @@ export default [
         },
       };
     }, {}),
-    renderText: (val: string[]) => {
+    renderText: (val: string[] = []) => {
       return val.map((data) => {
         const target = FOOD_MAP.find((item) => item.value === data);
         return (

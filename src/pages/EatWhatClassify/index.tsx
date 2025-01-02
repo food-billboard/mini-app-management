@@ -24,11 +24,15 @@ const EatWhatClassifyManage: React.FC<any> = () => {
 
   const handleAdd = useCallback(
     async (values: API.PostEatMenuClassifyData | API.PutEatMenuClassifyData) => {
+      const realValues = {
+        ...values,
+        menu_type: values.menu_type.join(','),
+      };
       try {
         if ((values as API.PutEatMenuData)['_id']) {
-          await putCurrentMenuClassify(values as API.PutEatMenuClassifyData);
+          await putCurrentMenuClassify(realValues as API.PutEatMenuClassifyData);
         } else {
-          await postCurrentMenuClassify(values as API.PostEatMenuClassifyData);
+          await postCurrentMenuClassify(realValues as API.PostEatMenuClassifyData);
         }
         message.success('操作成功');
         return Promise.resolve();

@@ -10,6 +10,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react';
+import { sleep } from '@/utils';
 import RichTextEditor from '@/components/RichTextEditor';
 import { MENU_MAP, FOOD_MAP } from '../../columns';
 
@@ -41,17 +42,17 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
         setVisible(true);
       };
 
+      show();
+
       if (isEdit) {
+        await sleep(1000);
         const { food_type } = values!;
         // 获取修改的数据
         formRef.current?.setFieldsValue({
           ...values,
-          food_type: food_type?.[0],
+          food_type: food_type?.[0] || 'OTHER',
         });
-        show();
       }
-
-      show();
     },
     [formRef],
   );
