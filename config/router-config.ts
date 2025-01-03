@@ -74,14 +74,14 @@ export default [
               {
                 path: '/eat-what/main',
                 component: '@/pages/EatWhat',
-                title: '数据信息管理',
-                name: '数据信息管理',
+                title: '菜单管理',
+                name: 'eat_what_main',
               },
               {
                 path: '/eat-what/classify',
                 component: '@/pages/EatWhatClassify',
-                title: '菜单分类',
-                name: '菜单分类',
+                title: '菜单分类管理',
+                name: 'eat_what_classify',
               },
             ],
           },
@@ -89,11 +89,19 @@ export default [
             path: '/media',
             name: 'media',
             icon: 'picture',
-            title: '媒体资源管理',
+            title: '媒体管理',
             routes: [
               {
-                path: '/media',
+                title: '资源管理',
+                path: '/media/source',
                 component: '@/pages/Media',
+                name: 'mediasource',
+              },
+              {
+                title: '视频处理',
+                path: '/media/video-deal',
+                component: '@/pages/VideoDeal',
+                name: 'mediavideo',
               },
               {
                 path: '/media/video/list',
