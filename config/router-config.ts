@@ -3,8 +3,8 @@ const { REACT_APP_ENV } = process.env;
 export default [
   {
     path: '/user',
-    // layout: false,
-    component: '@/layouts/UserLayout',
+    layout: false,
+    wrappers: ['@/layouts/UserLayout'],
     routes: [
       {
         name: 'login',
@@ -27,322 +27,294 @@ export default [
   },
   {
     path: '/',
-    component: '@/layouts/SecurityLayout',
-    wrappers: ['@/layouts/Authority'],
+    wrappers: ['@/layouts/BaseLayout'],
     routes: [
       {
         path: '/',
-        component: '@/layouts/BasicLayout',
+        redirect: '/home',
+      },
+      {
+        path: '/home',
+        component: '@/pages/Dashboard',
+        name: '首页',
+        icon: 'home',
+        title: '首页',
+      },
+      {
+        path: '/member',
+        name: '用户管理',
+        icon: 'team',
+        title: '用户管理',
         routes: [
           {
-            path: '/',
-            redirect: '/home',
-          },
-          {
-            path: '/home',
-            component: '@/pages/Dashboard',
-            name: 'home',
-            icon: 'home',
-            title: '首页',
-            // authority: [ 'admin'], //如果用户的权限不在这里面的话就不显示当前路由
-          },
-          {
             path: '/member',
-            name: 'member',
-            icon: 'team',
-            title: '用户管理',
-            routes: [
-              {
-                path: '/member',
-                component: '@/pages/Member',
-              },
-              {
-                path: '/member/:id',
-                component: '@/pages/MemberDetail',
-                title: '用户详情',
-                name: 'memberdetail',
-                hideInMenu: true,
-              },
-            ],
+            component: '@/pages/Member',
           },
           {
-            path: '/eat-what',
-            name: 'eat_what',
-            icon: 'coffee',
-            title: '今天吃什么管理',
-            routes: [
-              {
-                path: '/eat-what/main',
-                component: '@/pages/EatWhat',
-                title: '菜单管理',
-                name: 'eat_what_main',
-              },
-              {
-                path: '/eat-what/classify',
-                component: '@/pages/EatWhatClassify',
-                title: '菜单分类管理',
-                name: 'eat_what_classify',
-              },
-            ],
+            path: '/member/:id',
+            component: '@/pages/MemberDetail',
+            title: '用户详情',
+            name: '用户详情',
+            hideInMenu: true,
+          },
+        ],
+      },
+      {
+        path: '/eat-what',
+        name: '今天吃什么管理',
+        icon: 'coffee',
+        title: '今天吃什么管理',
+        routes: [
+          {
+            path: '/eat-what/main',
+            component: '@/pages/EatWhat',
+            title: '菜单管理',
+            name: '菜单管理',
           },
           {
-            path: '/media',
-            name: 'media',
-            icon: 'picture',
-            title: '媒体管理',
-            routes: [
-              {
-                title: '资源管理',
-                path: '/media/source',
-                component: '@/pages/Media',
-                name: 'mediasource',
-              },
-              {
-                title: '视频处理',
-                path: '/media/video-deal',
-                component: '@/pages/VideoDeal',
-                name: 'mediavideo',
-              },
-              {
-                path: '/media/video/list',
-                component: '@/pages/VideoList',
-                title: '视频列表',
-                name: 'mediadetailvideolist',
-                hideInMenu: true,
-              },
-              {
-                path: '/media/video',
-                component: '@/pages/Video',
-                title: '视频详情',
-                name: 'mediadetailvideo',
-                hideInMenu: true,
-              },
-              {
-                path: '/media/image',
-                component: '@/pages/Image',
-                title: '图片详情',
-                name: 'mediadetailimage',
-                hideInMenu: true,
-              },
-            ],
+            path: '/eat-what/classify',
+            component: '@/pages/EatWhatClassify',
+            title: '菜单分类管理',
+            name: '菜单分类管理',
           },
+        ],
+      },
+      {
+        path: '/media',
+        name: '媒体管理',
+        icon: 'picture',
+        title: '媒体管理',
+        routes: [
+          {
+            title: '资源管理',
+            path: '/media/source',
+            component: '@/pages/Media',
+            name: '资源管理',
+          },
+          {
+            title: '视频处理',
+            path: '/media/video-deal',
+            component: '@/pages/VideoDeal',
+            name: '视频处理',
+          },
+          {
+            path: '/media/video/list',
+            component: '@/pages/VideoList',
+            title: '视频列表',
+            name: '视频列表',
+            hideInMenu: true,
+          },
+          {
+            path: '/media/image',
+            component: '@/pages/Image',
+            title: '图片详情',
+            name: '图片详情',
+            hideInMenu: true,
+          },
+        ],
+      },
+      {
+        path: '/chat',
+        name: '聊天管理',
+        icon: 'message',
+        title: '聊天管理',
+        routes: [
           {
             path: '/chat',
-            name: 'chat',
-            icon: 'message',
-            title: '聊天管理',
-            routes: [
-              {
-                path: '/chat',
-                component: '@/pages/Room',
-                // title: '聊天室管理',
-                // name: 'room'
-              },
-              {
-                path: '/chat/message/:room',
-                component: '@/pages/Message',
-                title: '消息管理',
-                name: 'message',
-                hideInMenu: true,
-              },
-              {
-                path: '/chat/member/:room',
-                component: '@/pages/ChatMembers',
-                title: '成员管理',
-                name: 'member',
-                hideInMenu: true,
-              },
-            ],
+            component: '@/pages/Room',
+            // title: '聊天室管理',
+            // name: 'room'
           },
           {
-            path: '/feedback',
-            component: '@/pages/Feedback',
-            name: 'feedback',
-            icon: 'tool',
-            title: '反馈管理',
+            path: '/chat/message/:room',
+            component: '@/pages/Message',
+            title: '消息管理',
+            name: '消息管理',
+            hideInMenu: true,
           },
           {
-            path: '/schedule',
-            component: '@/pages/Schedule',
-            name: 'schedule',
-            icon: 'clock-circle',
-            title: '定时任务管理',
+            path: '/chat/member/:room',
+            component: '@/pages/ChatMembers',
+            title: '成员管理',
+            name: '成员管理',
+            hideInMenu: true,
           },
-          ...(REACT_APP_ENV === 'prod-local'
-            ? [
-                {
-                  path: '/raspberry',
-                  component: '@/pages/RaspberryPiPackage',
-                  name: 'raspberry',
-                  icon: 'reddit',
-                  title: '树莓派本地仓库管理',
-                },
-              ]
-            : []),
+        ],
+      },
+      {
+        path: '/feedback',
+        component: '@/pages/Feedback',
+        name: '反馈管理',
+        icon: 'tool',
+        title: '反馈管理',
+      },
+      {
+        path: '/schedule',
+        component: '@/pages/Schedule',
+        name: '定时任务管理',
+        icon: 'HistoryOutlined',
+        title: '定时任务管理',
+      },
+      ...(REACT_APP_ENV === 'prod-local'
+        ? [
+            {
+              path: '/raspberry',
+              component: '@/pages/RaspberryPiPackage',
+              name: '树莓派本地仓库管理',
+              icon: 'reddit',
+              title: '树莓派本地仓库管理',
+            },
+          ]
+        : []),
+      {
+        path: '/instance',
+        component: '@/pages/instance',
+        title: '实例管理',
+        name: '实例管理',
+        icon: 'global',
+      },
+      {
+        path: '/data',
+        name: '数据管理',
+        title: '数据管理',
+        icon: 'database',
+        routes: [
           {
-            path: '/instance',
-            component: '@/pages/instance',
-            title: '实例管理',
-            name: 'instance',
-            icon: 'global',
-          },
-          {
-            path: '/data',
-            name: 'data',
-            title: '数据管理',
-            icon: 'database',
+            path: '/data/main',
+            title: '数据信息管理',
+            name: '数据信息管理',
             routes: [
               {
                 path: '/data/main',
-                title: '数据信息管理',
-                name: 'datainfo',
-                routes: [
-                  {
-                    path: '/data/main',
-                    component: '@/pages/Data',
-                  },
-                  {
-                    path: '/data/main/edit',
-                    component: '@/pages/DataEdit',
-                    title: '数据修改',
-                    name: 'datainfoedit',
-                    hideInMenu: true,
-                  },
-                  {
-                    path: '/data/main/:id',
-                    component: '@/pages/DataDetail',
-                    title: '数据详情',
-                    name: 'datainfodetail',
-                    hideInMenu: true,
-                  },
-                ],
+                component: '@/pages/Data',
               },
               {
-                path: '/data/special',
-                title: '数据专题管理',
-                name: 'special',
-                routes: [
-                  {
-                    path: '/data/special',
-                    component: '@/pages/DataSpecial',
-                  },
-                  {
-                    path: '/data/special/:name',
-                    component: '@/pages/DataSpecialDetail',
-                    title: '数据专题详情',
-                    name: 'specialdetail',
-                    hideInMenu: true,
-                  },
-                ],
+                path: '/data/main/edit',
+                component: '@/pages/DataEdit',
+                title: '数据修改',
+                name: '数据修改',
+                hideInMenu: true,
               },
               {
-                path: '/data/tag',
-                title: '数据标签管理',
-                name: 'tag',
-                routes: [
-                  {
-                    path: '/data/tag',
-                    component: '@/pages/DataTag',
-                  },
-                ],
+                path: '/data/main/:id',
+                component: '@/pages/DataDetail',
+                title: '数据详情',
+                name: '数据详情',
+                hideInMenu: true,
               },
-              {
-                path: '/data/about',
-                title: '数据相关管理',
-                name: 'dataabout',
-                routes: [
-                  {
-                    path: '/data/about',
-                    component: '@/pages/DataAbout',
-                  },
-                  {
-                    path: '/data/about/:name',
-                    component: '@/pages/DataAboutDetail',
-                    title: '数据相关详情',
-                    name: 'dataaboutdetail',
-                    hideInMenu: true,
-                  },
-                ],
-              },
-              // {
-              //   path: '/data/image/edit',
-              //   component: '@/pages/ImageEditor',
-              //   title: '图片编辑',
-              //   hideInMenu: true
-              // }
             ],
           },
-          // {
-          //   path: '/error',
-          //   component: '@/pages/Error',
-          //   name: 'error',
-          //   icon: 'meh',
-          //   title: '错误管理',
-          // },
           {
-            path: '/screen',
-            name: 'screen',
-            title: '大屏管理',
-            icon: 'fund',
+            path: '/data/special',
+            title: '数据专题管理',
+            name: '数据专题管理',
+            routes: [
+              {
+                path: '/data/special',
+                component: '@/pages/DataSpecial',
+              },
+              {
+                path: '/data/special/:name',
+                component: '@/pages/DataSpecialDetail',
+                title: '数据专题详情',
+                name: '数据专题详情',
+                hideInMenu: true,
+              },
+            ],
+          },
+          {
+            path: '/data/tag',
+            title: '数据标签管理',
+            name: '数据标签管理',
+            routes: [
+              {
+                path: '/data/tag',
+                component: '@/pages/DataTag',
+              },
+            ],
+          },
+          {
+            path: '/data/about',
+            title: '数据相关管理',
+            name: '数据相关管理',
+            routes: [
+              {
+                path: '/data/about',
+                component: '@/pages/DataAbout',
+              },
+              {
+                path: '/data/about/:name',
+                component: '@/pages/DataAboutDetail',
+                title: '数据相关详情',
+                name: '数据相关详情',
+                hideInMenu: true,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        path: '/screen',
+        name: '大屏管理',
+        title: '大屏管理',
+        icon: 'fund',
+        routes: [
+          {
+            path: '/screen/list',
+            title: '实例管理',
+            name: '实例管理',
             routes: [
               {
                 path: '/screen/list',
-                title: '实例管理',
-                name: 'list',
-                routes: [
-                  {
-                    path: '/screen/list',
-                    component: '@/pages/Screen',
-                  },
-                ],
-              },
-              {
-                path: '/screen/model',
-                title: '模板管理',
-                name: 'model',
-                routes: [
-                  {
-                    path: '/screen/model',
-                    component: '@/pages/ScreenModel',
-                  },
-                ],
-              },
-              {
-                path: '/screen/mock',
-                title: 'mock数据管理',
-                name: 'mock',
-                routes: [
-                  {
-                    path: '/screen/mock',
-                    component: '@/pages/ScreenMock',
-                  },
-                ],
+                component: '@/pages/Screen',
               },
             ],
           },
           {
-            path: '/third',
-            name: 'third',
-            title: '第三方接口',
-            icon: 'api',
-            component: '@/pages/ThirdParty',
-          },
-          {
-            path: '/admin',
-            name: 'admin',
-            title: '个人中心',
-            icon: 'setting',
+            path: '/screen/model',
+            title: '模板管理',
+            name: '模板管理',
             routes: [
               {
-                path: '/admin',
-                component: '@/pages/Admin',
-              },
-              {
-                path: '/admin/setting',
-                component: '@/pages/Setting',
-                title: '个人设置',
+                path: '/screen/model',
+                component: '@/pages/ScreenModel',
               },
             ],
+          },
+          {
+            path: '/screen/mock',
+            title: 'mock数据管理',
+            name: 'mock数据管理',
+            routes: [
+              {
+                path: '/screen/mock',
+                component: '@/pages/ScreenMock',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        path: '/third',
+        name: '第三方接口',
+        title: '第三方接口',
+        icon: 'api',
+        component: '@/pages/ThirdParty',
+      },
+      {
+        path: '/admin',
+        name: '个人中心',
+        title: '个人中心',
+        icon: 'setting',
+        routes: [
+          {
+            path: '/admin',
+            component: '@/pages/Admin',
+          },
+          {
+            path: '/admin/setting',
+            component: '@/pages/Setting',
+            title: '个人设置',
           },
         ],
       },

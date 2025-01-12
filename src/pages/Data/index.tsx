@@ -1,25 +1,22 @@
-import React, { useRef, useCallback } from 'react';
-import { Button, Dropdown, message } from 'antd';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import ProTable from '@ant-design/pro-table';
-import type { ActionType } from '@ant-design/pro-table';
-import { DownOutlined, EllipsisOutlined } from '@ant-design/icons';
-import { connect } from 'umi';
-import pickBy from 'lodash/pickBy';
-import identity from 'lodash/identity';
-import { history } from 'umi';
+import { ProPage } from '@/components/ProTable';
+import TableAction from '@/components/TableAction';
+import { message } from '@/components/Toast';
 import {
   deleteMovie,
+  deleteMovieStatus,
   getMovieList,
   putMovieStatus,
-  deleteMovieStatus,
   updateMovieTag,
 } from '@/services';
-import { commonDeleteMethod } from '@/utils';
-import TableAction from '@/components/TableAction';
-import { mapStateToProps, mapDispatchToProps } from './connect';
-import AddModal from './component/AddModal';
+import { EllipsisOutlined } from '@ant-design/icons';
+import type { ActionType } from '@ant-design/pro-components';
+import { Button } from 'antd';
+import { identity, pickBy } from 'lodash';
+import React, { useCallback, useRef } from 'react';
+import { connect, history } from 'umi';
 import column from './columns';
+import AddModal from './component/AddModal';
+import { mapDispatchToProps, mapStateToProps } from './connect';
 
 interface IProps {
   role: any;
@@ -69,16 +66,18 @@ const CardList: React.FC<IProps> = () => {
    */
 
   const handleRemove = async (selectedRows: API_DATA.IGetMovieData[]) => {
-    return commonDeleteMethod<API_DATA.IGetMovieData>(
-      selectedRows,
-      (row: API_DATA.IGetMovieData) => {
-        const { _id } = row;
-        return deleteMovie({
+    try {
+      for (let i = 0; i < selectedRows.length; i++) {
+        const { _id } = selectedRows[i];
+        await deleteMovie({
           _id,
         });
-      },
-      actionRef.current?.reloadAndRest,
-    );
+      }
+    } catch (err) {
+      return false;
+    }
+    actionRef.current?.reloadAndRest?.();
+    return true;
   };
 
   const columns: any[] = [
@@ -100,12 +99,21 @@ const CardList: React.FC<IProps> = () => {
             }}
           >
             {record.status !== 'COMPLETE' && (
-              <Button onClick={() => handleModalVisible(record['_id'])} type="link" key="edit">
+              <Button
+                onClick={() => handleModalVisible(record['_id'])}
+                type="link"
+                key="edit"
+              >
                 编辑
               </Button>
             )}
             {record.status !== 'COMPLETE' && (
-              <Button danger onClick={() => handleRemove([record])} type="link" key="delete">
+              <Button
+                danger
+                onClick={() => handleRemove([record])}
+                type="link"
+                key="delete"
+              >
                 删除
               </Button>
             )}
@@ -127,12 +135,20 @@ const CardList: React.FC<IProps> = () => {
               </Button>
             )}
             {(record.status === 'NOT_VERIFY' || record.status === 'VERIFY') && (
-              <Button type="link" onClick={putStatus.bind(null, record['_id'])} key="enable">
+              <Button
+                type="link"
+                onClick={putStatus.bind(null, record['_id'])}
+                key="enable"
+              >
                 启用
               </Button>
             )}
             {record.status === 'COMPLETE' && (
-              <Button type="link" onClick={() => updateMovieTagMethod(record['_id'])} key="reset">
+              <Button
+                type="link"
+                onClick={() => updateMovieTagMethod(record['_id'])}
+                key="reset"
+              >
                 标签重置
               </Button>
             )}
@@ -143,80 +159,43 @@ const CardList: React.FC<IProps> = () => {
   ];
 
   return (
-    <PageHeaderWrapper>
-      <ProTable
-        headerTitle="数据列表"
-        actionRef={actionRef}
-        scroll={{ x: 'max-content' }}
-        pagination={{ defaultPageSize: 10 }}
-        rowKey="_id"
-        toolBarRender={(action, { selectedRows }) => [
-          <AddModal
-            key={'add'}
-            onCancel={() => handleModalVisible()}
-            onConfirm={(data) => {
-              actionRef.current?.reloadAndRest?.();
-              handleModalVisible(data);
-            }}
-          />,
-          selectedRows && selectedRows.length > 0 && (
-            <Dropdown
-              menu={{
-                items: [
-                  {
-                    key: 'remove',
-                    label: '批量删除',
-                    onClick: () => {
-                      handleRemove(selectedRows);
-                    },
-                  },
-                ],
-              }}
-            >
-              <Button key="many">
-                批量操作 <DownOutlined />
-              </Button>
-            </Dropdown>
-          ),
-        ]}
-        tableAlertRender={({
-          selectedRowKeys,
-        }: {
-          selectedRowKeys: React.ReactText[];
-          selectedRows: any[];
-        }) => (
-          <div>
-            已选择{' '}
-            <a
-              style={{
-                fontWeight: 600,
-              }}
-            >
-              {selectedRowKeys.length}
-            </a>{' '}
-            项&nbsp;&nbsp;
-            <span>
-              {/* 服务调用次数总计 {selectedRows.reduce((pre, item) => pre + item.callNo, 0)} 万 */}
-            </span>
-          </div>
-        )}
-        request={async (params: any) => {
-          const { createdAt = [], current, ...nextParams } = params;
-          let newParams = {
-            ...nextParams,
-            start_date: createdAt[0],
-            end_date: createdAt[1],
-            currPage: current - 1,
-          };
-          newParams = pickBy(newParams, identity);
-          return getMovieList(newParams)
-            .then(({ list, total }) => ({ data: list, total }))
-            .catch(() => ({ data: [], total: 0 }));
-        }}
-        columns={columns}
-        rowSelection={{}}
-      />
-    </PageHeaderWrapper>
+    <ProPage
+      action={{
+        remove: {
+          action: handleRemove,
+        },
+      }}
+      headerTitle="数据列表"
+      actionRef={actionRef}
+      scroll={{ x: 'max-content' }}
+      pagination={{ defaultPageSize: 10 }}
+      rowKey="_id"
+      toolBarRender={(action, { selectedRows }) => [
+        <AddModal
+          key={'add'}
+          onCancel={() => handleModalVisible()}
+          onConfirm={(data) => {
+            actionRef.current?.reloadAndRest?.();
+            handleModalVisible(data);
+          }}
+        />,
+      ]}
+      request={async (params: any) => {
+        const { createdAt = [], current, ...nextParams } = params;
+        let newParams = {
+          ...nextParams,
+          start_date: createdAt[0],
+          end_date: createdAt[1],
+          currPage: current - 1,
+        };
+        newParams = pickBy(newParams, identity);
+        return getMovieList(newParams)
+          .then(({ list, total }) => ({ data: list, total }))
+          .catch(() => ({ data: [], total: 0 }));
+      }}
+      columns={columns}
+      rowSelection={{}}
+    />
   );
 };
 

@@ -1,6 +1,6 @@
 import { Form, Input } from 'antd';
 import type { FormInstance } from 'antd/lib/form';
-import { ModalForm, ProFormTextArea, ProFormSelect } from '@ant-design/pro-form';
+import { ModalForm, ProFormTextArea, ProFormSelect } from '@ant-design/pro-components';
 import type { Store } from 'antd/lib/form/interface';
 import React, {
   useCallback,
@@ -90,11 +90,11 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   return (
     <ModalForm
       title="新增菜单分类"
-      visible={visible}
+      open={visible}
       // @ts-ignore
       formRef={formRef}
       onFinish={onFinish}
-      onVisibleChange={onVisibleChange}
+      onOpenChange={onVisibleChange}
       modalProps={{
         bodyStyle: {
           height: 500,

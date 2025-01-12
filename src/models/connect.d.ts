@@ -1,4 +1,4 @@
-import { MenuDataItem, Settings as ProSettings } from '@ant-design/pro-layout';
+import { MenuDataItem, Settings as ProSettings } from '@ant-design/pro-components';
 import { IGlobalModelState } from './global';
 import { IUserModelState } from './user';
 import { IDataState } from './data';

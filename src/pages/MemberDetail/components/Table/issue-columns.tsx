@@ -1,7 +1,7 @@
 import React from 'react'
 import { history } from 'umi'
 import { Tag } from 'antd'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { SOURCE_TYPE, MOVIE_STATUS } from '@/utils'
 
 export default [
@@ -24,13 +24,13 @@ export default [
     title: '创建时间',
     dataIndex: 'createdAt',
     key: 'createdAt',
-    render: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    render: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
   {
     title: '更新时间',
     dataIndex: 'updatedAt',
     key: 'updatedAt',
-    render: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    render: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
   {
     title: '人气',

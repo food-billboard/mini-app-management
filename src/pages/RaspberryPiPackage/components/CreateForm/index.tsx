@@ -1,6 +1,6 @@
 import { Form, Input } from 'antd';
 import type { FormInstance } from 'antd/lib/form';
-import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
+import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
 import type { Store } from 'antd/lib/form/interface';
 import React, { Component, createRef } from 'react';
 
@@ -55,7 +55,7 @@ class CreateForm extends Component<IProps, IState> {
     return (
       <ModalForm
         title="仓库编辑"
-        visible={visible}
+        open={visible}
         // @ts-ignore
         formRef={this.formRef as any}
         onFinish={async (values: Store) => {
@@ -65,7 +65,7 @@ class CreateForm extends Component<IProps, IState> {
           this.formRef.current?.resetFields();
           return true;
         }}
-        onVisibleChange={(visibleState: boolean) => {
+        onOpenChange={(visibleState: boolean) => {
           if (!visibleState) this.onCancel();
           this.setState((prev) => {
             if (prev.visible === visibleState) return null;

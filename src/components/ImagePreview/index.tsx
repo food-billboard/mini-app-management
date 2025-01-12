@@ -1,5 +1,16 @@
-import React, { forwardRef, useCallback, useImperativeHandle, useState } from 'react';
-import { Modal } from 'antd';
+import { forwardRef, useEffect, useState } from 'react';
+import { Image } from 'antd';
+import type { PreviewGroupPreview } from 'rc-image/es/PreviewGroup'
+import { EventEmitter } from 'eventemitter3'
+
+const Emitter = new EventEmitter()
+
+export function preview(image: string[], modalConfig: Partial<PreviewGroupPreview>={}) {
+  if(!image.length) return 
+  Emitter.emit('view', image, modalConfig)
+}
+
+const DEFAULT_PREVIEW_CONFIG: Partial<PreviewGroupPreview> = {}
 
 export type ImagePreviewRef = {
   open: (value: string) => void;
@@ -7,32 +18,33 @@ export type ImagePreviewRef = {
 
 const ImagePreview = forwardRef<ImagePreviewRef, any>((props, ref) => {
   const [visible, setVisible] = useState<boolean>(false);
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState<string[]>([]);
 
-  const open = useCallback((data: string) => {
-    setValue(data);
-    setVisible(true);
-  }, []);
+  const [previewConfig, setModalConfig] = useState<Partial<PreviewGroupPreview>>({...DEFAULT_PREVIEW_CONFIG})
 
-  useImperativeHandle(
-    ref,
-    () => {
-      return {
-        open,
-      };
-    },
-    [],
-  );
+  useEffect(() => {
+    function listener(url: string[], config: Partial<PreviewGroupPreview>={}) {
+      setValue(url)
+      setModalConfig({...config})
+    }
+    Emitter.addListener('view', listener)
+    return () => {
+      Emitter.removeListener('view', listener)
+    }
+  }, [])
 
   return (
-    <Modal
-      open={visible}
-      bodyStyle={{ padding: 0 }}
-      footer={null}
-      onCancel={() => setVisible(false)}
-    >
-      <img src={value} width="100%" />
-    </Modal>
+    <Image.PreviewGroup
+      items={value}
+      preview={{
+        current: 0,
+        ...previewConfig,
+        visible,
+        onVisibleChange: (visible) => {
+          setVisible(visible)
+        }
+      }}
+    />
   );
 });
 

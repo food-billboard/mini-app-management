@@ -1,5 +1,3 @@
-@import '~antd/es/style/themes/default.less';
-
 html,
 body,
 #root {
@@ -29,21 +27,12 @@ ol {
   list-style: none;
 }
 
-@media (max-width: @screen-xs) {
-  .ant-table {
-    width: 100%;
-    overflow-x: auto;
-    &-thead > tr,
-    &-tbody > tr {
-      > th,
-      > td {
-        white-space: pre;
-        > span {
-          display: block;
-        }
-      }
-    }
-  }
+:where(.css-dev-only-do-not-override-15wgzpl) a{
+  color: @primary-color;
+}
+
+:root {
+  --primary-color: @primary-color;
 }
 
 // 兼容IE11

@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import { memo } from 'react'
 import { Tooltip, Carousel, Image } from 'antd'
 import { history } from 'umi'
 import type { ImageProps } from 'antd/es/image'

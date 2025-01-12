@@ -1,20 +1,22 @@
-import React, { useRef, useCallback, memo, useMemo } from 'react';
-import { Button, Dropdown, message, Space } from 'antd';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import ProTable from '@ant-design/pro-table';
-import type { ActionType } from '@ant-design/pro-table';
-import { DownOutlined } from '@ant-design/icons';
+import { ProPage } from '@/components/ProTable';
+import { message } from '@/components/Toast';
+import {
+  deleteUserFeedback,
+  getUserFeedbackList,
+  putUserFeedback,
+} from '@/services';
+import type { ActionType } from '@ant-design/pro-components';
+import { Button } from 'antd';
+import { identity, merge, pick, pickBy } from 'lodash';
+import { memo, useCallback, useRef } from 'react';
 import { connect } from 'umi';
-import merge from 'lodash/merge';
-import pickBy from 'lodash/pickBy';
-import pick from 'lodash/pick';
-import identity from 'lodash/identity';
+import columns from './columns';
+import type {
+  IFeedbackModalRef,
+  TFeedbackEditData,
+} from './components/FeedbackModal';
 import FeedbackModal from './components/FeedbackModal';
-import type { IFeedbackModalRef, TFeedbackEditData } from './components/FeedbackModal';
-import { mapStateToProps, mapDispatchToProps } from './connect';
-import column from './columns';
-import { getUserFeedbackList, putUserFeedback, deleteUserFeedback } from '@/services';
-import { commonDeleteMethod } from '@/utils';
+import { mapDispatchToProps, mapStateToProps } from './connect';
 
 const FeedbackManage = memo(() => {
   const actionRef = useRef<ActionType>();
@@ -26,7 +28,11 @@ const FeedbackManage = memo(() => {
    */
   const handleAdd = useCallback(async (fields: TFeedbackEditData) => {
     const hide = message.loading('正在修改');
-    const params = pick(fields, ['_id', 'status', 'description']) as API_USER.IPutFeedbackParams;
+    const params = pick(fields, [
+      '_id',
+      'status',
+      'description',
+    ]) as API_USER.IPutFeedbackParams;
 
     return putUserFeedback(params)
       .then(() => {
@@ -49,41 +55,23 @@ const FeedbackManage = memo(() => {
    * @param selectedRows
    */
 
-  const handleRemove = useCallback(async (selectedRows: API_USER.IGetFeedbackData[]) => {
-    return commonDeleteMethod<API_USER.IGetFeedbackData>(
-      selectedRows,
-      (row: API_USER.IGetFeedbackData) => {
-        const { _id } = row;
-        return deleteUserFeedback({
-          _id,
-        });
-      },
-      actionRef.current?.reloadAndRest,
-    );
-  }, []);
-
-  const columns: any[] = useMemo(() => {
-    return [
-      ...column,
-      {
-        title: '操作',
-        key: 'option',
-        dataIndex: 'option',
-        valueType: 'option',
-        fixed: 'right',
-        render: (_: any, record: API_USER.IGetFeedbackData) => {
-          return (
-            <Space>
-              {record.status === 'DEALING' && <a onClick={edit.bind(null, record)}>完成处理</a>}
-              <a style={{ color: 'red' }} onClick={() => handleRemove([record])}>
-                删除
-              </a>
-            </Space>
-          );
-        },
-      },
-    ];
-  }, [edit, handleRemove]);
+  const handleRemove = useCallback(
+    async (selectedRows: API_USER.IGetFeedbackData[]) => {
+      try {
+        for (let i = 0; i < selectedRows.length; i++) {
+          const { _id } = selectedRows[i];
+          await deleteUserFeedback({
+            _id,
+          });
+        }
+      } catch (err) {
+        return false;
+      }
+      actionRef.current?.reloadAndRest?.();
+      return true;
+    },
+    [],
+  );
 
   const fetchData = useCallback(async (params: any) => {
     const { current, ...nextParams } = params;
@@ -107,61 +95,38 @@ const FeedbackManage = memo(() => {
   );
 
   return (
-    <PageHeaderWrapper>
-      <ProTable
-        scroll={{ x: 'max-content' }}
-        headerTitle="用户反馈列表"
-        actionRef={actionRef}
-        pagination={{ defaultPageSize: 10 }}
-        rowKey="_id"
-        toolBarRender={(action, { selectedRows }) => [
-          selectedRows && selectedRows.length > 0 && (
-            <Dropdown
-              menu={{
-                items: [
-                  {
-                    key: 'remove',
-                    label: '批量删除',
-                    onClick: () => {
-                      handleRemove(selectedRows);
-                    },
-                  },
-                ],
-              }}
-            >
-              <Button key="many">
-                批量操作 <DownOutlined />
+    <ProPage
+      action={{
+        remove: {
+          action: handleRemove,
+        },
+      }}
+      extraActionRender={(record) => {
+        return (
+          <>
+            {record.status === 'DEALING' && (
+              <Button
+                type="link"
+                style={{ paddingLeft: 0 }}
+                onClick={edit.bind(null, record)}
+              >
+                完成处理
               </Button>
-            </Dropdown>
-          ),
-        ]}
-        tableAlertRender={({
-          selectedRowKeys,
-        }: {
-          selectedRowKeys: React.ReactText[];
-          selectedRows: any[];
-        }) => (
-          <div>
-            已选择{' '}
-            <a
-              style={{
-                fontWeight: 600,
-              }}
-            >
-              {selectedRowKeys.length}
-            </a>{' '}
-            项&nbsp;&nbsp;
-            <span>
-              {/* 服务调用次数总计 {selectedRows.reduce((pre, item) => pre + item.callNo, 0)} 万 */}
-            </span>
-          </div>
-        )}
-        request={fetchData}
-        columns={columns}
-        rowSelection={{}}
-      />
+            )}
+          </>
+        );
+      }}
+      scroll={{ x: 'max-content' }}
+      headerTitle="用户反馈列表"
+      actionRef={actionRef}
+      pagination={{ defaultPageSize: 10 }}
+      rowKey="_id"
+      request={fetchData}
+      columns={columns as any}
+      rowSelection={{}}
+    >
       <FeedbackModal ref={feedbackRef} onOk={onInputOk} />
-    </PageHeaderWrapper>
+    </ProPage>
   );
 });
 

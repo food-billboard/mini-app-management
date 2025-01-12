@@ -1,6 +1,6 @@
 import { Form, Input, Select } from 'antd';
 import type { FormInstance } from 'antd/lib/form';
-import { ModalForm, ProFormSelect } from '@ant-design/pro-form';
+import { ModalForm, ProFormSelect } from '@ant-design/pro-components';
 import { pick } from 'lodash';
 import type { Store } from 'antd/lib/form/interface';
 import React, {
@@ -82,14 +82,14 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   const onVisibleChange = useCallback(
     (nowVisible: boolean) => {
       if (!nowVisible) onCancel();
-      if (nowVisible != visible) setVisible(nowVisible);
+      if (nowVisible !== visible) setVisible(nowVisible);
     },
     [onCancel, visible],
   );
 
   const onFinish = useCallback(
     async (values: Store) => {
-      const { media_type, image, video, audio, text, ...nextValues } = values;
+      const { media_type, ...nextValues } = values;
       const contentData: any = pick(values, ['video', 'image', 'audio', 'text']);
       const content = contentData[media_type.toLowerCase()];
       await (onSubmit &&
@@ -112,7 +112,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
     async (type: string, callback: any, errMsg: string, ...args: any[]) => {
       try {
         const currentType = formRef.current?.getFieldValue?.('media_type');
-        if (currentType == type) {
+        if (currentType === type) {
           return callback(...args);
         }
         return Promise.resolve();
@@ -126,11 +126,11 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   return (
     <ModalForm
       title="新增消息"
-      visible={visible}
+      open={visible}
       //@ts-ignore
       formRef={formRef}
       onFinish={onFinish}
-      onVisibleChange={onVisibleChange}
+      onOpenChange={onVisibleChange}
     >
       <ProFormSelect
         name="media_type"

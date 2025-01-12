@@ -124,21 +124,11 @@ const RichText = forwardRef<IDomEditor, RichTextProps>((props, ref) => {
   // 及时销毁 editor ，重要！
   useEffect(() => {
     return () => {
-      if (editor == null) return;
+      if (editor === null) return;
       editor.destroy();
       setEditor(null);
     };
   }, [editor]);
-
-  // useEffect(() => {
-  //   if(editor) {
-  //     if(disabled) {
-  //       editor.disable()
-  //     }else {
-  //       editor.enable()
-  //     }
-  //   }
-  // }, [editor, disabled])
 
   return (
     <div className={classnames(styles['rich'], className)} style={style}>

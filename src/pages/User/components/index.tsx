@@ -36,7 +36,7 @@ const Login: LoginType = (props) => {
   const { className } = props;
   const [form] = Form.useForm();
   const [tabs, setTabs] = useState<string[]>([]);
-  const [active, setActive] = useState({});
+  const [active, setActive] = useState<any>({});
   const [tabActiveType, setType] = useMergeValue('', {
     value: props.activeKey,
     onChange: props.onTabChange,

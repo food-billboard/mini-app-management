@@ -1,24 +1,27 @@
-import React, { useRef, useCallback, memo, useMemo, useState } from 'react';
-import { Button, Dropdown, message, Space, Modal } from 'antd';
-import { PageContainer } from '@ant-design/pro-layout';
-import ProTable from '@ant-design/pro-table';
-import type { ActionType } from '@ant-design/pro-table';
-import { DownOutlined, EllipsisOutlined } from '@ant-design/icons';
-import { connect, history } from 'umi';
-import { noop } from 'lodash';
-import ImagePreview from '@/components/ImagePreview';
-import type { ImagePreviewRef } from '@/components/ImagePreview';
-import { mapStateToProps, mapDispatchToProps } from './connect';
-import AddModal from './components/AddModal';
-import CreateForm from './components/CreateForm';
-import type { IFormRef } from './components/CreateForm';
-import ListModal, { formatData } from './components/ListModal';
-import type { ListModalRef } from './components/ListModal';
-import ConfirmModal from './components/PosterGenerate';
-import column from './columns';
+import { preview as imagePreview } from '@/components/ImagePreview';
+import { ProPage } from '@/components/ProTable';
+import { message } from '@/components/Toast';
+import { preview } from '@/components/VideoPreview';
+import {
+  deleteMedia,
+  getMediaList,
+  getMediaValid,
+  updateMedia,
+} from '@/services';
 import { MEDIA_TYPE_MAP, sleep } from '@/utils';
-import { getMediaList, updateMedia, deleteMedia, getMediaValid } from '@/services';
-import { commonDeleteMethod } from '@/utils';
+import type { ActionType } from '@ant-design/pro-components';
+import { Button, Modal } from 'antd';
+import { noop } from 'lodash';
+import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
+import { connect } from 'umi';
+import column from './columns';
+import AddModal from './components/AddModal';
+import type { IFormRef } from './components/CreateForm';
+import CreateForm from './components/CreateForm';
+import type { ListModalRef } from './components/ListModal';
+import ListModal, { formatData } from './components/ListModal';
+import ConfirmModal from './components/PosterGenerate';
+import { mapDispatchToProps, mapStateToProps } from './connect';
 
 const MediaManage = memo(() => {
   const actionRef = useRef<ActionType>();
@@ -26,9 +29,8 @@ const MediaManage = memo(() => {
   const modalRef = useRef<IFormRef>(null);
   const listModalRef = useRef<ListModalRef>(null);
   const posterRef = useRef<any>(null);
-  const previewRef = useRef<ImagePreviewRef>(null);
 
-  const [activeKey, setActiveKey] = useState<keyof typeof MEDIA_TYPE_MAP>('image');
+  const [activeKey, setActiveKey] = useState('image');
 
   const handleAdd = useCallback(
     async (fields: any) => {
@@ -57,15 +59,11 @@ const MediaManage = memo(() => {
     (record: API_MEDIA.IGetMediaListData) => {
       const { src } = record;
       if (activeKey === 'image') {
-        previewRef.current?.open(src);
+        imagePreview([src]);
+      } else if (activeKey === 'video') {
+        preview([src], {});
       } else {
-        const urls = Array.isArray(src) ? src : [src];
-        return history.push({
-          pathname: `/media/${activeKey}`,
-          query: {
-            url: urls,
-          },
-        });
+        message.info('功能开发中');
       }
     },
     [activeKey],
@@ -73,17 +71,19 @@ const MediaManage = memo(() => {
 
   const handleRemove = useCallback(
     async (selectedRows: API_MEDIA.IGetMediaListData[]) => {
-      return commonDeleteMethod<API_MEDIA.IGetMediaListData>(
-        selectedRows,
-        (row: API_MEDIA.IGetMediaListData) => {
-          const { _id } = row;
-          return deleteMedia({
+      try {
+        for (let i = 0; i < selectedRows.length; i++) {
+          const { _id } = selectedRows[i];
+          await deleteMedia({
             _id,
             type: MEDIA_TYPE_MAP[activeKey] as any,
           });
-        },
-        actionRef.current?.reloadAndRest,
-      );
+        }
+      } catch (err) {
+        return false;
+      }
+      actionRef.current?.reloadAndRest?.();
+      return true;
     },
     [activeKey],
   );
@@ -146,58 +146,10 @@ const MediaManage = memo(() => {
   }, []);
 
   const columns: any[] = useMemo(() => {
-    const newColumn =
-      activeKey === 'video' ? column : column.filter((item) => item.dataIndex !== 'poster');
-    return [
-      ...newColumn,
-      {
-        title: '操作',
-        key: 'option',
-        dataIndex: 'option',
-        valueType: 'option',
-        fixed: 'right',
-        render: (_: any, record: API_MEDIA.IGetMediaListData) => {
-          return (
-            <Space>
-              <a onClick={() => handleModalVisible(record)}>编辑</a>
-              <a style={{ color: 'red' }} onClick={() => handleRemove([record])}>
-                删除
-              </a>
-              <Dropdown
-                menu={{
-                  items: [
-                    {
-                      key: 'look',
-                      label: '查看',
-                      onClick: getDetail.bind(null, record),
-                    },
-                    {
-                      key: 'complete',
-                      label: '完成度检测',
-                      onClick: getProcess.bind(null, record['_id']),
-                    },
-                    ...(activeKey === 'video'
-                      ? [
-                          {
-                            key: 'poster',
-                            label: '海报生成',
-                            onClick: generatePoster.bind(null, record['_id']),
-                          },
-                        ]
-                      : []),
-                  ],
-                }}
-              >
-                <a onClick={(e) => e.preventDefault()}>
-                  <EllipsisOutlined />
-                </a>
-              </Dropdown>
-            </Space>
-          );
-        },
-      },
-    ];
-  }, [getDetail, handleRemove, getProcess, activeKey]);
+    return activeKey === 'video'
+      ? column
+      : column.filter((item) => item.dataIndex !== 'poster');
+  }, [activeKey]);
 
   const onSubmit = useCallback(
     async (value) => {
@@ -219,7 +171,11 @@ const MediaManage = memo(() => {
         type: MEDIA_TYPE_MAP[activeKey] as any,
         currPage: current - 1,
       };
-      if (typeof size === 'number' || typeof minSize === 'number' || typeof maxSize === 'number')
+      if (
+        typeof size === 'number' ||
+        typeof minSize === 'number' ||
+        typeof maxSize === 'number'
+      )
         newParams.size = size ?? `${minSize},${maxSize}`;
       return getMediaList(newParams)
         .then(({ list, total }) => ({ data: list, total }))
@@ -230,7 +186,7 @@ const MediaManage = memo(() => {
 
   const onTabChange = useCallback(
     async (newActiveKey: string) => {
-      setActiveKey(newActiveKey as keyof typeof MEDIA_TYPE_MAP);
+      setActiveKey(newActiveKey);
       await sleep(100);
       actionRef.current?.reload();
     },
@@ -238,95 +194,117 @@ const MediaManage = memo(() => {
   );
 
   return (
-    <PageContainer
-      tabList={[
-        {
-          tab: '图片资源',
-          key: 'image',
-          closable: false,
+    <ProPage
+      containerProps={{
+        tabList: [
+          {
+            tab: '图片资源',
+            key: 'image',
+            closable: false,
+          },
+          {
+            tab: '视频资源',
+            key: 'video',
+            closable: false,
+          },
+          {
+            tab: '其他资源',
+            key: 'other',
+            closable: false,
+          },
+        ],
+        tabProps: {
+          onChange: onTabChange,
+          activeKey,
         },
-        {
-          tab: '视频资源',
-          key: 'video',
-          closable: false,
-        },
-        {
-          tab: '其他资源',
-          key: 'other',
-          closable: false,
-        },
-      ]}
-      tabProps={{
-        onChange: onTabChange,
-        activeKey,
       }}
-    >
-      <ProTable
-        scroll={{ x: 'max-content' }}
-        headerTitle="媒体资源列表"
-        pagination={{ defaultPageSize: 10 }}
-        actionRef={actionRef}
-        rowKey="_id"
-        toolBarRender={(action, { selectedRows }) => [
-          <AddModal
-            key="add"
-            type={activeKey}
-            onAdd={() => actionRef.current?.reloadAndRest?.()}
-          />,
-          selectedRows && selectedRows.length > 0 && (
-            <Dropdown
-              menu={{
-                items: [
-                  {
-                    label: '批量检测',
-                    key: 'check',
-                    onClick: () => {
-                      getProcess(selectedRows.map((item) => item['_id']));
-                    },
-                  },
-                  {
-                    label: '批量删除',
-                    key: 'delete',
-                    onClick: () => {
-                      handleRemove(selectedRows);
-                    },
-                  },
-                ],
-              }}
+      action={{
+        remove: {
+          action: handleRemove,
+        },
+      }}
+      extraActionRender={(record) => {
+        const commonProps: any = {
+          type: 'link',
+          style: {
+            paddingLeft: 0,
+          },
+        };
+        return (
+          <>
+            <Button {...commonProps} onClick={() => handleModalVisible(record)}>
+              编辑
+            </Button>
+            <Button {...commonProps} onClick={getDetail.bind(null, record)}>
+              查看
+            </Button>
+            <Button
+              {...commonProps}
+              onClick={getProcess.bind(null, record['_id'])}
             >
-              <Button key="many">
-                批量操作 <DownOutlined />
+              完成度检测
+            </Button>
+            {activeKey === 'video' && (
+              <Button
+                {...commonProps}
+                onClick={generatePoster.bind(null, record['_id'])}
+              >
+                海报生成
               </Button>
-            </Dropdown>
-          ),
-        ]}
-        tableAlertRender={({
-          selectedRowKeys,
-        }: {
-          selectedRowKeys: React.ReactText[];
-          selectedRows: any[];
-        }) => (
-          <div>
-            已选择{' '}
-            <a
-              style={{
-                fontWeight: 600,
-              }}
-            >
-              {selectedRowKeys.length}
-            </a>{' '}
-            项&nbsp;&nbsp;
-          </div>
-        )}
-        request={fetchData}
-        columns={columns}
-        rowSelection={{}}
-      />
+            )}
+          </>
+        );
+      }}
+      scroll={{ x: 'max-content' }}
+      headerTitle="媒体资源列表"
+      pagination={{ defaultPageSize: 10 }}
+      actionRef={actionRef}
+      rowKey="_id"
+      toolBarRender={(action, { selectedRows = [] }) => [
+        <AddModal
+          key="add"
+          type={activeKey}
+          onAdd={() => actionRef.current?.reloadAndRest?.()}
+        />,
+        <Button
+          disabled={!selectedRows.length}
+          key="check"
+          onClick={() => {
+            getProcess(selectedRows.map((item) => item['_id']));
+          }}
+        >
+          批量检测
+        </Button>,
+      ]}
+      tableAlertRender={({
+        selectedRowKeys,
+      }: {
+        selectedRowKeys: React.Key[];
+        selectedRows: any[];
+      }) => (
+        <div>
+          已选择{' '}
+          <a
+            style={{
+              fontWeight: 600,
+            }}
+          >
+            {selectedRowKeys.length}
+          </a>{' '}
+          项&nbsp;&nbsp;
+        </div>
+      )}
+      request={fetchData}
+      columns={columns}
+      rowSelection={{}}
+    >
       <CreateForm onSubmit={onSubmit} ref={modalRef} />
       <ListModal ref={listModalRef} />
-      <ConfirmModal ref={posterRef} onOk={() => actionRef.current?.reloadAndRest?.()} />
-      <ImagePreview ref={previewRef} />
-    </PageContainer>
+      <ConfirmModal
+        ref={posterRef}
+        onOk={() => actionRef.current?.reloadAndRest?.()}
+      />
+    </ProPage>
   );
 });
 

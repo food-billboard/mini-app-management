@@ -1,8 +1,8 @@
 import React, { memo, useCallback, useEffect, useState, useImperativeHandle, forwardRef, useMemo } from 'react'
 import { List, Pagination } from 'antd'
 import { unstable_batchedUpdates } from 'react-dom'
-import { PageHeaderWrapper } from '@ant-design/pro-layout'
-import { ProFormText, LightFilter } from '@ant-design/pro-form'
+import { ProFormText, LightFilter } from '@ant-design/pro-components'
+import PageContainer from '@/components/PageContainer'
 import styles from '../style.less'
 
 export interface IList {
@@ -130,7 +130,7 @@ const Data = forwardRef<DataAboutRef, IProps>((props, ref) => {
   }, [])
 
   return (
-    <PageHeaderWrapper 
+    <PageContainer 
       content={content(init)} 
       extraContent={extraContent}
       footer={footerContent}
@@ -152,7 +152,7 @@ const Data = forwardRef<DataAboutRef, IProps>((props, ref) => {
           renderItem={renderItem}
         />
       </div>
-    </PageHeaderWrapper>
+    </PageContainer>
   )
 
 })

@@ -1,81 +1,139 @@
-// import React from 'react';
-// import { BasicLayoutProps, Settings as LayoutSettings } from '@ant-design/pro-layout';
-// import { history } from 'umi';
-// import RightContent from '@/components/RightContent';
-// import Footer from '@/components/Footer';
-// import { queryCurrent } from './services/user';
-// import defaultSettings from '../config/defaultSettings';
+import type { Settings as LayoutSettings } from '@ant-design/pro-components';
+import type { RuntimeConfig } from '@umijs/max';
+import { history, useModel } from '@umijs/max';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import "dayjs/locale/zh-cn.js";
+import PageLoading from '@/components/PageLoading'
+import Footer from '@/components/Footer'
+import RightContent from '@/components/RightContent'
+import defaultSettings from '../config/defaultSettings';
+import { getUserInfo } from './services';
 
-// export async function getInitialState(): Promise<{
-//   settings?: LayoutSettings;
-//   currentUser?: API.CurrentUser;
-//   fetchUserInfo: () => Promise<API.CurrentUser | undefined>;
-// }> {
-//   const fetchUserInfo = async () => {
-//     try {
-//       const currentUser = await queryCurrent();
-//       return currentUser;
-//     } catch (error) {
-//       history.push('/user/login');
-//     }
-//     return undefined;
-//   };
-//   // 如果是登录页面，不执行
-//   if (history.location.pathname !== '/user/login') {
-//     const currentUser = await fetchUserInfo();
-//     return {
-//       fetchUserInfo,
-//       currentUser,
-//       settings: defaultSettings,
-//     };
-//   }
-//   return {
-//     fetchUserInfo,
-//     settings: defaultSettings,
-//   };
-// }
+const loginPath = '/user/login';
+const authPathList = [loginPath, '/user/register', '/user/forget']
 
-// export const layout = ({
-//   initialState,
-// }: {
-//   initialState: { settings?: LayoutSettings; currentUser?: API.CurrentUser };
-// }): BasicLayoutProps => {
-//   return {
-//     rightContentRender: () => <RightContent />,
-//     disableContentMargin: false,
-//     footerRender: () => <Footer />,
-//     onPageChange: () => {
-//       const { currentUser } = initialState;
-//       const { location } = history;
-//       // 如果没有登录，重定向到 login
-//       if (!currentUser && location.pathname !== '/user/login') {
-//         history.push('/user/login');
-//       }
-//     },
-//     menuHeaderRender: undefined,
-//     ...initialState?.settings,
-//   };
-// };
+dayjs.extend(relativeTime)
 
-import moment from 'moment'
-import 'moment/locale/zh-cn'
+/**
+ * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
+ * */
+export async function getInitialState(): Promise<{
+  settings?: Partial<LayoutSettings>;
+  currentUser?: API.CurrentUser;
+  loading?: boolean;
+  fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
+}> {
+  const fetchUserInfo = async () => {
+    try {
+      const msg = await getUserInfo();
+      return msg;
+    } catch (error) {
+      history.push(loginPath);
+    }
+    return undefined;
+  };
+  // 如果不是登录页面，执行
+  const { location } = history;
+  if (!authPathList.includes(location.pathname)) {
+    const currentUser = await fetchUserInfo();
+    return {
+      fetchUserInfo,
+      currentUser,
+      settings: defaultSettings as Partial<LayoutSettings>,
+    };
+  }
+  return {
+    fetchUserInfo,
+    settings: defaultSettings as Partial<LayoutSettings>,
+  };
+}
 
-moment.locale('zh-cn')
+const AvatarName = () => {
+  const { initialState } = useModel('@@initialState');
+  const { currentUser } = initialState || {};
+  return <span className="anticon">{currentUser?.name}</span>;
+};
 
-export const dva = {
-  config: {
-    onError(e: any) {
-      // e.preventDefault();
-      console.error(e.message);
+// ProLayout 支持的api https://procomponents.ant.design/components/layout
+export const layout: RuntimeConfig['layout'] = ({ initialState, setInitialState }) => {
+  return {
+    token: {
+      header: {
+        colorBgHeader: '#292f33',
+        colorHeaderTitle: '#fff',
+        colorTextMenu: '#dfdfdf',
+        colorTextMenuSecondary: '#dfdfdf',
+        colorTextMenuSelected: '#fff',
+        colorBgMenuItemSelected: '#22272b',
+        colorTextRightActionsItem: '#dfdfdf',
+      },
+      sider: {
+        colorMenuBackground: '#fff',
+        colorMenuItemDivider: '#dfdfdf',
+        colorTextMenu: '#595959',
+        colorTextMenuSelected: 'var(--primary-color)',
+        colorBgMenuItemSelected: '#e6f4ff',
+      },
     },
-  },
-}
-
-
-export const locale = {
-  default: 'zh-CN'
-}
-
-export const render = (nextRender: any) => {
-  nextRender()
-}
+    contentStyle: {
+      paddingBlock: 8,
+      paddingInline: 8
+    },
+    avatarProps: {
+      src: initialState?.currentUser?.avatar,
+      title: <AvatarName />,
+      render: (_, avatarChildren) => {
+        return (
+          <RightContent />
+        )
+      },
+    },
+    footerRender: () => <Footer />,
+    onPageChange: () => {
+      const { location } = history;
+      // 如果没有登录，重定向到 login
+      if (!initialState?.currentUser && !authPathList.includes(location.pathname)) {
+        history.push(loginPath);
+      }
+    },
+    bgLayoutImgList: [
+      {
+        src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/D2LWSqNny4sAAAAAAAAAAAAAFl94AQBr',
+        left: 85,
+        bottom: 100,
+        height: '303px',
+      },
+      {
+        src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/C2TWRpJpiC0AAAAAAAAAAAAAFl94AQBr',
+        bottom: -68,
+        right: -45,
+        height: '303px',
+      },
+      {
+        src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/F6vSTbj8KpYAAAAAAAAAAAAAFl94AQBr',
+        bottom: 0,
+        left: 0,
+        width: '331px',
+      },
+    ],
+    menuHeaderRender: undefined,
+    // 自定义 403 页面
+    // unAccessible: <div>unAccessible</div>,
+    // 增加一个 loading 的状态
+    childrenRender: (children) => {
+      console.log(initialState)
+      if (initialState?.loading) return <PageLoading />;
+      return (
+        <>
+          {children}
+        </>
+      );
+    },
+    locale: 'zh-CN',
+    menuDataRender: (menuData) => {
+      return menuData[0]?.children || []
+    },
+    ...initialState?.settings,
+  };
+};

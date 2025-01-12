@@ -1,35 +1,37 @@
-import React, { useEffect, useMemo } from 'react'
-import { Card } from 'antd'
-import { TimelineChart } from '../Charts'
-import { connect } from 'umi'
-import { mapStateToProps, mapDispatchToProps } from './connect'
-import noop from 'lodash/noop'
-import { IVisitStatisticsData } from '../../service'
-import styles from './index.less'
+import { Card } from 'antd';
+import { noop } from 'lodash';
+import React, { useEffect, useMemo } from 'react';
+import { connect } from 'umi';
+import { IVisitStatisticsData } from '../../service';
+import { TimelineChart } from '../Charts';
+import { mapDispatchToProps, mapStateToProps } from './connect';
+import styles from './index.less';
 
 interface IProps {
-  loading: boolean
-  data: Array<IVisitStatisticsData>
+  loading: boolean;
+  data: Array<IVisitStatisticsData>;
   fetchData: (params?: {
-    date_type?: 'year' | 'month' | 'week' | 'day'
-    start_date?: string
-    end_date?: string
-  }) => any
+    date_type?: 'year' | 'month' | 'week' | 'day';
+    start_date?: string;
+    end_date?: string;
+  }) => any;
 }
 
 const UserVisit: React.FC<IProps> = ({
   loading,
-  data=[],
-  fetchData=noop
+  data = [],
+  fetchData = noop,
 }) => {
-
   const chartData = useMemo(() => {
-    return data.map((item: IVisitStatisticsData) => ({ x: item.day, y: item.count }))
-  }, [data])
+    return data.map((item: IVisitStatisticsData) => ({
+      x: item.day,
+      y: item.count,
+    }));
+  }, [data]);
 
   useEffect(() => {
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
   return (
     <Card
@@ -45,14 +47,10 @@ const UserVisit: React.FC<IProps> = ({
           padding: '0 24px',
         }}
       >
-        <TimelineChart
-          height={400}
-          data={chartData}
-        />
+        <TimelineChart height={400} data={chartData} />
       </div>
     </Card>
-  )
+  );
+};
 
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(UserVisit)
+export default connect(mapStateToProps, mapDispatchToProps)(UserVisit);

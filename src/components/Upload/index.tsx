@@ -1,31 +1,43 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { message } from 'antd';
-import pMap from 'p-map';
-import { Upload as TusUpload, isSupported, PreviousUpload, HttpRequest } from 'tus-js-client';
+import { message } from '@/components/Toast';
+import { useDeepCompareEffect } from 'ahooks';
 import {
-  supported,
-  FilePondFile,
   FilePondErrorDescription,
-  RevertServerConfigFunction,
-  ProcessServerConfigFunction,
+  FilePondFile,
   FilePondInitialFile as IInitFileType,
+  ProcessServerConfigFunction,
+  RevertServerConfigFunction,
+  supported,
 } from 'filepond';
-import { FilePond, registerPlugin, FilePondProps } from 'react-filepond';
+import FilePondPluginFilePoster from 'filepond-plugin-file-poster';
 import FilePondPluginFileRename from 'filepond-plugin-file-rename';
 import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
-import FilePondPluginFilePoster from 'filepond-plugin-file-poster';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
-import pick from 'lodash/pick';
-import useDeepCompareEffect from 'use-deep-compare-effect';
-import { withTry } from '@/utils';
+import { pick } from 'lodash';
+import pMap from 'p-map';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { FilePond, FilePondProps, registerPlugin } from 'react-filepond';
+import {
+  HttpRequest,
+  isSupported,
+  PreviousUpload,
+  Upload as TusUpload,
+} from 'tus-js-client';
+// import useDeepCompareEffect from 'use-deep-compare-effect';
 import Wrapper from '@/components/WrapperItem';
 import { loadFile } from '@/services';
-import china from './locale';
-import { encryptionFile, sleep, toBase64, propsValueValid, isObjectId } from './util';
-import 'filepond/dist/filepond.min.css';
+import { withTry } from '@/utils';
 import 'filepond-plugin-file-poster/dist/filepond-plugin-file-poster.css';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+import 'filepond/dist/filepond.min.css';
+import china from './locale';
+import {
+  encryptionFile,
+  isObjectId,
+  propsValueValid,
+  sleep,
+  toBase64,
+} from './util';
 
 interface IExtraMetaData {
   md5: string;
@@ -64,7 +76,11 @@ const tusSupport = isSupported;
 
 export type FilePondInitialFile = IInitFileType;
 
-const Upload: ReactFC<IProps> = ({ value: propsValue = [], onLoad, ...props }) => {
+const Upload: ReactFC<IProps> = ({
+  value: propsValue = [],
+  onLoad,
+  ...props
+}) => {
   const uploadRef = useRef<FilePond | null>(null);
 
   const [value, setValue] = useState<IValue[]>([]);
@@ -78,7 +94,8 @@ const Upload: ReactFC<IProps> = ({ value: propsValue = [], onLoad, ...props }) =
         setIsMessaging(false);
       });
     }
-    if (Object.prototype.toString.call(fileObj.file) !== '[object File]') return true;
+    if (Object.prototype.toString.call(fileObj.file) !== '[object File]')
+      return true;
 
     const chunkSize = props.chunkSize || CHUNK_SIZE;
 
@@ -129,7 +146,8 @@ const Upload: ReactFC<IProps> = ({ value: propsValue = [], onLoad, ...props }) =
       // 组织localstorage存储
       urlStorage: {
         findAllUploads: (): Promise<PreviousUpload[]> => Promise.resolve([]),
-        findUploadsByFingerprint: (): Promise<PreviousUpload[]> => Promise.resolve([]),
+        findUploadsByFingerprint: (): Promise<PreviousUpload[]> =>
+          Promise.resolve([]),
         removeUpload: (): Promise<void> => Promise.resolve(),
         // Returns the URL storage key, which can be used for removing the upload.
         addUpload: (): Promise<string> => Promise.resolve(''),
@@ -166,7 +184,7 @@ const Upload: ReactFC<IProps> = ({ value: propsValue = [], onLoad, ...props }) =
             .slice(0, -1),
         );
       },
-      onAfterResponse: function onAfterResponse(req, res) {
+      onAfterResponse: function onAfterResponse(req: any, res: any) {
         const method = req.getMethod().toLowerCase();
         // 查询请求保存id
         if (method === 'head') {
@@ -177,7 +195,9 @@ const Upload: ReactFC<IProps> = ({ value: propsValue = [], onLoad, ...props }) =
             const restValue = prevValue.filter((val) => {
               return typeof val === 'object' && val.local?.['_id'] !== id;
             });
-            const newValue = new Array(prevValue.length - restValue.length + 1).fill({
+            const newValue = new Array(
+              prevValue.length - restValue.length + 1,
+            ).fill({
               source: id,
               local: {
                 _id: id,
@@ -226,7 +246,10 @@ const Upload: ReactFC<IProps> = ({ value: propsValue = [], onLoad, ...props }) =
         });
       },
       // 上传进度 不用onProgress 因为这个更准确
-      onChunkComplete: function onChunkComplete(bytesUploaded: number, bytesTotal: number) {
+      onChunkComplete: function onChunkComplete(
+        bytesUploaded: number,
+        bytesTotal: number,
+      ) {
         progress(true, bytesUploaded, bytesTotal);
       },
       onSuccess: function onSuccess() {
@@ -261,19 +284,24 @@ const Upload: ReactFC<IProps> = ({ value: propsValue = [], onLoad, ...props }) =
     [value],
   );
 
-  const isExists: (propsData: string[], state: IValue[], target: string) => boolean = useCallback(
-    (propsData, state, target) => {
-      const stateLen = state.filter((item) => item.local?.['_id'] === target).length;
-      const propsLen = propsData.filter((item) => item === target).length;
-      return stateLen === propsLen;
-    },
-    [],
-  );
+  const isExists: (
+    propsData: string[],
+    state: IValue[],
+    target: string,
+  ) => boolean = useCallback((propsData, state, target) => {
+    const stateLen = state.filter(
+      (item) => item.local?.['_id'] === target,
+    ).length;
+    const propsLen = propsData.filter((item) => item === target).length;
+    return stateLen === propsLen;
+  }, []);
 
   // 获取文件id
   const fetchFileId = useCallback(async (file: string) => {
     if (isObjectId(file)) return file;
-    const [err, data] = await withTry(loadFile)({ load: encodeURIComponent(file) });
+    const [err, data] = await withTry(loadFile)({
+      load: encodeURIComponent(file),
+    });
     if (err) return file;
     return data;
   }, []);
@@ -281,7 +309,9 @@ const Upload: ReactFC<IProps> = ({ value: propsValue = [], onLoad, ...props }) =
   // 路径转id
   const formatValue = useCallback(
     async (normalValue: string[] | string): Promise<string[]> => {
-      const realValue = Array.isArray(normalValue) ? normalValue : [normalValue];
+      const realValue = Array.isArray(normalValue)
+        ? normalValue
+        : [normalValue];
       return pMap(realValue, async (item) => {
         if (isObjectId(item)) return item;
         return await fetchFileId(item);
@@ -299,7 +329,11 @@ const Upload: ReactFC<IProps> = ({ value: propsValue = [], onLoad, ...props }) =
             uploadRef.current?.addFile(file, {
               type: 'local',
             });
-            internalList.push({ source: file, options: { type: 'local' }, local: { _id: file } });
+            internalList.push({
+              source: file,
+              options: { type: 'local' },
+              local: { _id: file },
+            });
           }
         });
         return internalList;

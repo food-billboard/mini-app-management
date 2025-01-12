@@ -1,4 +1,3 @@
-import numeral from 'numeral';
 import Bar from './Bar';
 import ChartCard from './ChartCard';
 import Field from './Field';
@@ -11,7 +10,7 @@ import TagCloud from './TagCloud';
 import TimelineChart from './TimelineSlider';
 import WaterWave from './WaterWave';
 
-const yuan = val => `¥ ${numeral(val).format('0,0')}`;
+const yuan = val => `¥ ${val}`;
 
 const Charts = {
   yuan,

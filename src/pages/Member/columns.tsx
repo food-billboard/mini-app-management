@@ -1,7 +1,7 @@
 import React, {  } from 'react'
 import { Tag, DatePicker, Avatar, Badge } from 'antd'
 import { history } from 'umi'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { ROLES_MAP, USER_STATUS } from '@/utils'
 
 const { RangePicker } = DatePicker
@@ -58,7 +58,7 @@ export default [
     renderFormItem: (_: any, { type, defaultRender, ...rest }: any) => {
       return <RangePicker {...rest} />
     },
-    renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    renderText: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
   {
     title: '创建时间',
@@ -88,7 +88,7 @@ export default [
     dataIndex: 'updatedAt',
     sorter: true,
     hideInSearch: true,
-    renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    renderText: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
   {
     title: '邮箱',

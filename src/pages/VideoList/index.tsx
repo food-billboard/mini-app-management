@@ -1,9 +1,9 @@
 import React, { FC, memo, useMemo, useCallback, useState, useEffect } from 'react'
 import { history } from 'umi'
-import { Spin } from 'antd'
+import { Spin, Image } from 'antd'
 import pMap, { pMapSkip } from 'p-map'
-import { ImageList, TSrc } from '../Image'
-import { PreView } from '../Video'
+import { parse } from 'querystring'
+import { TSrc } from '../Image'
 import { getMediaList } from '@/services'
 import { withTry } from '@/utils'
 
@@ -13,13 +13,9 @@ const VideoList: FC<any> = () => {
   const [ loading, setLoading ] = useState<boolean>(true)
 
   const videoIds: string[] | undefined = useMemo(() => {
-    const { location: { query } } = history
-    const { url=[] } = query as { url: string[] | undefined }
+    const { location: { search } } = history
+    const { url=[] } = parse(search) as { url: string[] | undefined }
     return (Array.isArray(url) ? url : [url])
-  }, [])
-
-  const handleClick = useCallback((target: TSrc) => {
-    PreView(target.origin, false)
   }, [])
 
   const fetchData = useCallback(async (list: string[]) => {
@@ -65,10 +61,22 @@ const VideoList: FC<any> = () => {
   }
 
   return (
-    <ImageList
-      value={imageList}
-      onClick={handleClick}
-    />
+    <Image.PreviewGroup
+      preview={{
+        onChange: (current, prev) => console.log(`current index: ${current}, prev index: ${prev}`),
+      }}
+    >
+      {
+        imageList.map(item => {
+          return (
+            <Image
+              width={200}
+              src={item.src}
+            />
+          )
+        })
+      }
+    </Image.PreviewGroup>
   )
 
 }

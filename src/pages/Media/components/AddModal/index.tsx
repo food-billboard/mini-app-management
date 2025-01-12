@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useRef } from 'react';
-import { Button, message } from 'antd';
+import { Button } from 'antd';
+import { message } from '@/components/Toast';
 import type { MEDIA_TYPE_MAP } from '@/utils';
 import { uploadFile } from '../../../Screen/utils';
 

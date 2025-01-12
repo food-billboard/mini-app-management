@@ -1,9 +1,9 @@
 import React from 'react'
 import { DatePicker, Image, Tooltip, Tag } from 'antd'
 import { history } from 'umi'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { IMAGE_FALLBACK, SOURCE_TYPE, MESSAGE_MEDIA_TYPE } from '@/utils'
-import { PreView } from '../Video'
+import { preview } from '@/components/VideoPreview'
 
 const { RangePicker } = DatePicker
 
@@ -61,7 +61,7 @@ export default [
     renderFormItem: (_: any, { type, defaultRender, ...rest }: any, form: any) => {
       return <RangePicker {...rest} />
     },
-    renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    renderText: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
   {
     title: '创建时间',
@@ -82,7 +82,7 @@ export default [
     dataIndex: 'updatedAt',
     sorter: true,
     hideInSearch: true,
-    renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    renderText: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
   {
     title: '用户名',
@@ -140,7 +140,7 @@ export default [
         return (
           <a onClick={(e) => {
             e.stopPropagation()
-            return PreView(value.video || "", false)
+            return preview([value.video || ""])
           }} style={{color: '#1890ff'}}>(预览)</a>
         )
       }

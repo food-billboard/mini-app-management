@@ -1,5 +1,5 @@
 import React, { Suspense, Fragment } from 'react'
-import { GridContent } from '@ant-design/pro-layout'
+import { GridContent } from '@ant-design/pro-components'
 import PageLoading from '@/components/PageLoading'
 import { Row, Col } from 'antd'
 

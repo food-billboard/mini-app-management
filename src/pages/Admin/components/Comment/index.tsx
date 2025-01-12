@@ -1,12 +1,11 @@
 import { Pagination, List, Row, Col, Avatar, Image } from 'antd';
-import React, { memo, useCallback, useState, Fragment, useEffect, useMemo } from 'react';
+import { memo, useCallback, useState, Fragment, useEffect, useMemo } from 'react';
 import { unstable_batchedUpdates } from 'react-dom';
-import { merge } from 'lodash';
-import { connect } from 'dva';
-import moment from 'moment';
+import { merge, noop } from 'lodash';
+import { connect } from 'umi';
+import dayjs from 'dayjs';
 import { StarOutlined, LikeOutlined, MessageOutlined } from '@ant-design/icons';
-import { Preview } from '../../../Image';
-import { PreView as VideoPreView } from '../../../Video';
+import { preview } from '@/components/VideoPreview';
 import { mapStateToProps, mapDispatchToProps } from '../../connect';
 import { GerAdminCommentList } from '@/services';
 import { IMAGE_FALLBACK } from '@/utils';
@@ -68,13 +67,13 @@ const Comments = memo((props: IProps) => {
     result.push(...video.map((item) => ({ src: item, video: true })));
     return result.map((item, index) => {
       const { video: isVideo, src } = item;
-      const method = isVideo ? VideoPreView.bind(null, video) : Preview.bind(null, image);
+      const method = isVideo ? preview.bind(null, video) : noop;
       return (
         <Col key={index} span={8} onClick={() => method()}>
           <Image
             fallback={IMAGE_FALLBACK}
             src={isVideo ? '' : src}
-            preview={false}
+            preview={!isVideo}
             className={styles['media-image-list-item']}
           />
         </Col>
@@ -95,7 +94,7 @@ const Comments = memo((props: IProps) => {
       <List
         size="large"
         className={styles.articleList}
-        rowKey="id"
+        rowKey={"id" as any}
         itemLayout="vertical"
         dataSource={list}
         renderItem={(item) => (
@@ -123,7 +122,7 @@ const Comments = memo((props: IProps) => {
                 </span>
               }
             />
-            <em>{moment(item.updatedAt).format('YYYY-MM-DD HH:mm')}</em>
+            <em>{dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm')}</em>
           </List.Item>
         )}
       />

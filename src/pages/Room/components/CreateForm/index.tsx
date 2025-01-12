@@ -1,6 +1,6 @@
 import { Form, Input } from 'antd';
 import type { FormInstance } from 'antd/lib/form';
-import ProForm, { ModalForm, ProFormTextArea } from '@ant-design/pro-form';
+import { ModalForm, ProFormTextArea, ProForm } from '@ant-design/pro-components';
 import type { Store } from 'antd/lib/form/interface';
 import React, {
   useCallback,
@@ -137,11 +137,11 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   return (
     <ModalForm
       title="新建聊天室"
-      visible={visible}
+      open={visible}
       // @ts-ignore
       formRef={formRef}
       onFinish={onFinish}
-      onVisibleChange={onVisibleChange}
+      onOpenChange={onVisibleChange}
     >
       <ProFormTextArea
         name="name"

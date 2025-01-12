@@ -4,7 +4,7 @@ import {
   ModalForm,
   ProFormTextArea,
   ProFormSwitch
-} from '@ant-design/pro-form'
+} from '@ant-design/pro-components'
 import type { Store } from 'antd/lib/form/interface'
 import React, { useCallback, useMemo, useRef, useState, forwardRef, useImperativeHandle } from 'react'
 
@@ -69,11 +69,11 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   return (
     <ModalForm
       title="新增实例"
-      visible={visible}
+      open={visible}
       // @ts-ignore
       formRef={formRef}
       onFinish={onFinish}
-      onVisibleChange={onVisibleChange}
+      onOpenChange={onVisibleChange}
     >
       <ProFormTextArea 
         name="info" 

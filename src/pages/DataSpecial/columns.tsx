@@ -1,6 +1,6 @@
 import React from 'react'
 import { Badge } from 'antd'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 export default [
   {
@@ -18,13 +18,13 @@ export default [
     title: '创建时间',
     dataIndex: 'createdAt',
     hideInSearch: true,
-    renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    renderText: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
   {
     title: '更新时间',
     dataIndex: 'updatedAt',
     hideInSearch: true,
-    renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    renderText: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
   {
     title: '是否启用',

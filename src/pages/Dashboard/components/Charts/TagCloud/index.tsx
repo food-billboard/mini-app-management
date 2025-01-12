@@ -1,27 +1,26 @@
-// import { Chart, Coord, Geom, Shape, Tooltip, goord } from 'bizcharts';
+import DataSet from '@antv/data-set';
 import {
+  Axis,
   Chart,
+  Coordinate,
+  G2,
   Geom,
+  Interaction,
+  Legend,
   Tooltip,
   registerShape,
-  Legend,
-  Axis,
-  Interaction,
-  G2,
-  Coordinate,
 } from 'bizcharts';
-import React, { Component } from 'react';
-import DataSet from '@antv/data-set';
-import Debounce from 'lodash/debounce';
-import assign from 'lodash/assign';
 import classNames from 'classnames';
+import { assign, debounce } from 'lodash';
+import React, { Component } from 'react';
 import autoHeight from '../autoHeight';
 import styles from './index.less';
 /* eslint no-underscore-dangle: 0 */
 
 /* eslint no-param-reassign: 0 */
 
-const imgUrl = 'https://gw.alipayobjects.com/zos/rmsportal/gWyeGLCdFFRavBGIDzWk.png';
+const imgUrl =
+  'https://gw.alipayobjects.com/zos/rmsportal/gWyeGLCdFFRavBGIDzWk.png';
 
 export interface ICloudData {
   name: string;
@@ -120,7 +119,7 @@ class TagCloud extends Component<IProps, IState> {
     });
   };
 
-  renderChart = Debounce((nextProps) => {
+  renderChart = debounce((nextProps) => {
     // const colors = ['#1890FF', '#41D9C7', '#2FC25B', '#FACC14', '#9AE65C'];
     const { data, height } = nextProps || this.props;
 

@@ -4,16 +4,12 @@ import { TransferItem, TransferProps, RenderResult } from 'antd/es/transfer'
 import { omit } from 'lodash'
 import Wrapper from '../WrapperItem'
 
-export interface IMovieSelectRef {
-
-}
-
 export interface ISelectItem extends TransferItem {
   title: string
   key: string
 }
 
-interface IProps extends Partial<TransferProps<any>> {
+type IProps = Partial<TransferProps<any>> & {
   placeholder?: string
   fetchData: (value?: any) => Promise<ISelectItem[]>
   fetchSelectData?: () => Promise<string[]>
@@ -22,7 +18,7 @@ interface IProps extends Partial<TransferProps<any>> {
   onSearch?: (direction: string, value: string) => void 
 }
 
-export default Wrapper<IProps>(memo(forwardRef<IMovieSelectRef, IProps>((props) => {
+export default Wrapper<IProps>(memo(forwardRef<any, IProps>((props) => {
 
   const [ originData, setOriginData ] = useState<ISelectItem[]>([])
 
@@ -31,7 +27,6 @@ export default Wrapper<IProps>(memo(forwardRef<IMovieSelectRef, IProps>((props) 
     fetchSelectData, 
     fetchData: fetchOriginData, 
     onChange: propsChange,
-    onSearch: propsOnSearch,
     ...comProps
   } = useMemo(() => {
     const { ...nextProps } = props 
@@ -57,16 +52,9 @@ export default Wrapper<IProps>(memo(forwardRef<IMovieSelectRef, IProps>((props) 
     await internalFetchTargetKeysData()
   }, [internalFetchOriginData, internalFetchTargetKeysData])
 
-  const onChange = useCallback((newTargetKeys: string[], direction: string, moveKeys: string[]) => {
-    propsChange?.(newTargetKeys)
+  const onChange = useCallback((newTargetKeys: React.Key[]) => {
+    propsChange?.(newTargetKeys as string[])
   }, [propsChange])
-
-  const onSearch = useCallback((direction: string, value: string) => {
-    propsOnSearch?.(direction, value)
-    if(direction == 'left') {
-      internalFetchOriginData(value)
-    }
-  }, [])
 
   const renderItem = useMemo(() => {
     return (item: TransferItem) => {

@@ -1,60 +1,52 @@
-import React, { Component } from 'react'
-import { GridContent } from '@ant-design/pro-layout'
-import { Menu } from 'antd'
-import { MenuMode } from 'antd/es/menu'
-import { connect } from 'dva'
-import BaseView from './components/base'
-import { mapDispatchToProps, mapStateToProps } from './connect'
-import styles from './index.less'
+import { GridContent } from '@ant-design/pro-components';
+import { Menu } from 'antd';
+import React, { Component } from 'react';
+import { connect } from 'umi';
+import BaseView from './components/base';
+import { mapDispatchToProps, mapStateToProps } from './connect';
+import styles from './index.less';
 
-const { Item } = Menu
+const { Item } = Menu;
 
 interface IProps {
-  getUserInfo: () => Promise<API_ADMIN.IGetAdminInfoRes>
-  userInfo: API_ADMIN.IGetAdminInfoRes
-  loading: boolean
+  getUserInfo: () => Promise<API_ADMIN.IGetAdminInfoRes>;
+  userInfo: API_ADMIN.IGetAdminInfoRes;
+  loading: boolean;
 }
 
 interface IState {
-  mode: MenuMode
-  selectKey: 'base'
+  mode: any;
+  selectKey: 'base';
   menuMap: {
-    [key: string]: React.ReactElement
-  }
+    [key: string]: React.ReactElement;
+  };
 }
 
 class Settings extends Component<IProps> {
-  main = React.createRef<HTMLDivElement>()
+  main = React.createRef<HTMLDivElement>();
 
   state: IState = {
     mode: 'inline',
     menuMap: {
-      base: (
-        <span>基本设置</span>
-      )
+      base: <span>基本设置</span>,
     },
     selectKey: 'base',
-  }
+  };
 
   async componentDidMount() {
-    const { getUserInfo } = this.props
-    if(getUserInfo) await getUserInfo()
-    window.addEventListener('resize', this.resize)
-    this.resize()
+    const { getUserInfo } = this.props;
+    if (getUserInfo) await getUserInfo();
+    window.addEventListener('resize', this.resize);
+    this.resize();
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.resize);
   }
 
-  getMenu = () => {
-    const { menuMap } = this.state
-    return Object.keys(menuMap).map(item => <Item key={item}>{menuMap[item]}</Item>);
-  }
-
   getRightTitle = () => {
-    const { selectKey, menuMap } = this.state
-    return menuMap[selectKey]
+    const { selectKey, menuMap } = this.state;
+    return menuMap[selectKey];
   };
 
   selectKey = (key: string) => {
@@ -70,57 +62,62 @@ class Settings extends Component<IProps> {
 
     requestAnimationFrame(() => {
       if (!this.main) {
-        return
+        return;
       }
 
       let mode = 'inline';
-      const offsetWidth = this.main.current?.offsetWidth || 0
+      const offsetWidth = this.main.current?.offsetWidth || 0;
 
       if (offsetWidth < 641 && offsetWidth > 400) {
-        mode = 'horizontal'
+        mode = 'horizontal';
       }
 
       if (window.innerWidth < 768 && offsetWidth > 400) {
-        mode = 'horizontal'
+        mode = 'horizontal';
       }
 
       this.setState({
         mode,
-      })
-    })
-  }
+      });
+    });
+  };
 
   renderChildren = () => {
-    const { selectKey } = this.state
+    const { selectKey } = this.state;
 
     switch (selectKey) {
       case 'base':
-        return <BaseView />
+        return <BaseView />;
       default:
-        break
+        break;
     }
 
-    return null
-  }
+    return null;
+  };
 
   render() {
     const { userInfo } = this.props;
 
     if (!userInfo._id) {
-      return ''
+      return '';
     }
 
-    const { mode, selectKey } = this.state
+    const { mode, selectKey, menuMap } = this.state;
     return (
       <GridContent>
-        <div
-          className={styles.main}
-          ref={this.main}
-        >
+        <div className={styles.main} ref={this.main}>
           <div className={styles.leftMenu}>
-            <Menu mode={mode} selectedKeys={[selectKey]} onClick={({ key }) => this.selectKey(key as string)}>
-              {this.getMenu()}
-            </Menu>
+            <Menu
+              mode={mode}
+              selectedKeys={[selectKey]}
+              onClick={({ key }) => this.selectKey(key as string)}
+              items={Object.keys(menuMap).map((item) => {
+                return {
+                  key: item,
+                  label: menuMap[item],
+                };
+              })}
+            />
           </div>
           <div className={styles.right}>
             <div className={styles.title}>{this.getRightTitle()}</div>
@@ -132,4 +129,4 @@ class Settings extends Component<IProps> {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Settings)
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);

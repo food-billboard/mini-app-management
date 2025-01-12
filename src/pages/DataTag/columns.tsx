@@ -1,11 +1,10 @@
-import React, {  } from 'react'
 import { Tag, DatePicker } from 'antd'
 import { history } from 'umi'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 const { RangePicker } = DatePicker
 
-const TAG_WEIGHT_MAP = {
+const TAG_WEIGHT_MAP: any = {
   0: '#f50',
   1: '#108ee9',
   2: '#2db7f5',
@@ -59,7 +58,7 @@ export default [
     renderFormItem: (_: any, { type, defaultRender, ...rest }: any) => {
       return <RangePicker {...rest} />
     },
-    renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    renderText: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
   {
     title: '创建时间',
@@ -89,7 +88,7 @@ export default [
     dataIndex: 'updatedAt',
     sorter: true,
     hideInSearch: true,
-    renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    renderText: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
   {
     title: '是否启用',
@@ -122,4 +121,4 @@ export default [
     hideInTable: true,
     valueType: 'progress'
   }
-]
+] as any

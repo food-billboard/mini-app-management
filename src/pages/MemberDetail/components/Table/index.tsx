@@ -1,11 +1,11 @@
-import { Table, message, Modal } from 'antd'
+import { Table, Modal } from 'antd'
 import React, { memo, useCallback, useEffect, useMemo, useState, Fragment, useRef } from 'react'
 import { unstable_batchedUpdates } from 'react-dom'
 import { omit } from 'lodash'
+import { message } from '@/components/Toast';
 import FeedbackModal, { IFeedbackModalRef } from '../../../Feedback/components/FeedbackModal'
 import MemberEdit from '../../../Member/components/CreateForm'
 import { ACTIVE_KEY_MAP } from '../../constants'
-import { commonDeleteMethod } from '@/utils'
 
 type IProps = {
   value?: string

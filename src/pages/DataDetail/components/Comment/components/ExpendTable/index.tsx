@@ -1,12 +1,21 @@
-import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react';
-import { message, Space, Popconfirm, Button } from 'antd';
-import { LightFilter, ProFormDatePicker } from '@ant-design/pro-form';
-import ProTable from '@ant-design/pro-table';
-import AddModal from '../AddModal';
+import { message } from '@/components/Toast';
+import {
+  deleteMovieCommentList,
+  getMovieCommentDetail,
+  getMovieCommentList,
+  postMovieCommentList,
+} from '@/services';
+import { withTry } from '@/utils';
+import {
+  LightFilter,
+  ProFormDatePicker,
+  ProTable,
+} from '@ant-design/pro-components';
+import { Button, Popconfirm, Space } from 'antd';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import columns from '../../columns';
 import type { IFormRef } from '../AddModal';
-import columns from '../../columns'
-import { deleteMovieCommentList, postMovieCommentList, getMovieCommentDetail, getMovieCommentList } from '@/services'
-import { withTry } from '@/utils'
+import AddModal from '../AddModal';
 
 export const deleteComment = async (fetchData: any, id: string) => {
   const [err] = await withTry(deleteMovieCommentList)({
@@ -16,7 +25,7 @@ export const deleteComment = async (fetchData: any, id: string) => {
     message.info('删除评论出错');
   }
   await fetchData({});
-}
+};
 
 export const newColumns = (fetchData: any) => [
   ...columns,
@@ -41,46 +50,51 @@ export const newColumns = (fetchData: any) => [
         </Space>
       );
     },
-  }
-]
+  },
+];
 
 const ExpendTable = (props: {
-  _id: string 
-  source_type: API_USER.TSourceType
-  currentExpend: string 
+  _id: string;
+  source_type: API_USER.TSourceType;
+  currentExpend: string;
 }) => {
-
-  const [ commentData, setCommentData ] = useState<API_DATA.IGetMovieCommentDetailData[]>([])
-  const [ currPage, setCurrPage ] = useState<number>(1)
-  const [ total, setTotal ] = useState<number>(0)
-  const [ loading, setLoading ] = useState<boolean>(false)
-  const [ currentExpend, setCurrentExpend ] = useState<string>("")
+  const [commentData, setCommentData] = useState<
+    API_DATA.IGetMovieCommentDetailData[]
+  >([]);
+  const [currPage, setCurrPage] = useState<number>(1);
+  const [total, setTotal] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [currentExpend, setCurrentExpend] = useState<string>('');
 
   const addRef = useRef<IFormRef>(null);
 
-  const { _id, source_type, currentExpend: propsCurrentExpend } = props 
+  const { _id, source_type, currentExpend: propsCurrentExpend } = props;
 
   const onPageChange = useCallback((page) => {
-    setCurrPage(page)
-    fetchData({ currPage: page })
-  }, [])
+    setCurrPage(page);
+    fetchData({ currPage: page });
+  }, []);
 
-  const fetchData = useCallback(async (params: Partial<API_DATA.IGetMovieCommentParams>={}) => {
-    setLoading(true)
-    const method = source_type === "movie" ? getMovieCommentList : getMovieCommentDetail
-    const data = await method({
-      ...params,
-      currPage: (params.currPage ?? currPage) - 1,
-      _id,
-      pageSize: 10,
-    })
-    setTotal(data.total || 0)
-    setCommentData(data.list || [])
-    setLoading(false)
-  }, [_id, currPage])
+  const fetchData = useCallback(
+    async (params: Partial<API_DATA.IGetMovieCommentParams> = {}) => {
+      setLoading(true);
+      const method =
+        source_type === 'movie' ? getMovieCommentList : getMovieCommentDetail;
+      const data = await method({
+        ...params,
+        currPage: (params.currPage ?? currPage) - 1,
+        _id,
+        pageSize: 10,
+      });
+      setTotal(data.total || 0);
+      setCommentData(data.list || []);
+      setLoading(false);
+    },
+    [_id, currPage],
+  );
 
   const columns = useMemo(() => {
-    return newColumns(fetchData)
+    return newColumns(fetchData);
   }, [fetchData]);
 
   const postComment = useCallback(
@@ -98,21 +112,27 @@ const ExpendTable = (props: {
     [source_type],
   );
 
-  const expandedRowRender = useCallback((record: API_DATA.IGetMovieCommentDetailData) => {
-    const { _id } = record 
-    return (
-      <ExpendTable
-        source_type={"comment"}
-        _id={_id}
-        currentExpend={currentExpend}
-      />
-    )
-  }, [currentExpend])
+  const expandedRowRender = useCallback(
+    (record: API_DATA.IGetMovieCommentDetailData) => {
+      const { _id } = record;
+      return (
+        <ExpendTable
+          source_type={'comment'}
+          _id={_id}
+          currentExpend={currentExpend}
+        />
+      );
+    },
+    [currentExpend],
+  );
 
-  const init = useCallback(async (value) => {
-    setCurrPage(1);
-    await fetchData(value);
-  }, [fetchData]);
+  const init = useCallback(
+    async (value) => {
+      setCurrPage(1);
+      await fetchData(value);
+    },
+    [fetchData],
+  );
 
   const openAddModal = useCallback((id: string) => {
     addRef.current?.open(id);
@@ -138,7 +158,11 @@ const ExpendTable = (props: {
               }}
             />
           </LightFilter>
-          <Button key="add" type="primary" onClick={openAddModal.bind(null, _id!)}>
+          <Button
+            key="add"
+            type="primary"
+            onClick={openAddModal.bind(null, _id!)}
+          >
             新增
           </Button>
         </Space>
@@ -146,13 +170,16 @@ const ExpendTable = (props: {
     };
   }, [openAddModal, init, _id]);
 
-  const onExpand = useCallback((expanded: boolean, record: API_DATA.IGetMovieCommentDetailData) => {
-    if(expanded) setCurrentExpend(record._id)
-  }, [])
+  const onExpand = useCallback(
+    (expanded: boolean, record: API_DATA.IGetMovieCommentDetailData) => {
+      if (expanded) setCurrentExpend(record._id);
+    },
+    [],
+  );
 
   useEffect(() => {
-    if(_id === propsCurrentExpend) fetchData({})
-  }, [propsCurrentExpend, _id])
+    if (_id === propsCurrentExpend) fetchData({});
+  }, [propsCurrentExpend, _id]);
 
   return (
     <>
@@ -170,16 +197,16 @@ const ExpendTable = (props: {
         pagination={{
           current: currPage,
           total,
-          onChange: onPageChange
+          onChange: onPageChange,
         }}
         expandable={{
           expandedRowRender,
           onExpand,
         }}
       />
-       <AddModal ref={addRef} onSubmit={postComment} />
+      <AddModal ref={addRef} onSubmit={postComment} />
     </>
   );
-}
+};
 
-export default ExpendTable 
+export default ExpendTable;

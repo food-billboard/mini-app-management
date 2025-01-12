@@ -1,16 +1,13 @@
-import React, { useRef, useCallback, memo, useMemo } from 'react';
-import { Button, Dropdown, message, Space } from 'antd';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import ProTable from '@ant-design/pro-table';
-import type { ActionType } from '@ant-design/pro-table';
-import { DownOutlined } from '@ant-design/icons';
+import { ProPage } from '@/components/ProTable';
+import { message } from '@/components/Toast';
+import { deleteMovieTag, getMovieTagList, putMovieTag } from '@/services';
+import type { ActionType } from '@ant-design/pro-components';
+import { Button } from 'antd';
+import { identity, pickBy } from 'lodash';
+import { memo, useCallback, useRef } from 'react';
 import { connect } from 'umi';
-import pickBy from 'lodash/pickBy';
-import identity from 'lodash/identity';
-import { mapStateToProps, mapDispatchToProps } from './connect';
-import column from './columns';
-import { getMovieTagList, putMovieTag, deleteMovieTag } from '@/services';
-import { commonDeleteMethod } from '@/utils';
+import columns from './columns';
+import { mapDispatchToProps, mapStateToProps } from './connect';
 
 const TagManage = memo(() => {
   const actionRef = useRef<ActionType>();
@@ -19,66 +16,46 @@ const TagManage = memo(() => {
    * 修改节点
    * @param fields
    */
-  const handleAdd = useCallback(async (record: API_DATA.IGetMovieTagResData) => {
-    const hide = message.loading('正在修改');
+  const handleAdd = useCallback(
+    async (record: API_DATA.IGetMovieTagResData) => {
+      const hide = message.loading('正在修改');
 
-    try {
-      await putMovieTag({ _id: record['_id'], valid: !record.valid });
-      hide();
-      message.success('操作成功');
-      return true;
-    } catch (error) {
-      hide();
-      message.error('操作失败请重试！');
-      return false;
-    }
-  }, []);
+      try {
+        await putMovieTag({ _id: record['_id'], valid: !record.valid });
+        hide();
+        message.success('操作成功');
+        return true;
+      } catch (error) {
+        hide();
+        message.error('操作失败请重试！');
+        return false;
+      }
+    },
+    [],
+  );
 
   /**
    *  删除节点
    * @param selectedRows
    */
 
-  const handleRemove = useCallback(async (selectedRows: API_DATA.IGetMovieTagResData[]) => {
-    return commonDeleteMethod<API_DATA.IGetMovieTagResData>(
-      selectedRows,
-      (row: API_DATA.IGetMovieTagResData) => {
-        const { _id } = row;
-        return deleteMovieTag({
-          _id,
-        });
-      },
-      actionRef.current?.reloadAndRest,
-    );
-  }, []);
-
-  const columns: any[] = useMemo(() => {
-    return [
-      ...column,
-      {
-        title: '操作',
-        key: 'option',
-        dataIndex: 'option',
-        valueType: 'option',
-        fixed: 'right',
-        render: (_: any, record: API_DATA.IGetMovieTagResData) => {
-          return (
-            <Space>
-              <a
-                style={{ color: record.valid ? 'red' : 'currentcolor' }}
-                onClick={() => handleAdd(record)}
-              >
-                {record.valid ? '禁用' : '启用'}
-              </a>
-              <a style={{ color: 'red' }} onClick={() => handleRemove([record])}>
-                删除
-              </a>
-            </Space>
-          );
-        },
-      },
-    ];
-  }, []);
+  const handleRemove = useCallback(
+    async (selectedRows: API_DATA.IGetMovieTagResData[]) => {
+      try {
+        for (let i = 0; i < selectedRows.length; i++) {
+          const { _id } = selectedRows[i];
+          await deleteMovieTag({
+            _id,
+          });
+        }
+      } catch (err) {
+        return false;
+      }
+      actionRef.current?.reloadAndRest?.();
+      return true;
+    },
+    [],
+  );
 
   const fetchData = useCallback(async (params: any) => {
     const { current, valid, ...nextParams } = params;
@@ -100,61 +77,35 @@ const TagManage = memo(() => {
   }, []);
 
   return (
-    <PageHeaderWrapper>
-      <ProTable
-        headerTitle="数据标签列表"
-        actionRef={actionRef}
-        scroll={{ x: 'max-content' }}
-        pagination={{ defaultPageSize: 10 }}
-        rowKey="_id"
-        toolBarRender={(action, { selectedRows }) => [
-          selectedRows && selectedRows.length > 0 && (
-            <Dropdown
-              menu={{
-                items: [
-                  {
-                    key: 'remove',
-                    label: '批量删除',
-                    onClick: () => {
-                      handleRemove(selectedRows);
-                      actionRef.current?.reloadAndRest?.();
-                    },
-                  },
-                ],
-              }}
-            >
-              <Button key="many">
-                批量操作 <DownOutlined />
-              </Button>
-            </Dropdown>
-          ),
-        ]}
-        tableAlertRender={({
-          selectedRowKeys,
-        }: {
-          selectedRowKeys: React.ReactText[];
-          selectedRows: any[];
-        }) => (
-          <div>
-            已选择{' '}
-            <a
-              style={{
-                fontWeight: 600,
-              }}
-            >
-              {selectedRowKeys.length}
-            </a>{' '}
-            项&nbsp;&nbsp;
-            <span>
-              {/* 服务调用次数总计 {selectedRows.reduce((pre, item) => pre + item.callNo, 0)} 万 */}
-            </span>
-          </div>
-        )}
-        request={fetchData}
-        columns={columns}
-        rowSelection={{}}
-      />
-    </PageHeaderWrapper>
+    <ProPage
+      action={{
+        remove: {
+          action: handleRemove,
+        },
+      }}
+      extraActionRender={(record) => {
+        return (
+          <Button
+            type="link"
+            style={{
+              paddingLeft: 0,
+            }}
+            danger={record.valid}
+            onClick={() => handleAdd(record)}
+          >
+            {record.valid ? '禁用' : '启用'}
+          </Button>
+        );
+      }}
+      headerTitle="数据标签列表"
+      actionRef={actionRef}
+      scroll={{ x: 'max-content' }}
+      pagination={{ defaultPageSize: 10 }}
+      rowKey="_id"
+      request={fetchData}
+      columns={columns}
+      rowSelection={{}}
+    />
   );
 });
 

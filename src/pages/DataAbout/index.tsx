@@ -1,15 +1,14 @@
-import React, { memo, useCallback, useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useState } from 'react'
 import type { FC } from 'react'
 import { unstable_batchedUpdates } from 'react-dom'
 import { Row, Col, Card } from 'antd'
-import { PageHeaderWrapper } from '@ant-design/pro-layout'
 import { history } from 'umi'
+import PageContainer from '@/components/PageContainer'
 import TagCloud from '../Dashboard/components/Charts/TagCloud'
 import type { ICloudData } from '../Dashboard/components/Charts/TagCloud'
 import { getActorInfo, getDirectorInfo, getDistrictInfo, getLanguageInfo, getClassifyInfo } from '@/services'
 import { localFetchData4Array } from '../DataEdit/utils'
 import styles from './style.less'
-
 interface IList {
   title: string
   data: ICloudData[]
@@ -97,7 +96,7 @@ const DataAbout: FC<any> = () => {
   }, [])
 
   return (
-    <PageHeaderWrapper 
+    <PageContainer 
       content={content} 
       extraContent={extraContent}
     >
@@ -136,7 +135,7 @@ const DataAbout: FC<any> = () => {
           }
         </Row>
       </Card>
-    </PageHeaderWrapper>
+    </PageContainer>
   )
 
 }

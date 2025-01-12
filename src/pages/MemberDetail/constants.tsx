@@ -1,8 +1,9 @@
 import { history } from 'umi';
 import React from 'react';
-import { Space, message, Dropdown } from 'antd';
+import { Space, Dropdown } from 'antd';
 import { EllipsisOutlined } from '@ant-design/icons';
 import { pick } from 'lodash';
+import { message } from '@/components/Toast';
 import issueColumns from './components/Table/issue-columns';
 import commentColumns from './components/Table/comment-columns';
 import rateColumns from './components/Table/rate-columns';

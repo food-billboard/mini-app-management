@@ -1,13 +1,20 @@
-import React, { useEffect, memo, useMemo, useCallback, useState } from 'react';
-import { Button, message, Modal } from 'antd';
+import { message } from '@/components/Toast';
+import {
+  deleteMovie,
+  deleteMovieStatus,
+  movieDetail,
+  putMovieStatus,
+} from '@/services';
+import { ProCard } from '@ant-design/pro-components';
+import PageContainer from '@/components/PageContainer'
+import { Button, Modal } from 'antd';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { unstable_batchedUpdates } from 'react-dom';
-import { PageContainer } from '@ant-design/pro-layout';
-import ProCard from '@ant-design/pro-card';
 import { history } from 'umi';
+
+import CommentTable from './components/Comment';
 import Descriptions from './components/Descriptions';
 import UserTable from './components/User';
-import CommentTable from './components/Comment';
-import { movieDetail, deleteMovie, putMovieStatus, deleteMovieStatus } from '@/services';
 
 export default memo(() => {
   const movieId: string | undefined = useMemo(() => {
@@ -88,7 +95,11 @@ export default memo(() => {
       </Button>
     );
     const is = (
-      <Button type="primary" onClick={editStatus.bind(null, true, movieId)} key="3">
+      <Button
+        type="primary"
+        onClick={editStatus.bind(null, true, movieId)}
+        key="3"
+      >
         启用
       </Button>
     );
@@ -149,7 +160,9 @@ export default memo(() => {
         activeKey,
       }}
     >
-      {activeKey === 'base' && <Descriptions loading={loading} value={detail} />}
+      {activeKey === 'base' && (
+        <Descriptions loading={loading} value={detail} />
+      )}
       {activeKey === 'user' && (
         <ProCard loading={loading} title="电影数据">
           <UserTable _id={detail?.['_id']} />

@@ -1,7 +1,7 @@
 import React from 'react'
 import { history } from 'umi'
 import { DatePicker, Image, Badge } from 'antd'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { IMAGE_FALLBACK, CHAT_ROOM_TYPE } from '@/utils'
 
 const { RangePicker } = DatePicker
@@ -139,7 +139,7 @@ export default [
     renderFormItem: (_: any, { type, defaultRender, ...rest }: any, form: any) => {
       return <RangePicker {...rest} />
     },
-    renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    renderText: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
   // {
   //   title: '创建时间',
@@ -160,6 +160,6 @@ export default [
     dataIndex: 'updatedAt',
     sorter: true,
     hideInSearch: true,
-    renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    renderText: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
 ]

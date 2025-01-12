@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tag } from 'antd';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 export const MENU_MAP = [
   {
@@ -123,13 +123,13 @@ export default [
     dataIndex: 'createdAt',
     hideInSearch: true,
     key: 'createdAt',
-    renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss'),
+    renderText: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss'),
   },
   {
     title: '更新时间',
     dataIndex: 'updatedAt',
     hideInSearch: true,
     key: 'updatedAt',
-    renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss'),
+    renderText: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss'),
   },
 ];

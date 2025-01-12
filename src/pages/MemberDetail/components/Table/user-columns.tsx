@@ -1,7 +1,7 @@
 import React from 'react'
 import { Tag, Avatar } from 'antd'
 import { history } from 'umi'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { ROLES_MAP, USER_STATUS } from '@/utils'
 
 export default [
@@ -35,7 +35,7 @@ export default [
     title: '创建时间',
     dataIndex: 'createdAt',
     key: 'createdAt',
-    render: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    render: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
   {
     title: '内容',
@@ -46,7 +46,7 @@ export default [
     title: '更新时间',
     dataIndex: 'updatedAt',
     key: "updatedAt",
-    render: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    render: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
   {
     title: '邮箱',

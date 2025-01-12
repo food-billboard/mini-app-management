@@ -1,9 +1,8 @@
 import { Card, Col, Divider, Row } from 'antd'
-import React, { Component } from 'react'
+import { Component } from 'react'
 import { EditOutlined } from '@ant-design/icons'
-import { GridContent } from '@ant-design/pro-layout'
-import { connect } from 'dva'
-import { Link, history } from 'umi'
+import { GridContent } from '@ant-design/pro-components'
+import { Link, history, connect } from 'umi'
 import { ROLES_MAP } from '@/utils'
 import Issue from './components/Issue'
 import Comment from './components/Comment'
@@ -57,7 +56,7 @@ class Center extends Component<IProps> {
     const { tabKey } = this.state
     const { userInfo, loading } = this.props
     const dataLoading = loading || !(userInfo && Object.keys(userInfo).length)
-    const rolesText = Array.isArray(userInfo.roles) ? userInfo.roles.map(item => ROLES_MAP[item]).join(',') : userInfo.roles
+    const rolesText = Array.isArray(userInfo.roles) ? userInfo.roles.map(item => ROLES_MAP[item]).join(',') : userInfo.roles as string 
 
     return (
       <GridContent>

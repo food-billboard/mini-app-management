@@ -1,7 +1,7 @@
 import React from 'react'
 import { history } from 'umi'
 import { DatePicker, Image, Tag } from 'antd'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { IMAGE_FALLBACK } from '@/utils'
 
 const { RangePicker } = DatePicker
@@ -70,27 +70,13 @@ export default [
     renderFormItem: (_: any, { type, defaultRender, ...rest }: any) => {
       return <RangePicker {...rest} />
     },
-    renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    renderText: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
-  // {
-  //   title: '创建时间',
-  //   dataIndex: 'createdAt',
-  //   valueType: 'dateRange',
-  //   hideInTable: true,
-  //   search: {
-  //     transform: (value: any) => {
-  //       return {
-  //         startTime: value[0],
-  //         endTime: value[1],
-  //       };
-  //     },
-  //   },
-  // },
   {
     title: '更新时间',
     dataIndex: 'updatedAt',
     sorter: true,
     hideInSearch: true,
-    renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    renderText: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
-]
+] as any

@@ -1,60 +1,54 @@
-// https://umijs.org/config/
-import { defineConfig } from 'umi';
+import { defineConfig } from '@umijs/max';
 import { merge } from 'lodash';
-import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
-// import HappyPack from 'happypack'
-// import os from 'os'
+import * as MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routerConfig from './router-config';
-
-// const happyThreadPool = HappyPack.ThreadPool({
-//   size: os.cpus().length
-// })
 
 const { REACT_APP_ENV } = process.env;
 
 const commonConfig = {
   hash: true,
-  antd: {},
-  dva: {
-    hmr: true,
-  },
+  dva: {},
   history: {
     type: 'hash',
   },
-  // layout: {
-  //   name: 'Ant Design Pro',
-  //   locale: true,
-  //   ...defaultSettings,
+  antd: {
+    configProvider: {},
+    theme: {
+      token: {
+        colorPrimary: defaultSettings.colorPrimary,
+        itemSelectedBg: 'red'
+      },
+      components: {
+        Menu: {
+          itemSelectedBg: 'red'
+        }
+      }
+    },
+  },
+  locale: false,
+  // locale: {
+  //   default: 'zh-CN',
+  //   antd: true,
+  //   baseNavigator: false,
   // },
-  locale: {
-    // default zh-CN
-    default: 'zh-CN',
-    antd: true,
-    // default true, when it is true, will use `navigator.language` overwrite default
-    baseNavigator: true,
+  mock: false,
+  model: {},
+  initialState: {},
+  layout: {
+    locale: false,
+    ...defaultSettings,
   },
-  dynamicImport: {
-    loading: '@/components/PageLoading/index',
-  },
-  targets: {
-    ie: 11,
-  },
-  // umi routes: https://umijs.org/docs/routing
   routes: routerConfig,
-  // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
-    // ...darkTheme,
-    'primary-color': defaultSettings.primaryColor,
+    '@primary-color': defaultSettings.colorPrimary,
   },
-  // @ts-ignore
-  title: false,
-  ignoreMomentLocale: true,
+  headScripts: [
+    // 解决首次加载时白屏的问题
+    { src: '/scripts/loading.js', async: true },
+  ],
   proxy: (proxy as any)[REACT_APP_ENV || 'prod'],
-  manifest: {
-    basePath: '/',
-  },
 };
 
 const developmentConfig: any = merge({}, commonConfig, {
@@ -62,13 +56,13 @@ const developmentConfig: any = merge({}, commonConfig, {
     'process.env.REACT_APP_ENV': 'dev',
     'process.env.REQUEST_API': process.env.REQUEST_API,
   },
-  chainWebpack(config: any) {
-    config.plugin('monaco-editor').use(MonacoWebpackPlugin, [
-      {
-        languages: ['javascript', 'json'],
-      },
-    ]);
-  },
+  // chainWebpack(config: any) {
+  //   config.plugin('monaco-editor').use(MonacoWebpackPlugin, [
+  //     {
+  //       languages: ['javascript', 'json'],
+  //     },
+  //   ]);
+  // },
 });
 
 const productionConfig: any = merge({}, commonConfig, {
@@ -99,7 +93,7 @@ const productionConfig: any = merge({}, commonConfig, {
       .plugin('replace')
       .use(require('webpack').ContextReplacementPlugin)
       .tap(() => {
-        return [/moment[/\\]locale$/, /zh-cn/];
+        return [/dayjs[/\\]locale$/, /zh-cn/];
       });
 
     config.merge({
@@ -120,7 +114,7 @@ const productionConfig: any = merge({}, commonConfig, {
             lfpvendors: {
               name: 'vendors',
               chunks: 'all',
-              test: /[\\/]node_modules[\\/](lodash|moment|react|dva|postcss|mapbox-gl|video)/,
+              test: /[\\/]node_modules[\\/](lodash|dayjs|react|dva|postcss|mapbox-gl|video)/,
               priority: 10,
             },
             // // 最基础的

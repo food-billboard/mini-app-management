@@ -1,9 +1,9 @@
-import moment from 'moment'
+import dayjs from 'dayjs'
 import React from 'react'
 import { history } from 'umi'
 import ImageView from '@/components/TableImageView'
 import { COMMENT_SOURCE_TYPE } from '@/utils'
-import { PreView } from '@/pages/Video'
+import { preview } from '@/components/VideoPreview'
 
 export default [
   {
@@ -69,7 +69,7 @@ export default [
       return (
         <a onClick={(e) => {
           e.stopPropagation()
-          return PreView(record?.content?.video)
+          return preview(record?.content?.video)
         }} style={{color: '#1890ff'}}>(预览)</a>
       )
     }
@@ -77,11 +77,11 @@ export default [
   {
     title: '创建时间',
     dataIndex: 'createdAt',
-    render: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    render: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
   {
     title: '更新时间',
     dataIndex: 'updatedAt',
-    render: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    render: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
 ]

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Tag } from 'antd'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 export default [
   {
@@ -37,12 +37,12 @@ export default [
     title: '更新时间',
     dataIndex: 'updatedAt',
     key: 'updatedAt',
-    render: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    render: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
   {
     title: '浏览时间',
     dataIndex: 'glance_date',
     key: 'glance_date',
-    render: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    render: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
 ]

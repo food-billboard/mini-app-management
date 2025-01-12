@@ -1,4 +1,4 @@
-import { Button, Col, Input, Row, Form, message } from 'antd';
+import { Button, Col, Input, Row, Form } from 'antd';
 import React, { useState, useCallback, useEffect } from 'react';
 import omit from 'omit.js';
 import type { FormItemProps } from 'antd/es/form/FormItem';
@@ -144,7 +144,7 @@ const LoginItem: React.FC<LoginItemProps> = (props) => {
   }
   return (
     <FormItem name={name} {...options}>
-      <Input {...customProps} {...otherProps} />
+      <Input {...customProps} {...otherProps as any} />
     </FormItem>
   );
 };
@@ -152,8 +152,8 @@ const LoginItem: React.FC<LoginItemProps> = (props) => {
 const LoginItems: Partial<LoginItemType> = {};
 
 Object.keys(ItemMap).forEach((key) => {
-  const item = ItemMap[key];
-  LoginItems[key] = (props: LoginItemProps) => (
+  const item = (ItemMap as any)[key];
+  (LoginItems as any)[key] = (props: LoginItemProps) => (
     <LoginContext.Consumer>
       {(context) => (
         <LoginItem

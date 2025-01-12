@@ -1,7 +1,7 @@
 import { Avatar, Tooltip } from 'antd'
 import type { AvatarProps } from 'antd/es/avatar'
 import React, { useMemo } from 'react'
-import type { ReactElement, JSXElementConstructor, ReactChildren } from 'react'
+import type { ReactElement, JSXElementConstructor } from 'react'
 import classNames from 'classnames'
 import styles from './index.less'
 
@@ -9,7 +9,6 @@ const avatarSizeToClassName = (size: AvatarProps["size"]) =>
   classNames(styles.avatarItem, {
     [styles.avatarItemLarge]: size === 'large',
     [styles.avatarItemSmall]: size === 'small',
-    [styles.avatarItemMini]: size === 'mini',
   })
 
 const AvatarItem = ({ src, size, tips, onClick = () => {} }: {
@@ -39,7 +38,7 @@ const AvatarItem = ({ src, size, tips, onClick = () => {} }: {
 }
 
 interface IProps {
-  children: ReactChildren | ReactElement[]
+  children: ReactElement[]
   size: AvatarProps["size"]
   maxLength?: number
   excessItemsStyle?: React.CSSProperties

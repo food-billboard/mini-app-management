@@ -1,7 +1,7 @@
 import React from 'react'
 import { Image, Tooltip } from 'antd'
 import { EyeOutlined } from '@ant-design/icons'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { IMAGE_FALLBACK, formatUrl } from '@/utils'
 
 export default [
@@ -47,11 +47,11 @@ export default [
   {
     title: '创建时间',
     dataIndex: 'createdAt',
-    render: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    render: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
   {
     title: '更新时间',
     dataIndex: 'updatedAt',
-    render: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    render: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
 ]

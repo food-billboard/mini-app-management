@@ -1,7 +1,7 @@
-import { message } from 'antd';
-import { Upload } from 'chunk-file-upload';
-import { leadInScreen, exportScreen } from '@/services';
+import { message } from '@/components/Toast';
+import { exportScreen, leadInScreen } from '@/services';
 import { exitDataFn, uploadFn } from '@/utils/Upload';
+import { Upload } from 'chunk-file-upload';
 import { saveAs } from 'file-saver';
 
 // 导入 loading
@@ -15,7 +15,7 @@ export async function upload(file: File) {
 
   let fileId: string = '';
 
-  return new Promise((resolve, reject) => {
+  return new Promise<any>((resolve, reject) => {
     const [name] = UPLOAD_INSTANCE.add({
       file: {
         file,
@@ -36,7 +36,7 @@ export async function upload(file: File) {
     });
 
     if (!name) {
-      return Promise.reject();
+      Promise.reject();
     } else {
       UPLOAD_INSTANCE.deal(name);
     }
@@ -58,7 +58,13 @@ export function uploadFile(config: {
   callback?: () => void;
   accept: string;
 }) {
-  const { beforeUpload, upload: configUpload, uploadEnd, accept, callback } = config;
+  const {
+    beforeUpload,
+    upload: configUpload,
+    uploadEnd,
+    accept,
+    callback,
+  } = config;
   if (beforeUpload && !beforeUpload()) return;
   const input = document.createElement('input');
   input.setAttribute('type', 'file');
@@ -80,7 +86,10 @@ export function uploadFile(config: {
 }
 
 // 导入
-export async function LeadIn(type: API_SCREEN.ILeadInScreenParams['type'], callback?: () => void) {
+export async function LeadIn(
+  type: API_SCREEN.ILeadInScreenParams['type'],
+  callback?: () => void,
+) {
   return uploadFile({
     accept: 'application/json',
     beforeUpload: () => {

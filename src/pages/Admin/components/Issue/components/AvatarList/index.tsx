@@ -21,7 +21,7 @@ export default memo((props: IProps) => {
     setList(data.list || [])
   }, [id])
 
-  const getUserDetail = useCallback((memberId: string, e) => {
+  const getUserDetail = useCallback((memberId: string, e: any) => {
     e.stopPropagation()
     return history.push(`/member/${memberId}`)
   }, [])

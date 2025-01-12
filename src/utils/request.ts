@@ -1,12 +1,12 @@
-import { notification, message } from 'antd';
 import { getDvaApp, history } from 'umi'
+import { message, notification } from '@/components/Toast'
 import axios from 'axios';
 import type { AxiosRequestConfig } from 'axios'
 import { stringify } from 'querystring'
-import debounce from 'lodash/debounce'
+import { debounce } from 'lodash'
 import { formatQuery } from './utils'
 
-const codeMessage = {
+const codeMessage: {[key: string] : string} = {
   200: '服务器成功返回请求的数据。',
   201: '新建或修改数据成功。',
   202: '一个请求已经进入后台排队（异步任务）。',
@@ -75,20 +75,44 @@ export const misManage = (error: any) => {
   }
 }
 
+const REACT_APP_ENV = process.env.REACT_APP_ENV
+const API_DOMAIN = process.env.REQUEST_API;
+
 const request = async <ResBody>(url: string, setting: RequestOptions = {} as RequestOptions)=>{
 
   // 过滤URL参数
-  const { params, mis=true, origin, ...options } = setting
+  const { params, mis=true, origin, headers={}, data={}, method, ...options } = setting
 
   let body: any
   let error: any
 
   try{
-    body = await axios.request({
-      url,
-      ...options,
-      ...(params ? { params: formatQuery(params) } : {}),
-    });
+    // !!! tnnd 不知道为什么代理到后端的ip服务器就一直500，开发环境就自己本地再起个代理服务器吧，如果后端的服务器不是ip的就直接走下面就行 !!!!
+    if(false && REACT_APP_ENV === 'dev' && API_DOMAIN?.includes('8002')) {
+      body = await axios.request({
+        method: 'POST',
+        url: '/api/request',
+        ...options,
+        data: {
+          config: {
+            data,
+            method,
+            headers,
+            params,
+            url
+          }
+        }
+      });
+    }else {
+      body = await axios.request({
+        method,
+        url,
+        ...options,
+        ...(params ? { params: formatQuery(params) } : {
+          data
+        }),
+      });
+    }
   } catch(err) {
     error = err
   }

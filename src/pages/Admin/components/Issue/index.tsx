@@ -1,9 +1,9 @@
 import { Card, List, Pagination, Carousel } from 'antd'
-import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
+import { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import { unstable_batchedUpdates } from 'react-dom'
 import { history } from 'umi'
 import { merge } from 'lodash'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import AvatarList from './components/AvatarList'
 import { GetAdminIssueList } from '@/services'
 import styles from './index.less'
@@ -78,7 +78,7 @@ const Issue = () => {
               <div onClick={getUserDetail.bind(null, item["_id"])}>
                 <Card.Meta title={<a>{item.name}</a>} description={item.description} />
                 <div className={styles.cardItemContent}>
-                  <span>{moment(item.updatedAt).fromNow()}</span>
+                  <span>{dayjs(item.updatedAt).fromNow()}</span>
                   <div className={styles.avatarList}>
                     <AvatarList
                       id={item["_id"]}

@@ -65,8 +65,9 @@ const BASE64_MAPPING = [
   '/',
 ];
 
-const _toBinary = function (ascii: number) {
+const _toBinary = function (_ascii: number) {
   const binary = new Array(0);
+  let ascii = _ascii
   while (ascii > 0) {
     const b = ascii % 2;
     ascii = Math.floor(ascii / 2);

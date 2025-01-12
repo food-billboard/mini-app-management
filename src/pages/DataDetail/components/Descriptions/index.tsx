@@ -1,7 +1,7 @@
-import React, { useMemo, memo, useCallback } from 'react';
-import { Card, Button } from 'antd';
+import { ProDescriptions } from '@ant-design/pro-components';
+import { Button, Card } from 'antd';
+import { memo, useCallback, useMemo } from 'react';
 import { history } from 'umi';
-import ProDescriptions from '@ant-design/pro-descriptions';
 import { PreImage } from '../../../DataSpecialDetail/components/Descriptions/upload';
 
 interface IProps {
@@ -63,7 +63,9 @@ export default memo((props: IProps) => {
         valueType: 'text',
         span: 2,
         renderText: (poster: string) => {
-          return <PreImage value={poster} onClick={preview.bind(null, poster)} />;
+          return (
+            <PreImage value={poster} onClick={preview.bind(null, poster)} />
+          );
         },
       },
       {
@@ -73,7 +75,9 @@ export default memo((props: IProps) => {
         valueType: 'text',
         span: 3,
         renderText: (images: string[]) => {
-          return <PreImage value={images[0]} onClick={preview.bind(null, images)} />;
+          return (
+            <PreImage value={images[0]} onClick={preview.bind(null, images)} />
+          );
         },
       },
       {

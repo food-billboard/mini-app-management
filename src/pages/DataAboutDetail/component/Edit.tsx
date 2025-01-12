@@ -1,9 +1,9 @@
 import React, { memo, forwardRef, useImperativeHandle, useState, useRef, useEffect, useCallback } from 'react'
 import { unstable_batchedUpdates } from 'react-dom'
-import { message } from 'antd'
+import { message } from '@/components/Toast';
 import type { ModalProps } from 'antd/es/modal'
 import type { FormInstance } from 'antd/es/form'
-import { ModalForm } from '@ant-design/pro-form'
+import { ModalForm } from '@ant-design/pro-components'
 import type { Store } from 'antd/lib/form/interface'
 
 interface IProps extends ModalProps {
@@ -60,7 +60,7 @@ const EditModal = forwardRef<IEditRef, IProps>((props, ref) => {
     setVisible(false)
   }, [id])
 
-  const onCancel = useCallback((e) => {
+  const onCancel = useCallback((e: any) => {
     setVisible(false)
     nextProps.onCancel?.(e)
   }, [nextProps])
@@ -81,11 +81,11 @@ const EditModal = forwardRef<IEditRef, IProps>((props, ref) => {
   return (
     <ModalForm
       title={`${id ? '编辑' : '新增'}信息`}
-      visible={visible}
+      open={visible}
       // @ts-ignore
       formRef={formRef}
       onFinish={onFinish}
-      onVisibleChange={visibleChange}
+      onOpenChange={visibleChange}
       modalProps={{
         ...nextProps,
         onCancel,

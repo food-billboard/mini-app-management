@@ -1,25 +1,25 @@
-import React, { useMemo, memo, useCallback, useRef, useContext } from 'react'
-import { Card, Tag } from 'antd'
-import { pick } from 'lodash' 
-import ProDescriptions from '@ant-design/pro-descriptions'
-import ProProvider from '@ant-design/pro-provider'
-import Upload, { PreImage } from './upload'
+import { ProDescriptions, ProProvider } from '@ant-design/pro-components';
+import { Card, Tag } from 'antd';
+import { pick } from 'lodash';
+import { memo, useCallback, useContext, useMemo, useRef } from 'react';
+import Upload, { PreImage } from './upload';
 
 interface IProps {
-  loading?: boolean
-  onChange: (value: Partial<API_INSTANCE.IPutInstanceSpecialParams>) => Promise<void>
-  value?: API_INSTANCE.IGetInstanceSpecialData
+  loading?: boolean;
+  onChange: (
+    value: Partial<API_INSTANCE.IPutInstanceSpecialParams>,
+  ) => Promise<void>;
+  value?: API_INSTANCE.IGetInstanceSpecialData;
 }
 
 export default memo((props: IProps) => {
+  const values = useContext(ProProvider);
 
-  const values = useContext(ProProvider)
-
-  const actionRef = useRef()
+  const actionRef = useRef();
 
   const { loading, onChange, value } = useMemo(() => {
-    return props 
-  }, [props])
+    return props;
+  }, [props]);
 
   const columns = useMemo(() => {
     return [
@@ -39,8 +39,8 @@ export default memo((props: IProps) => {
         render: (valid: any) => {
           return (
             <Tag color={valid ? 'lime' : 'red'}>{valid ? '启用' : '禁用'}</Tag>
-          )
-        }
+          );
+        },
       },
       {
         title: '描述',
@@ -54,14 +54,17 @@ export default memo((props: IProps) => {
         dataIndex: 'poster',
         key: 'poster',
         valueType: 'poster',
-        span: 3
-      }
-    ]
-  }, [])
+        span: 3,
+      },
+    ];
+  }, []);
 
-  const onBaseInfoValueChange = useCallback(async (key: any, record: API_INSTANCE.IGetInstanceSpecialData) => {
-    onChange(pick(record, [key]))
-  }, [onChange])
+  const onBaseInfoValueChange = useCallback(
+    async (key: any, record: API_INSTANCE.IGetInstanceSpecialData) => {
+      onChange(pick(record, [key]));
+    },
+    [onChange],
+  );
 
   return (
     <ProProvider.Provider
@@ -70,7 +73,7 @@ export default memo((props: IProps) => {
         valueTypeMap: {
           poster: {
             render: (poster: string) => {
-              return <PreImage value={poster} />
+              return <PreImage value={poster} />;
             },
             renderFormItem: (poster: any, posterProps: any) => {
               return (
@@ -81,19 +84,16 @@ export default memo((props: IProps) => {
                     overflow: 'auto',
                   }}
                 >
-                  <Upload
-                    value={poster}
-                    props={posterProps}
-                  />
+                  <Upload value={poster} props={posterProps} />
                 </div>
-              )
+              );
             },
-          }
+          },
         },
       }}
     >
       <Card>
-        <ProDescriptions 
+        <ProDescriptions
           actionRef={actionRef}
           dataSource={value}
           column={{
@@ -101,18 +101,16 @@ export default memo((props: IProps) => {
             md: 3,
           }}
           style={{
-            backgroundColor: 'white'
+            backgroundColor: 'white',
           }}
           loading={loading}
           bordered
           editable={{
-            onSave: onBaseInfoValueChange
+            onSave: onBaseInfoValueChange,
           }}
           columns={columns}
-        >
-        </ProDescriptions>
+        ></ProDescriptions>
       </Card>
     </ProProvider.Provider>
-  )
-
-})
+  );
+});

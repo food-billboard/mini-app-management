@@ -1,7 +1,8 @@
-import { message, Input, Form } from 'antd';
+import { Input, Form } from 'antd';
 import type { FormInstance } from 'antd/lib/form';
-import { ModalForm, ProFormTextArea } from '@ant-design/pro-form';
+import { ModalForm, ProFormTextArea } from '@ant-design/pro-components';
 import type { Store } from 'antd/lib/form/interface';
+import { message } from '@/components/Toast';
 import React, { useCallback, useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import Upload from '@/components/Upload';
 import VideoUpload from '@/components/VideoUpload'
@@ -75,11 +76,11 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   return (
     <ModalForm
       title="新增评论"
-      visible={visible}
+      open={visible}
       // @ts-ignore
       formRef={formRef}
       onFinish={onFinish}
-      onVisibleChange={onVisibleChange}
+      onOpenChange={onVisibleChange}
     >
       <ProFormTextArea
         name="text"

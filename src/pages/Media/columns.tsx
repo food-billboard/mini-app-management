@@ -1,7 +1,6 @@
-import React from 'react';
 import { Tag, DatePicker, Image } from 'antd';
 import { history } from 'umi';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import {
   SOURCE_TYPE,
   MEDIA_AUTH_MAP,
@@ -83,7 +82,7 @@ export default [
     renderFormItem: (_: any, { type, defaultRender, ...rest }: any) => {
       return <RangePicker {...rest} />;
     },
-    renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss'),
+    renderText: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss'),
   },
   {
     title: '创建时间',
@@ -111,7 +110,7 @@ export default [
     dataIndex: 'updatedAt',
     sorter: true,
     hideInSearch: true,
-    renderText: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss'),
+    renderText: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss'),
   },
   {
     title: '来源类型',

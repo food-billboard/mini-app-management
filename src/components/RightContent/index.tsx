@@ -1,5 +1,5 @@
 import { Tag, Space } from 'antd';
-import { Settings as ProSettings } from '@ant-design/pro-layout';
+import { Settings as ProSettings } from '@ant-design/pro-components';
 import React from 'react';
 import { ConnectProps } from 'umi';
 import Avatar from './AvatarDropdown';
@@ -11,7 +11,7 @@ export interface GlobalHeaderRightProps extends Partial<ConnectProps>, Partial<P
   theme?: ProSettings['navTheme'] | 'realDark';
 }
 
-const ENVTagColor = {
+const ENVTagColor: any = {
   dev: 'orange',
   test: 'green',
   pre: '#87d068',
@@ -19,11 +19,13 @@ const ENVTagColor = {
   'prod-local': '#87d068',
 };
 
+const REACT_APP_ENV = process.env.REACT_APP_ENV
+
 const GlobalHeaderRight: React.FC<GlobalHeaderRightProps> = (props) => {
   const { theme, layout } = props;
   let className = styles.right;
 
-  if (theme === 'dark' && layout === 'top') {
+  if (theme === 'realDark' && layout === 'top') {
     className = `${styles.right}  ${styles.dark}`;
   }
 

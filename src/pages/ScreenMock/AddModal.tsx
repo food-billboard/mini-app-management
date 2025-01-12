@@ -1,21 +1,21 @@
-import { Form, Input } from 'antd';
-import type { FormInstance } from 'antd/lib/form';
 import {
   ModalForm,
-  ProFormTextArea,
-  ProFormText,
-  ProFormRadio,
-  ProFormDigitRange,
   ProFormDigit,
-} from '@ant-design/pro-form';
+  ProFormDigitRange,
+  ProFormRadio,
+  ProFormText,
+  ProFormTextArea,
+} from '@ant-design/pro-components';
+import { Form, Input } from 'antd';
+import type { FormInstance } from 'antd/lib/form';
 import type { Store } from 'antd/lib/form/interface';
-import React, {
+import {
+  forwardRef,
   useCallback,
+  useImperativeHandle,
   useMemo,
   useRef,
   useState,
-  forwardRef,
-  useImperativeHandle,
 } from 'react';
 import { DATA_Name_MAP } from './columns';
 
@@ -195,7 +195,7 @@ const ConfigMap = {
             onChange: (e) => {
               const newValue = e.target.value;
               onChange?.({
-                decimal: newValue == '1',
+                decimal: newValue === '1',
               });
             },
           }}
@@ -265,7 +265,7 @@ const ConfigMap = {
               value: prefix ? '1' : '0',
               onChange: (e) => {
                 onChange?.({
-                  prefix: e.target.value == '1',
+                  prefix: e.target.value === '1',
                 });
               },
             }}
@@ -450,7 +450,9 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   const [visible, setVisible] = useState<boolean>(false);
   const [isPut, setIsPut] = useState<boolean>(false);
   const [configType, setConfigType] = useState<string>('text');
-  const [configValue, setConfigValue] = useState<any>({ ...ConfigInitialValue });
+  const [configValue, setConfigValue] = useState<any>({
+    ...ConfigInitialValue,
+  });
 
   const { onCancel: propsCancel, onSubmit } = useMemo(() => {
     return props;
@@ -522,7 +524,9 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   );
 
   const hasConfig = useMemo(() => {
-    return !!(DATA_Name_MAP as any)[configType] && !!(ConfigMap as any)[configType];
+    return (
+      !!(DATA_Name_MAP as any)[configType] && !!(ConfigMap as any)[configType]
+    );
   }, [configType]);
 
   useImperativeHandle(ref, () => ({
@@ -532,11 +536,11 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   return (
     <ModalForm
       title={(isPut ? '修改' : '新增') + 'Mock数据'}
-      visible={visible}
+      open={visible}
       // @ts-ignore
       formRef={formRef}
       onFinish={onFinish}
-      onVisibleChange={onVisibleChange}
+      onOpenChange={onVisibleChange}
     >
       <ProFormText
         name="data_kind"
@@ -570,7 +574,10 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
             setConfigType(value.target.value);
           },
         }}
-        options={Object.entries(DATA_Name_MAP).map((item) => ({ label: item[1], value: item[0] }))}
+        options={Object.entries(DATA_Name_MAP).map((item) => ({
+          label: item[1] as string,
+          value: item[0],
+        }))}
       />
       <Form.Item
         name={configType}

@@ -10,7 +10,7 @@ export const PreImage = ({ value, onClick }: { value: string, onClick?: any }) =
   const [ src, setSrc ] = useState<string>(value)
 
   const error = useCallback(() => {
-    // message.info('图片获取失败')
+    
   }, [])
 
   const fetchData = useCallback(async (objectId: string) => {

@@ -1,5 +1,4 @@
-import React, { memo, useCallback, useState } from 'react'
-import pMap from 'p-map'
+import { memo, useCallback } from 'react'
 import type { FilePondProps } from 'react-filepond'
 import { Upload } from '@/components/Upload'
 import Wrapper from '@/components/WrapperItem'

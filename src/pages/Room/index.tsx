@@ -1,18 +1,16 @@
-import React, { useRef, useCallback } from 'react';
-import { Button, Dropdown, message, Space } from 'antd';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import ProTable from '@ant-design/pro-table';
-import type { ActionType } from '@ant-design/pro-table';
-import { DownOutlined, PlusOutlined } from '@ant-design/icons';
+import { ProPage } from '@/components/ProTable';
+import { message } from '@/components/Toast';
+import { deleteRoom, getRoomList, postRoom, putRoom } from '@/services';
+import { PlusOutlined } from '@ant-design/icons';
+import type { ActionType } from '@ant-design/pro-components';
+import { Button } from 'antd';
+import { identity, pickBy } from 'lodash';
+import React, { useCallback, useRef } from 'react';
 import { connect } from 'umi';
-import pickBy from 'lodash/pickBy';
-import identity from 'lodash/identity';
-import Form from './components/CreateForm';
+import columns from './columns';
 import type { IFormRef } from './components/CreateForm';
-import { mapStateToProps, mapDispatchToProps } from './connect';
-import column from './columns';
-import { deleteRoom, getRoomList, putRoom, postRoom } from '@/services';
-import { commonDeleteMethod } from '@/utils';
+import Form from './components/CreateForm';
+import { mapDispatchToProps, mapStateToProps } from './connect';
 
 interface IProps {
   role: any;
@@ -28,37 +26,19 @@ const CardList: React.FC<IProps> = () => {
   };
 
   const handleRemove = async (selectedRows: API_CHAT.IGetRoomListResData[]) => {
-    return commonDeleteMethod<API_CHAT.IGetRoomListResData>(
-      selectedRows,
-      (row: API_CHAT.IGetRoomListResData) => {
-        const { _id } = row;
-        return deleteRoom({
+    try {
+      for (let i = 0; i < selectedRows.length; i++) {
+        const { _id } = selectedRows[i];
+        await deleteRoom({
           _id,
         });
-      },
-      actionRef.current?.reloadAndRest,
-    );
+      }
+    } catch (err) {
+      return false;
+    }
+    actionRef.current?.reloadAndRest?.();
+    return true;
   };
-
-  const columns: any[] = [
-    ...column,
-    {
-      title: '操作',
-      key: 'option',
-      dataIndex: 'option',
-      valueType: 'option',
-      render: (_: any, record: API_CHAT.IGetRoomListResData) => {
-        return (
-          <Space>
-            <a onClick={() => handleModalVisible(record)}>编辑</a>
-            <a style={{ color: 'red' }} onClick={() => handleRemove([record])}>
-              删除
-            </a>
-          </Space>
-        );
-      },
-    },
-  ];
 
   const onSubmit = useCallback(async (value: API_CHAT.IPutRoomParams) => {
     try {
@@ -77,79 +57,52 @@ const CardList: React.FC<IProps> = () => {
   }, []);
 
   return (
-    <PageHeaderWrapper>
-      <ProTable
-        headerTitle="聊天室列表"
-        actionRef={actionRef}
-        scroll={{ x: 'max-content' }}
-        pagination={{ defaultPageSize: 10 }}
-        rowKey="_id"
-        toolBarRender={(action, { selectedRows }) => [
-          <Button
-            key={'add'}
-            icon={<PlusOutlined />}
-            type="primary"
-            onClick={() => handleModalVisible()}
-          >
-            新建
-          </Button>,
-          selectedRows && selectedRows.length > 0 && (
-            <Dropdown
-              menu={{
-                items: [
-                  {
-                    key: 'remove',
-                    label: '批量删除',
-                    onClick: () => {
-                      handleRemove(selectedRows);
-                    },
-                  },
-                ],
-              }}
-            >
-              <Button key="many">
-                批量操作 <DownOutlined />
-              </Button>
-            </Dropdown>
-          ),
-        ]}
-        tableAlertRender={({
-          selectedRowKeys,
-        }: {
-          selectedRowKeys: React.ReactText[];
-          selectedRows: any[];
-        }) => (
-          <div>
-            已选择{' '}
-            <a
-              style={{
-                fontWeight: 600,
-              }}
-            >
-              {selectedRowKeys.length}
-            </a>{' '}
-            项&nbsp;&nbsp;
-            <span>
-              {/* 服务调用次数总计 {selectedRows.reduce((pre, item) => pre + item.callNo, 0)} 万 */}
-            </span>
-          </div>
-        )}
-        request={async (params: any) => {
-          const { createdAt, current, ...nextParams } = params;
-          let newParams = {
-            ...nextParams,
-            currPage: current - 1,
-          };
-          newParams = pickBy(newParams, identity);
-          return getRoomList(newParams)
-            .then(({ list, total }) => ({ data: list, total }))
-            .catch(() => ({ data: [], total: 0 }));
-        }}
-        columns={columns}
-        rowSelection={{}}
-      />
+    <ProPage
+      action={{
+        remove: {
+          action: handleRemove,
+        },
+      }}
+      extraActionRender={(record) => {
+        return (
+          <>
+            <Button style={{paddingLeft: 0}} type="link" onClick={() => handleModalVisible(record)}>
+              编辑
+            </Button>
+          </>
+        );
+      }}
+      headerTitle="聊天室列表"
+      actionRef={actionRef}
+      scroll={{ x: 'max-content' }}
+      pagination={{ defaultPageSize: 10 }}
+      rowKey="_id"
+      toolBarRender={(action, { selectedRows }) => [
+        <Button
+          key={'add'}
+          icon={<PlusOutlined />}
+          type="primary"
+          onClick={() => handleModalVisible()}
+        >
+          新建
+        </Button>,
+      ]}
+      request={async (params: any) => {
+        const { createdAt, current, ...nextParams } = params;
+        let newParams = {
+          ...nextParams,
+          currPage: current - 1,
+        };
+        newParams = pickBy(newParams, identity);
+        return getRoomList(newParams)
+          .then(({ list, total }) => ({ data: list, total }))
+          .catch(() => ({ data: [], total: 0 }));
+      }}
+      columns={columns as any}
+      rowSelection={{}}
+    >
       <Form ref={formRef} onSubmit={onSubmit} />
-    </PageHeaderWrapper>
+    </ProPage>
   );
 };
 

@@ -1,8 +1,8 @@
 import { Form, Input } from 'antd';
 import type { FormInstance } from 'antd/lib/form';
-import { ModalForm, ProFormTextArea, ProFormSelect } from '@ant-design/pro-form';
+import { ModalForm, ProFormTextArea, ProFormSelect } from '@ant-design/pro-components';
 import type { Store } from 'antd/lib/form/interface';
-import React, {
+import  {
   useCallback,
   useMemo,
   useRef,
@@ -74,7 +74,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
     return Object.entries(MEDIA_AUTH_MAP).reduce((acc, cur) => {
       const [key, value] = cur;
       acc.push({
-        label: value,
+        label: value as string,
         value: key,
       });
       return acc;
@@ -85,7 +85,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
     return Object.entries(MEDIA_UPLOAD_STATUS).reduce((acc, cur) => {
       const [key, value] = cur;
       acc.push({
-        label: value,
+        label: value as string,
         value: key,
       });
       return acc;
@@ -95,11 +95,11 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   return (
     <ModalForm
       title="媒体资源修改"
-      visible={visible}
+      open={visible}
       // @ts-ignore
       formRef={formRef}
       onFinish={onFinish}
-      onVisibleChange={onVisibleChange}
+      onOpenChange={onVisibleChange}
     >
       <ProFormTextArea
         name="name"

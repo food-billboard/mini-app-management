@@ -1,10 +1,11 @@
 import { Form, Input } from 'antd'
 import type { FormInstance } from 'antd/lib/form'
-import ProForm, {
+import {
   ModalForm,
   ProFormTextArea,
-  ProFormSwitch
-} from '@ant-design/pro-form'
+  ProFormSwitch, 
+  ProForm
+} from '@ant-design/pro-components'
 import { omit } from 'lodash'
 import type { Store } from 'antd/lib/form/interface'
 import React, { useCallback, useRef, useState, forwardRef, useImperativeHandle } from 'react'
@@ -76,11 +77,11 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   return (
     <ModalForm
       title="新增专题"
-      visible={visible}
+      open={visible}
       // @ts-ignore
       formRef={formRef}
       onFinish={onFinish}
-      onVisibleChange={onVisibleChange}
+      onOpenChange={onVisibleChange}
     >
       <ProFormTextArea 
         name="name" 

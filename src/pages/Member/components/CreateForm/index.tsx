@@ -1,8 +1,9 @@
-import { Form, message, Input } from 'antd';
+import { Form, Input } from 'antd';
 import type { FormInstance } from 'antd/lib/form';
-import { ModalForm, ProFormText, ProFormSelect, ProFormTextArea } from '@ant-design/pro-form';
+import { ModalForm, ProFormText, ProFormSelect, ProFormTextArea } from '@ant-design/pro-components';
 import type { Store } from 'antd/lib/form/interface';
 import React, { Component, createRef } from 'react';
+import { message } from '@/components/Toast';
 import Upload from '@/components/Upload';
 import { getUserDetail } from '@/services';
 import { fileValidator } from '../../../DataEdit/utils';
@@ -82,7 +83,7 @@ class CreateForm extends Component<IProps, IState> {
     return (
       <ModalForm
         title="新建表单"
-        visible={visible}
+        open={visible}
         // @ts-ignore
         formRef={this.formRef as any}
         onFinish={async (values: Store) => {
@@ -90,7 +91,7 @@ class CreateForm extends Component<IProps, IState> {
           this.setState({ visible: false });
           this.formRef.current?.resetFields();
         }}
-        onVisibleChange={(visibleState: boolean) => {
+        onOpenChange={(visibleState: boolean) => {
           if (!visibleState) this.onCancel();
           this.setState((prev) => {
             if (prev.visible === visibleState) return null;

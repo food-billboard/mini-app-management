@@ -1,7 +1,7 @@
 import { Chart, Coord, Geom, Tooltip } from 'bizcharts';
 import React, { Component } from 'react';
 import { DataView } from '@antv/data-set';
-import Debounce from 'lodash.debounce';
+import { debounce } from 'lodash';
 import { Divider } from 'antd';
 import ReactFitText from 'react-fittext';
 import classNames from 'classnames';
@@ -20,7 +20,7 @@ class Pie extends Component {
 
   chart = undefined; // for window resize auto responsive legend
 
-  resize = Debounce(() => {
+  resize = debounce(() => {
     const { hasLegend } = this.props;
     const { legendBlock } = this.state;
 

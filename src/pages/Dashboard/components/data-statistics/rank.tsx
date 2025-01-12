@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react'
 import { history } from 'umi'
 import styles from './index.less'
-import numeral from 'numeral'
 
 export interface IRankData {
   index?: number
@@ -41,7 +40,7 @@ const Rank: React.FC<any> = ({
                 {title}
               </span>
               <span className={styles.rankingItemValue}>
-                {numeral(value).format('0,0')}
+                {value}
               </span>
             </li>
           )

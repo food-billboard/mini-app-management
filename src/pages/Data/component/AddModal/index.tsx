@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import { Button, message, Popconfirm, Modal, Input } from 'antd';
+import { Button, Popconfirm, Modal, Input } from 'antd';
+import { message } from '@/components/Toast';
 import { PlusOutlined } from '@ant-design/icons';
 import { getDoubanMovieData } from '@/services';
 

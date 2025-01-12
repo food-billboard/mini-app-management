@@ -1,9 +1,9 @@
 import React from 'react'
 import { DatePicker, Tag } from 'antd'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import ImageView from '@/components/TableImageView'
 import { FEEDBACK_STATUS } from '@/utils'
-import { PreView } from '@/pages/Video'
+import { preview } from '@/components/VideoPreview'
 
 const { RangePicker } = DatePicker
 
@@ -50,7 +50,7 @@ export default [
       return (
         <a onClick={(e) => {
           e.stopPropagation()
-          return PreView(record?.content?.video)
+          return preview(record?.content?.video)
         }} style={{color: '#1890ff'}}>(预览)</a>
       )
     }
@@ -61,11 +61,11 @@ export default [
     renderFormItem: (_: any, { type, defaultRender, ...rest }: any, form: any) => {
       return <RangePicker {...rest} />
     },
-    render: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    render: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
   {
     title: '更新时间',
     dataIndex: 'updatedAt',
-    render: (val: string) => moment(val).format('YYYY-MM-DD hh:mm:ss')
+    render: (val: string) => dayjs(val).format('YYYY-MM-DD hh:mm:ss')
   },
 ]

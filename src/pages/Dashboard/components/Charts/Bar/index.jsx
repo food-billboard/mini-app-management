@@ -1,6 +1,6 @@
 import { Axis, Chart, Geom, Tooltip } from 'bizcharts';
-import React, { Component } from 'react';
-import Debounce from 'lodash.debounce';
+import { Component } from 'react';
+import { debounce } from 'lodash';
 import autoHeight from '../autoHeight';
 import styles from '../index.less';
 
@@ -13,7 +13,7 @@ class Bar extends Component {
 
   node = undefined;
 
-  resize = Debounce(() => {
+  resize = debounce(() => {
     if (!this.node || !this.node.parentNode) {
       return;
     }

@@ -1,7 +1,7 @@
 import React, { memo } from "react"
 import {
   ProFormTextArea,
-} from '@ant-design/pro-form'
+} from '@ant-design/pro-components'
 
 export default memo(({ rules }: any) => {
 

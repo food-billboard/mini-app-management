@@ -6,9 +6,8 @@ import styles from './index.less';
 
 declare type OverlayFunc = () => React.ReactNode;
 
-export interface HeaderDropdownProps extends Omit<DropDownProps, 'overlay'> {
+export type HeaderDropdownProps = Omit<DropDownProps, 'overlay'> & {
   overlayClassName?: string;
-  overlay: React.ReactNode | OverlayFunc | any;
   placement?: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topCenter' | 'topRight' | 'bottomCenter';
 }
 

@@ -1,22 +1,22 @@
-import React, { useRef, useCallback, memo, useMemo } from 'react';
-import { Button, Dropdown, message, Space } from 'antd';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import ProTable from '@ant-design/pro-table';
-import type { ActionType } from '@ant-design/pro-table';
-import { DownOutlined, PlusOutlined, EllipsisOutlined } from '@ant-design/icons';
-import { connect, history } from 'umi';
-import pick from 'lodash/pick';
-import Form from './components/form';
-import type { IFormRef } from './components/form';
-import { mapStateToProps, mapDispatchToProps } from './connect';
-import column from './columns';
+import { ProPage } from '@/components/ProTable';
+import { message } from '@/components/Toast';
 import {
-  getInstanceSpecialList,
   deleteInstanceSpecial,
+  getInstanceSpecialList,
   postInstanceSpecial,
   putInstanceSpecial,
 } from '@/services';
 import { commonDeleteMethod } from '@/utils';
+import { PlusOutlined } from '@ant-design/icons';
+import type { ActionType } from '@ant-design/pro-components';
+import { Button } from 'antd';
+import { pick } from 'lodash';
+import React, { memo, useCallback, useMemo, useRef } from 'react';
+import { connect, history } from 'umi';
+import column from './columns';
+import type { IFormRef } from './components/form';
+import Form from './components/form';
+import { mapDispatchToProps, mapStateToProps } from './connect';
 
 const InstanceManage: React.FC<any> = () => {
   const actionRef = useRef<ActionType>();
@@ -25,13 +25,19 @@ const InstanceManage: React.FC<any> = () => {
 
   const handleAdd = useCallback(
     async (
-      values: API_INSTANCE.IPostInstanceSpecialParams | API_INSTANCE.IPutInstanceSpecialParams,
+      values:
+        | API_INSTANCE.IPostInstanceSpecialParams
+        | API_INSTANCE.IPutInstanceSpecialParams,
     ) => {
       try {
         if ((values as API_INSTANCE.IPutInstanceInfoParams)['_id']) {
-          await putInstanceSpecial(values as API_INSTANCE.IPutInstanceSpecialParams);
+          await putInstanceSpecial(
+            values as API_INSTANCE.IPutInstanceSpecialParams,
+          );
         } else {
-          await postInstanceSpecial(values as API_INSTANCE.IPostInstanceSpecialParams);
+          await postInstanceSpecial(
+            values as API_INSTANCE.IPostInstanceSpecialParams,
+          );
         }
         message.success('操作成功');
         return true;
@@ -62,42 +68,30 @@ const InstanceManage: React.FC<any> = () => {
     [modalRef],
   );
 
-  const handleRemove = useCallback(async (selectedRows: API_INSTANCE.IGetInstanceSpecialData[]) => {
-    return commonDeleteMethod<API_INSTANCE.IGetInstanceSpecialData>(
-      selectedRows,
-      (row: API_INSTANCE.IGetInstanceSpecialData) => {
-        const { _id } = row;
-        return deleteInstanceSpecial({
-          _id,
-        });
-      },
-      actionRef.current?.reloadAndRest,
-    );
-  }, []);
-
-  const tableAlertRender = useMemo(() => {
-    return ({ selectedRowKeys }: { selectedRowKeys: React.ReactText[]; selectedRows: any[] }) => (
-      <div>
-        已选择{' '}
-        <a
-          style={{
-            fontWeight: 600,
-          }}
-        >
-          {selectedRowKeys.length}
-        </a>{' '}
-        项&nbsp;&nbsp;
-        <span>
-          {/* 服务调用次数总计 {selectedRows.reduce((pre, item) => pre + item.callNo, 0)} 万 */}
-        </span>
-      </div>
-    );
-  }, []);
+  const handleRemove = useCallback(
+    async (selectedRows: API_INSTANCE.IGetInstanceSpecialData[]) => {
+      try {
+        for(let i = 0; i < selectedRows.length; i ++) {
+          const { _id } = selectedRows[i]
+          await deleteInstanceSpecial({
+            _id,
+          });
+        }
+      }catch(err) {
+        return false 
+      }
+      actionRef.current?.reloadAndRest?.()
+      return true 
+    },
+    [],
+  );
 
   const toolbarRender: any = useMemo(() => {
     return (
       action: any,
-      { selectedRows }: { selectedRows: API_INSTANCE.IGetInstanceSpecialData[] },
+      {
+        selectedRows,
+      }: { selectedRows: API_INSTANCE.IGetInstanceSpecialData[] },
     ) => [
       <Button
         key={'add'}
@@ -106,26 +100,7 @@ const InstanceManage: React.FC<any> = () => {
         onClick={() => handleModalVisible()}
       >
         新建
-      </Button>,
-      selectedRows && selectedRows.length > 0 && (
-        <Dropdown
-          menu={{
-            items: [
-              {
-                key: 'remove',
-                label: '批量删除',
-                onClick: () => {
-                  handleRemove(selectedRows);
-                },
-              },
-            ],
-          }}
-        >
-          <Button key="many">
-            批量操作 <DownOutlined />
-          </Button>
-        </Dropdown>
-      ),
+      </Button>
     ];
   }, []);
 
@@ -139,45 +114,44 @@ const InstanceManage: React.FC<any> = () => {
         valueType: 'option',
         render: (_: any, record: API_INSTANCE.IGetInstanceSpecialData) => {
           const { valid } = record;
+          const commonProps: any = {
+            style: {
+              paddingLeft: 0,
+            },
+            type: 'link',
+          };
           return (
-            <Space>
-              <a onClick={() => handleModalVisible(record)}>编辑</a>
-              <a style={{ color: 'red' }} onClick={() => handleRemove([record])}>
-                删除
-              </a>
-              <Dropdown
-                menu={{
-                  items: [
-                    {
-                      key: 'detail',
-                      label: '详情',
-                      onClick: () => {
-                        history.push(`/data/special/${record['_id']}`);
-                      },
-                    },
-                    ...(valid
-                      ? [
-                          {
-                            key: 'disable',
-                            label: '禁用',
-                            onClick: putInfo.bind(null, false, record),
-                          },
-                        ]
-                      : [
-                          {
-                            key: 'enable',
-                            label: '启用',
-                            onClick: putInfo.bind(null, true, record),
-                          },
-                        ]),
-                  ],
+            <>
+              <Button
+                {...commonProps}
+                onClick={() => handleModalVisible(record)}
+              >
+                编辑
+              </Button>
+              <Button
+                {...commonProps}
+                onClick={() => {
+                  history.push(`/data/special/${record['_id']}`);
                 }}
               >
-                <a onClick={(e) => e.preventDefault()}>
-                  <EllipsisOutlined />
-                </a>
-              </Dropdown>
-            </Space>
+                详情
+              </Button>
+              {valid ? (
+                <Button
+                  {...commonProps}
+                  onClick={putInfo.bind(null, false, record)}
+                >
+                  禁用
+                </Button>
+              ) : (
+                <Button
+                  {...commonProps}
+                  onClick={putInfo.bind(null, true, record)}
+                >
+                  启用
+                </Button>
+              )}
+            </>
           );
         },
       },
@@ -198,19 +172,20 @@ const InstanceManage: React.FC<any> = () => {
   }, []);
 
   return (
-    <PageHeaderWrapper>
-      <ProTable
-        headerTitle="专题列表"
-        scroll={{ x: 'max-content' }}
-        actionRef={actionRef}
-        rowKey="_id"
-        toolBarRender={toolbarRender}
-        tableAlertRender={tableAlertRender}
-        request={onSearchChange}
-        columns={columns}
-        rowSelection={{}}
-        pagination={{ defaultPageSize: 10 }}
-      />
+    <ProPage
+      headerTitle="专题列表"
+      scroll={{ x: 'max-content' }}
+      actionRef={actionRef}
+      rowKey="_id"
+      toolBarRender={toolbarRender}
+      request={onSearchChange}
+      columns={columns}
+      rowSelection={{}}
+      pagination={{ defaultPageSize: 10 }}
+      action={{
+        remove: handleRemove as any,
+      }}
+    >
       <Form
         onSubmit={async (value) => {
           const success = await handleAdd(value);
@@ -222,8 +197,11 @@ const InstanceManage: React.FC<any> = () => {
         }}
         ref={modalRef}
       />
-    </PageHeaderWrapper>
+    </ProPage>
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(memo(InstanceManage));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(memo(InstanceManage));

@@ -1,26 +1,26 @@
-import React, { useMemo, memo, useCallback, useRef, useContext } from 'react'
-import { Card } from 'antd'
-import { pick } from 'lodash' 
-import ProDescriptions from '@ant-design/pro-descriptions'
-import ProProvider from '@ant-design/pro-provider'
-import Upload, { PreImage } from '../../../DataSpecialDetail/components/Descriptions/upload'
-import { USER_STATUS, ROLES_MAP } from '@/utils'
+import { ROLES_MAP, USER_STATUS } from '@/utils';
+import { ProDescriptions, ProProvider } from '@ant-design/pro-components';
+import { Card } from 'antd';
+import { pick } from 'lodash';
+import { memo, useCallback, useContext, useMemo, useRef } from 'react';
+import Upload, {
+  PreImage,
+} from '../../../DataSpecialDetail/components/Descriptions/upload';
 
 interface IProps {
-  loading?: boolean
-  onChange: (value: Partial<API_USER.IPutUserParams>) => Promise<any>
-  value?: API_USER.IGetUserDetailRes
+  loading?: boolean;
+  onChange: (value: Partial<API_USER.IPutUserParams>) => Promise<any>;
+  value?: API_USER.IGetUserDetailRes;
 }
 
 export default memo((props: IProps) => {
+  const values = useContext(ProProvider);
 
-  const values = useContext(ProProvider)
-
-  const actionRef = useRef()
+  const actionRef = useRef();
 
   const { loading, onChange, value } = useMemo(() => {
-    return props 
-  }, [props])
+    return props;
+  }, [props]);
 
   const columns = useMemo(() => {
     return [
@@ -59,7 +59,7 @@ export default memo((props: IProps) => {
         valueType: 'password',
         key: 'password',
         span: 1,
-        render: () => '---'
+        render: () => '---',
       },
       {
         title: '描述',
@@ -73,21 +73,21 @@ export default memo((props: IProps) => {
         dataIndex: 'avatar',
         key: 'avatar',
         valueType: 'poster',
-        span: 1
+        span: 1,
       },
       {
         title: '角色',
         dataIndex: 'roles',
         valueType: 'select',
-        valueEnum: Object.entries(ROLES_MAP).reduce((acc, cur) => {
-          const [ key, title ] = cur
+        valueEnum: Object.entries(ROLES_MAP).reduce<any>((acc, cur) => {
+          const [key, title] = cur;
           acc[key] = {
-            text: title
-          } 
-          return acc 
+            text: title,
+          };
+          return acc;
         }, {}),
         fieldProps: {
-          mode: "multiple"
+          mode: 'multiple',
         },
         key: 'roles',
         span: 1,
@@ -98,7 +98,7 @@ export default memo((props: IProps) => {
         valueType: 'date',
         key: 'createdAt',
         span: 1,
-        editable: false
+        editable: false,
       },
       {
         title: '更新时间',
@@ -106,7 +106,7 @@ export default memo((props: IProps) => {
         valueType: 'date',
         key: 'updatedAt',
         span: 1,
-        editable: false
+        editable: false,
       },
       {
         title: '账号状态',
@@ -115,7 +115,7 @@ export default memo((props: IProps) => {
         key: 'status',
         span: 1,
         editable: false,
-        render: (value: string) => USER_STATUS[value]
+        render: (value: string) => USER_STATUS[value],
       },
       {
         title: '粉丝数量',
@@ -157,12 +157,15 @@ export default memo((props: IProps) => {
         span: 1,
         editable: false,
       },
-    ]
-  }, [])
+    ];
+  }, []);
 
-  const onBaseInfoValueChange = useCallback(async (key: any, record: API_USER.IGetUserDetailRes) => {
-    onChange(pick(record, [key]))
-  }, [onChange])
+  const onBaseInfoValueChange = useCallback(
+    async (key: any, record: API_USER.IGetUserDetailRes) => {
+      onChange(pick(record, [key]));
+    },
+    [onChange],
+  );
 
   return (
     <ProProvider.Provider
@@ -171,8 +174,8 @@ export default memo((props: IProps) => {
         valueTypeMap: {
           poster: {
             render: (value: string) => {
-              const image = Array.isArray(value) ? value[0] : value 
-              return <PreImage value={image} />
+              const image = Array.isArray(value) ? value[0] : value;
+              return <PreImage value={image} />;
             },
             renderFormItem: (value: any, props: any) => {
               return (
@@ -183,19 +186,16 @@ export default memo((props: IProps) => {
                     overflow: 'auto',
                   }}
                 >
-                  <Upload
-                    value={value}
-                    props={props}
-                  />
+                  <Upload value={value} props={props} />
                 </div>
-              )
+              );
             },
           },
         },
       }}
     >
       <Card>
-        <ProDescriptions 
+        <ProDescriptions
           actionRef={actionRef}
           dataSource={value}
           column={{
@@ -203,19 +203,17 @@ export default memo((props: IProps) => {
             md: 3,
           }}
           style={{
-            backgroundColor: 'white'
+            backgroundColor: 'white',
           }}
           loading={loading}
           bordered
           editable={{
-            onSave: onBaseInfoValueChange
+            onSave: onBaseInfoValueChange,
           }}
           //@ts-ignore
           columns={columns}
-        >
-        </ProDescriptions>
+        ></ProDescriptions>
       </Card>
     </ProProvider.Provider>
-  )
-
-})
+  );
+});

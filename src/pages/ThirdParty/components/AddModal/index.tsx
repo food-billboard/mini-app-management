@@ -4,7 +4,7 @@ import {
   ModalForm,
   ProFormTextArea,
   ProFormSelect
-} from '@ant-design/pro-form'
+} from '@ant-design/pro-components'
 import { pick } from 'lodash'
 import type { Store } from 'antd/lib/form/interface'
 import type { FormInstance } from 'antd/lib/form'
@@ -16,12 +16,12 @@ export type AddModalRef = {
 }
 
 const AddModal = forwardRef<AddModalRef, {
-  onConfrim?: () => void 
+  onConfirm?: () => void 
 }>((props, ref) => {
 
   const [ visible, setVisible ] = useState<boolean>(false)
 
-  const { onConfrim } = props 
+  const { onConfirm } = props 
 
   const formRef = useRef<FormInstance | null>(null)
   const isEdit = useRef<boolean>(true)
@@ -59,8 +59,8 @@ const AddModal = forwardRef<AddModalRef, {
     } as any)
     setVisible(false)
     formRef.current?.resetFields()
-    onConfrim?.()
-  }, [onConfrim])
+    onConfirm?.()
+  }, [onConfirm])
 
   useImperativeHandle(ref, () => {
 
@@ -73,11 +73,11 @@ const AddModal = forwardRef<AddModalRef, {
   return (
     <ModalForm
       title="第三方接口设置"
-      visible={visible}
+      open={visible}
       // @ts-ignore
       formRef={formRef}
       onFinish={onFinish}
-      onVisibleChange={onVisibleChange}
+      onOpenChange={onVisibleChange}
     >
       <ProFormTextArea 
         name="name" 

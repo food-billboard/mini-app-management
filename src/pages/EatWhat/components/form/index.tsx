@@ -6,8 +6,8 @@ import {
   ProFormSelect,
   ProFormDatePicker,
   ProFormDependency,
-} from '@ant-design/pro-form';
-import moment from 'moment';
+} from '@ant-design/pro-components';
+import dayjs from 'dayjs';
 import type { Store } from 'antd/lib/form/interface';
 import React, {
   useCallback,
@@ -90,11 +90,11 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   return (
     <ModalForm
       title="新增菜单"
-      visible={visible}
+      open={visible}
       // @ts-ignore
       formRef={formRef}
       onFinish={onFinish}
-      onVisibleChange={onVisibleChange}
+      onOpenChange={onVisibleChange}
       modalProps={{
         destroyOnClose: true,
       }}
@@ -154,7 +154,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
         placeholder={'请选择时间'}
         name="date"
         label="时间"
-        initialValue={moment()}
+        initialValue={dayjs()}
       />
       <Form.Item name="_id">
         <Input type="hidden" />

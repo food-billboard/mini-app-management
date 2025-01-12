@@ -1,16 +1,20 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
-import { Form, Rate, message, Input, Card, Button } from 'antd';
+import { Form, Rate, Input, Card, Button } from 'antd';
 import type { FormInstance } from 'antd/lib/form';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import ProForm, {
+import { FooterToolbar } from '@ant-design/pro-components';
+import {
+  ProForm,
   ProFormText,
   ProFormDatePicker,
   ProFormSelect,
   ProFormTextArea,
-} from '@ant-design/pro-form';
+} from '@ant-design/pro-components';
 import { history } from 'umi';
-import moment from 'moment';
+import { parse } from 'querystring'
+import dayjs from 'dayjs';
 import type { Store } from 'antd/lib/form/interface';
+import PageContainer from '@/components/PageContainer'
+import { message } from '@/components/Toast';
 import SearchForm from '@/components/TransferSelect';
 import type { ISelectItem } from '@/components/TransferSelect';
 import InputAlias from './components/InputSearch';
@@ -38,9 +42,9 @@ const CreateForm = memo(() => {
 
   const fetchData = async () => {
     const {
-      location: { query },
+      location: { search },
     } = history;
-    const { id } = query as { id: string | undefined };
+    const { id } = parse(search) as { id: string | undefined };
 
     if (id) {
       const method = isObjectId(id) ? getMovieInfo : getDoubanMovieDataDetail;
@@ -286,7 +290,7 @@ const CreateForm = memo(() => {
               label="上映时间"
               fieldProps={{
                 disabledDate: (currentDate) => {
-                  return currentDate > moment();
+                  return currentDate > dayjs();
                 },
               }}
               rules={[

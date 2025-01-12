@@ -1,6 +1,6 @@
 import { Form, Input } from 'antd';
 import type { FormInstance } from 'antd/lib/form';
-import ProForm, { ModalForm } from '@ant-design/pro-form';
+import{ ModalForm, ProForm } from '@ant-design/pro-components';
 import type { Store } from 'antd/lib/form/interface';
 import React, {
   useCallback,
@@ -111,11 +111,11 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   return (
     <ModalForm
       title="新增成员"
-      visible={visible}
+      open={visible}
       // @ts-ignore
       formRef={formRef}
       onFinish={onFinish}
-      onVisibleChange={onVisibleChange}
+      onOpenChange={onVisibleChange}
     >
       <ProForm.Group>
         <SearchForm

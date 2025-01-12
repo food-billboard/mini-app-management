@@ -1,8 +1,7 @@
-import React from 'react'
 import { Tag } from 'antd'
 import { history } from 'umi';
 
-const DATA_MAP = {
+const DATA_MAP: any = {
   image: 'magenta',
   color: 'red',
   text: 'volcano',
@@ -14,7 +13,7 @@ const DATA_MAP = {
   web: 'blue'
 }
 
-export const DATA_Name_MAP = {
+export const DATA_Name_MAP: any = {
   image: '图片',
   color: '颜色',
   text: '文本',

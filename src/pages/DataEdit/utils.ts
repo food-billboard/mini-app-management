@@ -1,6 +1,6 @@
-import pick from 'lodash/pick';
-import { withTry } from '@/utils';
 import { Upload } from '@/components/Upload';
+import { withTry } from '@/utils';
+import { pick } from 'lodash';
 
 type TGetOriginData<O, T> = (data: O) => T;
 
@@ -11,18 +11,23 @@ export const fileValidator = (length: number) => (_: any, value: string[]) => {
 };
 
 export function localFetchData4Array<T extends object, O = T[], K = any>(
-  fetchMethod: Function,
+  fetchMethod: () => any,
   ...restArgs: any[]
 ) {
   return async function filter(
-    ...pickParams: [...[keyof T, string][], [keyof T, string] | TGetOriginData<O, T[]>]
+    ...pickParams: [
+      ...[keyof T, string][],
+      [keyof T, string] | TGetOriginData<O, T[]>,
+    ]
   ): Promise<K[]> {
     const [, data] = await withTry<O>(fetchMethod)(...restArgs);
     console.log(data, 2222222);
     if (!data) return [];
     const lastParams = pickParams[pickParams.length - 1];
     const getOriginData = typeof lastParams === 'function' ? lastParams : null;
-    const realRestPickParams = getOriginData ? pickParams.slice(0, -1) : pickParams;
+    const realRestPickParams = getOriginData
+      ? pickParams.slice(0, -1)
+      : pickParams;
     const realData = getOriginData ? getOriginData(data) : data;
 
     return (
@@ -35,7 +40,7 @@ export function localFetchData4Array<T extends object, O = T[], K = any>(
           },
           {},
         );
-        const newValue = pick(item, Object.keys(keysMap));
+        const newValue: any = pick(item, Object.keys(keysMap));
         return Object.keys(newValue).reduce((acc: any, cur: string) => {
           acc[keysMap[cur]] = newValue[cur];
           return acc;
@@ -46,17 +51,22 @@ export function localFetchData4Array<T extends object, O = T[], K = any>(
 }
 
 export async function localFetchData4Object<T extends object, O = T, K = any>(
-  fetchMethod: Function,
+  fetchMethod: () => any,
   ...restArgs: any[]
 ) {
   return async function filter(
-    ...pickParams: [...[keyof T, string][], [keyof T, string] | TGetOriginData<O, T[]>]
+    ...pickParams: [
+      ...[keyof T, string][],
+      [keyof T, string] | TGetOriginData<O, T[]>,
+    ]
   ): Promise<K> {
     const [, data] = await withTry<O>(fetchMethod)(...restArgs);
     if (!data) return {} as K;
     const lastParams = pickParams[pickParams.length - 1];
     const getOriginData = typeof lastParams === 'function' ? lastParams : null;
-    const realRestPickParams = getOriginData ? pickParams.slice(0, -1) : pickParams;
+    const realRestPickParams = getOriginData
+      ? pickParams.slice(0, -1)
+      : pickParams;
     const realData = getOriginData ? getOriginData(data) : data;
     const keysMap = (realRestPickParams as [keyof T, string][]).reduce(
       (acc: any, cur: [keyof T, string]) => {
@@ -66,7 +76,7 @@ export async function localFetchData4Object<T extends object, O = T, K = any>(
       },
       {},
     );
-    const newValue = pick(realData, Object.keys(keysMap));
+    const newValue: any = pick(realData, Object.keys(keysMap));
     return Object.keys(newValue).reduce((acc: any, cur: string) => {
       acc[keysMap[cur]] = newValue[cur];
       return acc;

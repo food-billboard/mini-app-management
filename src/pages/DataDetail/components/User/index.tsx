@@ -1,8 +1,8 @@
 import { Table, Space } from 'antd'
 import { history } from 'umi'
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { unstable_batchedUpdates } from 'react-dom'
-import { LightFilter, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-form'
+import { LightFilter, ProFormDatePicker, ProFormSelect } from '@ant-design/pro-components'
 import commonColumns from './columns'
 import { getGlanceUserList } from '@/services'
 import { USER_STATUS } from '@/utils'
@@ -85,7 +85,7 @@ export default memo((props: IProps) => {
             options={Object.entries(USER_STATUS).reduce((acc, cur) => {
               const [ key, value ] = cur
               acc.push({
-                label: value,
+                label: value as string,
                 value: key
               }) 
               return acc 

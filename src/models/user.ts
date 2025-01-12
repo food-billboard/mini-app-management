@@ -1,21 +1,26 @@
-import { stringify } from 'querystring'
-import { getUserInfo, forgetPassword, register, LoginParamsType, accountLogin, RegisterParamsType, ResetParamsType, outLogin } from '@/services'
-import { setAuthority } from '@/utils/authority'
-import { getPageQuery } from '@/utils'
-import { history } from 'umi'
-import { message } from 'antd'
+import { message } from '@/components/Toast';
+import {
+  LoginParamsType,
+  RegisterParamsType,
+  ResetParamsType,
+  accountLogin,
+  forgetPassword,
+  getUserInfo,
+  outLogin,
+  register,
+} from '@/services';
+import { getPageQuery } from '@/utils';
+import { stringify } from 'querystring';
+import { history } from 'umi';
 
 interface IUserModelState {
-  currentUser?: CurrentUser
-  status: any
+  currentUser?: CurrentUser;
+  status: any;
 }
 
 interface CurrentUser extends API_ADMIN.IGetAdminInfoRes {}
 
-export {
-  IUserModelState,
-  CurrentUser
-}
+export { CurrentUser, IUserModelState };
 
 export default {
   namespace: 'user',
@@ -26,20 +31,22 @@ export default {
   },
 
   effects: {
-
     //获取用户信息
-    * fetchCurrent(_: any, { call, put }: { call: any, put: any }) {
-      const response = yield call(getUserInfo)
+    *fetchCurrent(_: any, { call, put }: { call: any; put: any }) {
+      const response = yield call(getUserInfo);
       yield put({
         type: 'saveCurrentUser',
-        payload: response
-      })
-      return response
+        payload: response,
+      });
+      return response;
     },
 
     //登录
-    * login({ payload }: { payload: LoginParamsType }, { call, put }: { call: any, put: any }) {
-      const response = yield call(accountLogin, payload)
+    *login(
+      { payload }: { payload: LoginParamsType },
+      { call, put }: { call: any; put: any },
+    ) {
+      const response = yield call(accountLogin, payload);
 
       yield put({
         type: 'changeLoginStatus',
@@ -66,20 +73,20 @@ export default {
     },
 
     //退出登录
-    * logout(_: any, { call, put }: { call: any, put: any }) {
+    *logout(_: any, { call, put }: { call: any; put: any }) {
       try {
-        yield call(outLogin)
-      }catch(err) {}
+        yield call(outLogin);
+      } catch (err) {}
 
       const { redirect } = getPageQuery();
       yield put({
         type: 'saveCurrentUser',
-        payload: {}
-      })
+        payload: {},
+      });
       yield put({
         type: 'changeLoginStatus',
-        payload: {}
-      })
+        payload: {},
+      });
       // Note: There may be security issues, please note
       if (window.location.pathname !== '/user/login' && !redirect) {
         history.replace({
@@ -92,8 +99,11 @@ export default {
     },
 
     //注册
-    * register({ payload }: { payload: RegisterParamsType }, { call }: { call: any }) {
-      const response = yield call(register, payload)
+    *register(
+      { payload }: { payload: RegisterParamsType },
+      { call }: { call: any },
+    ) {
+      const response = yield call(register, payload);
 
       //注册成功跳转至登录
       if (!!response.token) {
@@ -102,14 +112,17 @@ export default {
           duration: 1.5,
           onClose: () => {
             history.replace('/user/login');
-          }
-        })
+          },
+        });
       }
     },
 
     //重置密码
-    * forger({ payload }: { payload: ResetParamsType }, { call }: { call: any }) {
-      const response = yield call(forgetPassword, payload)
+    *forger(
+      { payload }: { payload: ResetParamsType },
+      { call }: { call: any },
+    ) {
+      const response = yield call(forgetPassword, payload);
       //重置成功跳转至登录
       if (response.status === 'ok') {
         message.success({
@@ -117,15 +130,13 @@ export default {
           duration: 1.5,
           onClose: () => {
             history.replace('/user/login');
-          }
-        })
+          },
+        });
       }
-    }
-
+    },
   },
 
   reducers: {
-
     saveCurrentUser(state: any, action: any) {
       return {
         ...state,
@@ -134,14 +145,11 @@ export default {
     },
 
     changeLoginStatus(state: any, { payload }: { payload: any }) {
-      setAuthority(payload.currentAuthority);
       return {
         ...state,
         status: payload.status,
         type: payload.type,
       };
     },
-
-  }
-
-}
+  },
+};
