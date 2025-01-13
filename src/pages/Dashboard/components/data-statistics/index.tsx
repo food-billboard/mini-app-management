@@ -109,8 +109,10 @@ const TopSearch: React.FC<any> = ({
     <Card
       bordered
       loading={activeKey == 'user' ? userLoading : dataLoading}
-      bodyStyle={{
-        padding: '10px 20px',
+      styles={{
+        body: {
+          padding: '10px 20px',
+        }
       }}
     >
       <Tabs

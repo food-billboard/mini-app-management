@@ -17,8 +17,10 @@ const Keyword: React.FC<any> = ({
     <Card
       // title={"热门搜索关键词"}
       bordered={false}
-      bodyStyle={{
-        overflow: 'hidden',
+      styles={{
+        body: {
+          overflow: 'hidden',
+        }
       }}
     >
       <TagCloud data={data.map((item: IKeyword) => ({ name: item.name, text: item.name, value: item.count }))} height={100} />

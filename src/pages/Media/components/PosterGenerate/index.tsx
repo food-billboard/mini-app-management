@@ -1,5 +1,6 @@
 import React, { useState, useCallback, forwardRef, useImperativeHandle } from 'react';
-import { Modal, Button } from 'antd';
+import { Button } from 'antd';
+import { Modal } from '@/components/ProModal'
 import { generateVideoPoster } from '@/services';
 
 const ConfirmModal = forwardRef(

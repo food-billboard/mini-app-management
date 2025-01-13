@@ -1,6 +1,6 @@
 import { Form, Input } from 'antd';
 import type { FormInstance } from 'antd/lib/form';
-import { ModalForm, ProFormTextArea, ProFormSelect } from '@ant-design/pro-components';
+import { ProFormTextArea, ProFormSelect } from '@ant-design/pro-components';
 import type { Store } from 'antd/lib/form/interface';
 import  {
   useCallback,
@@ -10,6 +10,7 @@ import  {
   forwardRef,
   useImperativeHandle,
 } from 'react';
+import { ModalForm } from '@/components/ProModal'
 import { MEDIA_AUTH_MAP, MEDIA_UPLOAD_STATUS } from '@/utils';
 
 type FormData = API_MEDIA.IPutMediaParams;

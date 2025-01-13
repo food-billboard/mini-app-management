@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react';
-import { Button, Popconfirm, Modal, Input } from 'antd';
+import { Button, Popconfirm, Input } from 'antd';
 import { message } from '@/components/Toast';
 import { PlusOutlined } from '@ant-design/icons';
 import { getDoubanMovieData } from '@/services';
+import { Modal } from '@/components/ProModal'
 
 const AddModal = (props: { onConfirm?: (id: string) => void; onCancel?: () => void }) => {
   const { onCancel: propsOnCancel, onConfirm } = props;

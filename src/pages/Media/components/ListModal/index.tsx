@@ -1,5 +1,6 @@
-import React, { useCallback, useState, useImperativeHandle, forwardRef } from 'react';
-import { Button, Modal } from 'antd';
+import { Modal } from '@/components/ProModal';
+import { Button } from 'antd';
+import { forwardRef, useCallback, useImperativeHandle, useState } from 'react';
 import styles from './index.less';
 
 export type ListModalRef = {
@@ -51,13 +52,19 @@ const ListModal = forwardRef<ListModalRef, {}>((props, ref) => {
       title="检测结果列表"
       onCancel={setVisible.bind(null, false)}
       footer={[
-        <Button key="confirm" type="primary" onClick={setVisible.bind(null, false)}>
+        <Button
+          key="confirm"
+          type="primary"
+          onClick={setVisible.bind(null, false)}
+        >
           确定
         </Button>,
       ]}
-      bodyStyle={{
-        maxHeight: '40vh',
-        overflow: 'scroll',
+      styles={{
+        body: {
+          maxHeight: '40vh',
+          overflow: 'scroll',
+        },
       }}
     >
       {list.map((item) => {

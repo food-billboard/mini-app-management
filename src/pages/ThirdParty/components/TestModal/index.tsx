@@ -1,8 +1,9 @@
 import React, { forwardRef, useImperativeHandle, useState, useCallback } from 'react';
-import { Modal, Button } from 'antd';
+import { Button } from 'antd';
 import { getThirdData } from '@/services';
 import CodeEditor from '@/components/CodeEditor';
 import { CodeData } from '@/components/JsonViewer';
+import { Modal } from '@/components/ProModal'
 
 export type TestModalRef = {
   open: (value: API_THIRD.GetThirdListData) => void;

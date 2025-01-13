@@ -1,13 +1,13 @@
 import React, { forwardRef, useImperativeHandle, useState, useRef, useCallback } from 'react'
 import { Form, Input } from 'antd'
 import {
-  ModalForm,
   ProFormTextArea,
   ProFormSelect
 } from '@ant-design/pro-components'
 import { pick } from 'lodash'
 import type { Store } from 'antd/lib/form/interface'
 import type { FormInstance } from 'antd/lib/form'
+import { ModalForm } from '@/components/ProModal'
 import CodeEditor from '@/components/CodeEditor'
 import { putThirdData, postThirdData } from '@/services'
 

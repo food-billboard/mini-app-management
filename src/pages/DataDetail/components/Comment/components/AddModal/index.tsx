@@ -1,8 +1,9 @@
 import { Input, Form } from 'antd';
 import type { FormInstance } from 'antd/lib/form';
-import { ModalForm, ProFormTextArea } from '@ant-design/pro-components';
+import { ProFormTextArea } from '@ant-design/pro-components';
 import type { Store } from 'antd/lib/form/interface';
 import { message } from '@/components/Toast';
+import { ModalForm } from '@/components/ProModal'
 import React, { useCallback, useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import Upload from '@/components/Upload';
 import VideoUpload from '@/components/VideoUpload'

@@ -1,18 +1,19 @@
+import { ModalForm } from '@/components/ProModal';
+import RichTextEditor from '@/components/RichTextEditor';
+import { sleep } from '@/utils';
+import { ProFormSelect, ProFormTextArea } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import type { FormInstance } from 'antd/lib/form';
-import { ModalForm, ProFormTextArea, ProFormSelect } from '@ant-design/pro-components';
 import type { Store } from 'antd/lib/form/interface';
-import React, {
+import {
+  forwardRef,
   useCallback,
+  useImperativeHandle,
   useMemo,
   useRef,
   useState,
-  forwardRef,
-  useImperativeHandle,
 } from 'react';
-import { sleep } from '@/utils';
-import RichTextEditor from '@/components/RichTextEditor';
-import { MENU_MAP, FOOD_MAP } from '../../columns';
+import { FOOD_MAP, MENU_MAP } from '../../columns';
 
 type FormData = API.PutEatMenuClassifyData | API.PostEatMenuClassifyData;
 
@@ -96,9 +97,11 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       onFinish={onFinish}
       onOpenChange={onVisibleChange}
       modalProps={{
-        bodyStyle: {
-          height: 500,
-          overflowY: 'auto',
+        styles: {
+          body: {
+            height: 500,
+            overflowY: 'auto',
+          },
         },
       }}
     >

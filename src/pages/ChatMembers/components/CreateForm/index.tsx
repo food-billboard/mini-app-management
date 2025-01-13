@@ -1,17 +1,18 @@
+import { ModalForm } from '@/components/ProModal';
+import SearchForm from '@/components/TransferSelect';
+import { getMemberList } from '@/services';
+import { ProForm } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import type { FormInstance } from 'antd/lib/form';
-import{ ModalForm, ProForm } from '@ant-design/pro-components';
 import type { Store } from 'antd/lib/form/interface';
-import React, {
+import {
+  forwardRef,
   useCallback,
+  useImperativeHandle,
   useMemo,
   useRef,
   useState,
-  forwardRef,
-  useImperativeHandle,
 } from 'react';
-import SearchForm from '@/components/TransferSelect';
-import { getMemberList } from '@/services';
 
 type FormData = API_CHAT.IPostMemberParams;
 
@@ -26,7 +27,9 @@ export interface IFormRef {
 
 const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   const [visible, setVisible] = useState<boolean>(false);
-  const [memberList, setMemberList] = useState<{ key: string; title: string }[]>([]);
+  const [memberList, setMemberList] = useState<
+    { key: string; title: string }[]
+  >([]);
 
   const { onCancel: propsCancel, onSubmit } = useMemo(() => {
     return props;

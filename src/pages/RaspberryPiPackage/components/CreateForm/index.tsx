@@ -1,8 +1,9 @@
 import { Form, Input } from 'antd';
 import type { FormInstance } from 'antd/lib/form';
-import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
+import { ProFormText, ProFormTextArea } from '@ant-design/pro-components';
 import type { Store } from 'antd/lib/form/interface';
 import React, { Component, createRef } from 'react';
+import { ModalForm } from '@/components/ProModal'
 
 export type FormData = API_RASPBERRY.GetListData;
 

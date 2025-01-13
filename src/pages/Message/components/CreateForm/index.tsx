@@ -1,6 +1,6 @@
 import { Form, Input, Select } from 'antd';
 import type { FormInstance } from 'antd/lib/form';
-import { ModalForm, ProFormSelect } from '@ant-design/pro-components';
+import { ProFormSelect } from '@ant-design/pro-components';
 import { pick } from 'lodash';
 import type { Store } from 'antd/lib/form/interface';
 import React, {
@@ -11,6 +11,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react';
+import { ModalForm } from '@/components/ProModal'
 import ImageContent from '../Image';
 import VideoContent from '../Video';
 import TextContent from '../Text';

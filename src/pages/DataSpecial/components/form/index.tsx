@@ -1,7 +1,6 @@
 import { Form, Input } from 'antd'
 import type { FormInstance } from 'antd/lib/form'
 import {
-  ModalForm,
   ProFormTextArea,
   ProFormSwitch, 
   ProForm
@@ -9,6 +8,7 @@ import {
 import { omit } from 'lodash'
 import type { Store } from 'antd/lib/form/interface'
 import React, { useCallback, useRef, useState, forwardRef, useImperativeHandle } from 'react'
+import { ModalForm } from '@/components/ProModal'
 import Upload from '@/components/Upload'
 import MovieSelect from '@/components/TransferSelect'
 import { fileValidator } from '../../../DataEdit/utils'

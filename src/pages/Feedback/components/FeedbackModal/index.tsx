@@ -7,8 +7,9 @@ import React, {
   useMemo,
 } from 'react';
 import { unstable_batchedUpdates } from 'react-dom';
-import { Modal, Input } from 'antd';
+import { Input } from 'antd';
 import { merge } from 'lodash';
+import { Modal } from '@/components/ProModal'
 
 export type TFeedbackEditData = API_USER.IGetFeedbackData & { description?: string };
 

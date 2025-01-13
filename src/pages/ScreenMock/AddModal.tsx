@@ -1,5 +1,4 @@
 import {
-  ModalForm,
   ProFormDigit,
   ProFormDigitRange,
   ProFormRadio,
@@ -17,6 +16,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { ModalForm } from '@/components/ProModal'
 import { DATA_Name_MAP } from './columns';
 
 type FormData = API_SCREEN.IPostScreenMockDataParams & { _id?: string };

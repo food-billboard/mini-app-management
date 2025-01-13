@@ -1,7 +1,6 @@
 import { Form, Input } from 'antd';
 import type { FormInstance } from 'antd/lib/form';
 import {
-  ModalForm,
   ProFormTextArea,
   ProFormSelect,
   ProFormDatePicker,
@@ -17,6 +16,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react';
+import { ModalForm } from '@/components/ProModal'
 import { getCurrentMenuClassifyList } from '@/services';
 import { MENU_MAP } from '../../columns';
 

@@ -1,9 +1,9 @@
 import React, { memo, forwardRef, useImperativeHandle, useState, useRef, useEffect, useCallback } from 'react'
 import { unstable_batchedUpdates } from 'react-dom'
 import { message } from '@/components/Toast';
+import { ModalForm } from '@/components/ProModal'
 import type { ModalProps } from 'antd/es/modal'
 import type { FormInstance } from 'antd/es/form'
-import { ModalForm } from '@ant-design/pro-components'
 import type { Store } from 'antd/lib/form/interface'
 
 interface IProps extends ModalProps {
