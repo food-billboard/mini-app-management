@@ -67,12 +67,9 @@ const CardList: React.FC<IProps> = () => {
 
   const handleRemove = async (selectedRows: API_DATA.IGetMovieData[]) => {
     try {
-      for (let i = 0; i < selectedRows.length; i++) {
-        const { _id } = selectedRows[i];
-        await deleteMovie({
-          _id,
-        });
-      }
+      await deleteMovie({
+        _id: selectedRows.map(item => item._id).join(','),
+      });
     } catch (err) {
       return false;
     }

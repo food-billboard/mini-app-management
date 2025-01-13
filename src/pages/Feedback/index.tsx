@@ -58,12 +58,9 @@ const FeedbackManage = memo(() => {
   const handleRemove = useCallback(
     async (selectedRows: API_USER.IGetFeedbackData[]) => {
       try {
-        for (let i = 0; i < selectedRows.length; i++) {
-          const { _id } = selectedRows[i];
-          await deleteUserFeedback({
-            _id,
-          });
-        }
+        await deleteUserFeedback({
+          _id: selectedRows.map(item => item._id).join(','),
+        });
       } catch (err) {
         return false;
       }

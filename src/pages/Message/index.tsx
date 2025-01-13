@@ -24,12 +24,9 @@ const CardList: React.FC<IProps> = () => {
 
   const handleRemove = async (selectedRows: API_CHAT.IGetMessageResData[]) => {
     try {
-      for (let i = 0; i < selectedRows.length; i++) {
-        const { _id } = selectedRows[i];
-        await deleteMessage({
-          _id,
-        });
-      }
+      await deleteMessage({
+        _id: selectedRows.map(item => item._id).join(','),
+      });
     } catch (err) {
       return false;
     }

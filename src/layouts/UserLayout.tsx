@@ -3,6 +3,7 @@ import type { ConnectState } from '@/models/connect';
 import { MenuDataItem } from '@ant-design/pro-components';
 import React from 'react';
 import { connect, ConnectProps, Link, Outlet } from 'umi';
+import useToast from '../components/Toast'
 import logo from '../assets/logo.svg';
 import styles from './UserLayout.less';
 
@@ -13,6 +14,7 @@ export interface UserLayoutProps extends Partial<ConnectProps> {
 }
 
 const UserLayout: React.FC<UserLayoutProps> = (props) => {
+  useToast()
   return (
     <div className={styles.container}>
       <div className={styles.lang}></div>

@@ -68,12 +68,9 @@ const InstanceManage: React.FC<any> = () => {
   const handleRemove = useCallback(
     async (selectedRows: API_INSTANCE.IGetInstanceInfoData[]) => {
       try {
-        for (let i = 0; i < selectedRows.length; i++) {
-          const { _id } = selectedRows[i];
-          await deleteInstanceInfo({
-            _id,
-          });
-        }
+        await deleteInstanceInfo({
+          _id: selectedRows.map(item => item._id).join(','),
+        });
       } catch (err) {
         return false;
       }

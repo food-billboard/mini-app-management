@@ -61,6 +61,7 @@ const CardList: React.FC<IProps> = () => {
       action={{
         remove: {
           action: handleRemove,
+          multiple: false 
         },
       }}
       extraActionRender={(record) => {
@@ -99,7 +100,6 @@ const CardList: React.FC<IProps> = () => {
           .catch(() => ({ data: [], total: 0 }));
       }}
       columns={columns as any}
-      rowSelection={{}}
     >
       <Form ref={formRef} onSubmit={onSubmit} />
     </ProPage>

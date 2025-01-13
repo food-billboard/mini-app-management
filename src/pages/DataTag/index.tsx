@@ -42,12 +42,9 @@ const TagManage = memo(() => {
   const handleRemove = useCallback(
     async (selectedRows: API_DATA.IGetMovieTagResData[]) => {
       try {
-        for (let i = 0; i < selectedRows.length; i++) {
-          const { _id } = selectedRows[i];
-          await deleteMovieTag({
-            _id,
-          });
-        }
+        await deleteMovieTag({
+          _id: selectedRows.map(item => item._id).join(','),
+        });
       } catch (err) {
         return false;
       }

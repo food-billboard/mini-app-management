@@ -52,12 +52,9 @@ const MemberManage = memo(() => {
   const handleRemove = useCallback(
     async (selectedRows: API_USER.IGetUserListResData[]) => {
       try {
-        for (let i = 0; i < selectedRows.length; i++) {
-          const { _id } = selectedRows[i];
-          await deleteUser({
-            _id,
-          });
-        }
+        await deleteUser({
+          _id: selectedRows.map(item => item._id).join(','),
+        })
       } catch (err) {
         return false;
       }

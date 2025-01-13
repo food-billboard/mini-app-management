@@ -27,13 +27,10 @@ const CardList: React.FC<IProps> = () => {
     selectedRows: API_CHAT.IGetMemberListResData[],
   ) => {
     try {
-      for(let i = 0; i < selectedRows.length; i ++) {
-        const { _id } = selectedRows[i]
-        await deleteMember({
-          _id,
-          room: roomId,
-        });
-      }
+      await deleteMember({
+        _id: selectedRows.map(item => item._id).join(','),
+        room: roomId,
+      });
     }catch(err) {
       return false 
     }

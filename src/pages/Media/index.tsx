@@ -72,13 +72,10 @@ const MediaManage = memo(() => {
   const handleRemove = useCallback(
     async (selectedRows: API_MEDIA.IGetMediaListData[]) => {
       try {
-        for (let i = 0; i < selectedRows.length; i++) {
-          const { _id } = selectedRows[i];
-          await deleteMedia({
-            _id,
-            type: MEDIA_TYPE_MAP[activeKey] as any,
-          });
-        }
+        await deleteMedia({
+          _id: selectedRows.map(item => item._id).join(','),
+          type: MEDIA_TYPE_MAP[activeKey] as any,
+        });
       } catch (err) {
         return false;
       }
