@@ -60,11 +60,17 @@ const ProTable = <
       title: '提示',
       content: '是否确认删除？',
       onOk: async () => {
-        const result = await action(record);
-        if (typeof result !== 'boolean' || result) {
-          return Promise.resolve();
+        try {
+          const result = await action(record);
+          actionLoading.current = false;
+          if (typeof result !== 'boolean' || result) {
+            return Promise.resolve();
+          }
+          return Promise.reject();
+        } catch (err) {
+          actionLoading.current = false;
+          return Promise.reject();
         }
-        return Promise.reject();
       },
       onCancel: () => {
         actionLoading.current = false;
@@ -93,10 +99,13 @@ const ProTable = <
           handleRemove(record, action);
         }}
         disabled={
-          disabled &&
-          (multipleAction
-            ? !record.length && disabled(record)
-            : disabled(record))
+          multipleAction
+            ? disabled === false
+              ? !record.length
+              : disabled(record)
+            : typeof disabled === 'boolean'
+            ? disabled
+            : disabled(record)
         }
       >
         {multipleAction
