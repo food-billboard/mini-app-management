@@ -8,8 +8,8 @@ const PageContainer = (props: PageContainerProps) => {
   return (
     <AntPageContainer
       token={{
-        paddingBlockPageContainerContent: 24,
-        paddingInlinePageContainerContent: 60,
+        paddingBlockPageContainerContent: 0,
+        paddingInlinePageContainerContent: 20,
       }}
       {...props}
     />
