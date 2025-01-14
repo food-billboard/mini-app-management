@@ -13,10 +13,9 @@ import type { ActionType } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import { identity, pickBy } from 'lodash';
 import React, { useCallback, useRef } from 'react';
-import { connect, history } from 'umi';
+import { history } from 'umi';
 import column from './columns';
 import AddModal from './component/AddModal';
-import { mapDispatchToProps, mapStateToProps } from './connect';
 
 interface IProps {
   role: any;
@@ -68,7 +67,7 @@ const CardList: React.FC<IProps> = () => {
   const handleRemove = async (selectedRows: API_DATA.IGetMovieData[]) => {
     try {
       await deleteMovie({
-        _id: selectedRows.map(item => item._id).join(','),
+        _id: selectedRows.map((item) => item._id).join(','),
       });
     } catch (err) {
       return false;
@@ -196,4 +195,4 @@ const CardList: React.FC<IProps> = () => {
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CardList);
+export default CardList;

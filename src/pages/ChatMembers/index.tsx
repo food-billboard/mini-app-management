@@ -6,11 +6,10 @@ import type { ActionType } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import { identity, omit, pickBy } from 'lodash';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { connect, history } from 'umi';
+import { history } from 'umi';
 import columns from './columns';
 import type { IFormRef } from './components/CreateForm';
 import Form from './components/CreateForm';
-import { mapDispatchToProps, mapStateToProps } from './connect';
 
 interface IProps {
   role: any;
@@ -28,14 +27,14 @@ const CardList: React.FC<IProps> = () => {
   ) => {
     try {
       await deleteMember({
-        _id: selectedRows.map(item => item._id).join(','),
+        _id: selectedRows.map((item) => item._id).join(','),
         room: roomId,
       });
-    }catch(err) {
-      return false 
+    } catch (err) {
+      return false;
     }
-    actionRef.current?.reloadAndRest?.()
-    return true 
+    actionRef.current?.reloadAndRest?.();
+    return true;
   };
 
   const onSubmit = useCallback(async (value: API_CHAT.IPostMemberParams) => {
@@ -68,8 +67,8 @@ const CardList: React.FC<IProps> = () => {
     <ProPage
       action={{
         remove: {
-          action: handleRemove
-        }
+          action: handleRemove,
+        },
       }}
       search={false}
       headerTitle="成员列表"
@@ -85,7 +84,7 @@ const CardList: React.FC<IProps> = () => {
           onClick={() => handleModalVisible()}
         >
           新建
-        </Button>
+        </Button>,
       ]}
       request={async (params: any) => {
         if (!roomId)
@@ -112,4 +111,4 @@ const CardList: React.FC<IProps> = () => {
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CardList);
+export default CardList;

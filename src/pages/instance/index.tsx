@@ -11,12 +11,10 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import { pick } from 'lodash';
-import React, { memo, useCallback, useRef } from 'react';
-import { connect } from 'umi';
+import React, { useCallback, useRef } from 'react';
 import columns from './columns';
 import type { IFormRef } from './components/form';
 import Form from './components/form';
-import { mapDispatchToProps, mapStateToProps } from './connect';
 
 const InstanceManage: React.FC<any> = () => {
   const actionRef = useRef<ActionType>();
@@ -69,7 +67,7 @@ const InstanceManage: React.FC<any> = () => {
     async (selectedRows: API_INSTANCE.IGetInstanceInfoData[]) => {
       try {
         await deleteInstanceInfo({
-          _id: selectedRows.map(item => item._id).join(','),
+          _id: selectedRows.map((item) => item._id).join(','),
         });
       } catch (err) {
         return false;
@@ -155,7 +153,4 @@ const InstanceManage: React.FC<any> = () => {
   );
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(memo(InstanceManage));
+export default InstanceManage;

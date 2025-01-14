@@ -63,6 +63,7 @@ declare namespace API {
   export interface CurrentUser {
     avatar?: string;
     name?: string;
+    username: string 
     title?: string;
     group?: string;
     signature?: string;
@@ -73,6 +74,16 @@ declare namespace API {
     userid?: string;
     access?: 'user' | 'guest' | 'admin';
     unreadCount?: number;
+    roles: keyof typeof API_USER.API_USER;
+    description: string 
+    mobile: string 
+    email: string 
+    fans: string 
+    comment: string 
+    store: string 
+    attentions: string 
+    hot: string 
+    issue: string 
   }
 
   export interface LoginStateType {

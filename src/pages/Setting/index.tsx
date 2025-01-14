@@ -1,90 +1,65 @@
+import useUserInfo from '@/hooks/useUserInfo';
 import { GridContent } from '@ant-design/pro-components';
 import { Menu } from 'antd';
-import React, { Component } from 'react';
-import { connect } from 'umi';
+import { useMemo, useRef, useState } from 'react';
 import BaseView from './components/base';
-import { mapDispatchToProps, mapStateToProps } from './connect';
 import styles from './index.less';
 
-const { Item } = Menu;
+const Settings = () => {
+  const [mode, setMode] = useState('inline');
+  const [selectKey, setSelectKey] = useState('base');
 
-interface IProps {
-  getUserInfo: () => Promise<API_ADMIN.IGetAdminInfoRes>;
-  userInfo: API_ADMIN.IGetAdminInfoRes;
-  loading: boolean;
-}
-
-interface IState {
-  mode: any;
-  selectKey: 'base';
-  menuMap: {
-    [key: string]: React.ReactElement;
-  };
-}
-
-class Settings extends Component<IProps> {
-  main = React.createRef<HTMLDivElement>();
-
-  state: IState = {
-    mode: 'inline',
-    menuMap: {
-      base: <span>基本设置</span>,
-    },
-    selectKey: 'base',
+  const menuMap = {
+    base: <span>基本设置</span>,
   };
 
-  async componentDidMount() {
-    const { getUserInfo } = this.props;
-    if (getUserInfo) await getUserInfo();
-    window.addEventListener('resize', this.resize);
-    this.resize();
-  }
+  useUserInfo();
 
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.resize);
-  }
+  const main = useRef<HTMLDivElement>(null);
 
-  getRightTitle = () => {
-    const { selectKey, menuMap } = this.state;
-    return menuMap[selectKey];
-  };
+  // async componentDidMount() {
+  //   const { getUserInfo } = this.props;
+  //   if (getUserInfo) await getUserInfo();
+  //   window.addEventListener('resize', this.resize);
+  //   this.resize();
+  // }
 
-  selectKey = (key: string) => {
-    this.setState({
-      selectKey: key,
-    });
-  };
+  // componentWillUnmount() {
+  //   window.removeEventListener('resize', this.resize);
+  // }
 
-  resize = () => {
-    if (!this.main) {
-      return;
-    }
+  const getRightTitle = useMemo(() => {
+    return (menuMap as any)[selectKey];
+  }, [selectKey]);
 
-    requestAnimationFrame(() => {
-      if (!this.main) {
-        return;
-      }
+  // resize = () => {
+  //   if (!this.main) {
+  //     return;
+  //   }
 
-      let mode = 'inline';
-      const offsetWidth = this.main.current?.offsetWidth || 0;
+  //   requestAnimationFrame(() => {
+  //     if (!this.main) {
+  //       return;
+  //     }
 
-      if (offsetWidth < 641 && offsetWidth > 400) {
-        mode = 'horizontal';
-      }
+  //     let mode = 'inline';
+  //     const offsetWidth = this.main.current?.offsetWidth || 0;
 
-      if (window.innerWidth < 768 && offsetWidth > 400) {
-        mode = 'horizontal';
-      }
+  //     if (offsetWidth < 641 && offsetWidth > 400) {
+  //       mode = 'horizontal';
+  //     }
 
-      this.setState({
-        mode,
-      });
-    });
-  };
+  //     if (window.innerWidth < 768 && offsetWidth > 400) {
+  //       mode = 'horizontal';
+  //     }
 
-  renderChildren = () => {
-    const { selectKey } = this.state;
+  //     this.setState({
+  //       mode,
+  //     });
+  //   });
+  // };
 
+  const renderChildren = useMemo(() => {
     switch (selectKey) {
       case 'base':
         return <BaseView />;
@@ -93,40 +68,31 @@ class Settings extends Component<IProps> {
     }
 
     return null;
-  };
+  }, [selectKey]);
 
-  render() {
-    const { userInfo } = this.props;
-
-    if (!userInfo._id) {
-      return '';
-    }
-
-    const { mode, selectKey, menuMap } = this.state;
-    return (
-      <GridContent>
-        <div className={styles.main} ref={this.main}>
-          <div className={styles.leftMenu}>
-            <Menu
-              mode={mode}
-              selectedKeys={[selectKey]}
-              onClick={({ key }) => this.selectKey(key as string)}
-              items={Object.keys(menuMap).map((item) => {
-                return {
-                  key: item,
-                  label: menuMap[item],
-                };
-              })}
-            />
-          </div>
-          <div className={styles.right}>
-            <div className={styles.title}>{this.getRightTitle()}</div>
-            {this.renderChildren()}
-          </div>
+  return (
+    <GridContent>
+      <div className={styles.main} ref={main}>
+        <div className={styles.leftMenu}>
+          <Menu
+            mode={mode as any}
+            selectedKeys={[selectKey]}
+            onClick={({ key }) => setSelectKey(key)}
+            items={Object.keys(menuMap).map((item) => {
+              return {
+                key: item,
+                label: (menuMap as any)[item],
+              };
+            })}
+          />
         </div>
-      </GridContent>
-    );
-  }
-}
+        <div className={styles.right}>
+          <div className={styles.title}>{getRightTitle}</div>
+          {renderChildren}
+        </div>
+      </div>
+    </GridContent>
+  );
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(Settings);
+export default Settings;

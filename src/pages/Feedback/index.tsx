@@ -9,14 +9,12 @@ import type { ActionType } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import { identity, merge, pick, pickBy } from 'lodash';
 import { memo, useCallback, useRef } from 'react';
-import { connect } from 'umi';
 import columns from './columns';
 import type {
   IFeedbackModalRef,
   TFeedbackEditData,
 } from './components/FeedbackModal';
 import FeedbackModal from './components/FeedbackModal';
-import { mapDispatchToProps, mapStateToProps } from './connect';
 
 const FeedbackManage = memo(() => {
   const actionRef = useRef<ActionType>();
@@ -59,7 +57,7 @@ const FeedbackManage = memo(() => {
     async (selectedRows: API_USER.IGetFeedbackData[]) => {
       try {
         await deleteUserFeedback({
-          _id: selectedRows.map(item => item._id).join(','),
+          _id: selectedRows.map((item) => item._id).join(','),
         });
       } catch (err) {
         return false;
@@ -127,4 +125,4 @@ const FeedbackManage = memo(() => {
   );
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(FeedbackManage);
+export default FeedbackManage;

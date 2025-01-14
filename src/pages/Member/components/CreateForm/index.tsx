@@ -8,7 +8,7 @@ import { message } from '@/components/Toast';
 import Upload from '@/components/Upload';
 import { getUserDetail } from '@/services';
 import { fileValidator } from '../../../DataEdit/utils';
-import { ROLES_MAP } from '@/utils';
+import { ROLES_MAP, sleep } from '@/utils';
 
 export type FormData = API_DATA.IPutMovieParams | API_DATA.IPostMovieParams;
 
@@ -40,12 +40,12 @@ class CreateForm extends Component<IProps, IState> {
   public open = async (id?: string) => {
     const isEdit = !!id;
 
-    const show = () => {
+    const show = (callback?: any) => {
       this.setState({
         visible: true,
         loading: isEdit,
         editable: isEdit,
-      });
+      }, callback);
     };
 
     if (id) {
@@ -55,12 +55,14 @@ class CreateForm extends Component<IProps, IState> {
       })
         .then((data: API_USER.IGetUserDetailRes) => {
           const { avatar } = data;
-          this.formRef.current?.setFieldsValue({
-            ...data,
-            poster: Array.isArray(avatar) ? avatar : [avatar],
-            _id: id,
-          });
-          show();
+          show(async () => {
+            await sleep(1000)
+            this.formRef.current?.setFieldsValue({
+              ...data,
+              poster: Array.isArray(avatar) ? avatar : [avatar],
+              _id: id,
+            });
+          })
         })
         .catch(() => {
           message.info('数据获取错误，请重试');

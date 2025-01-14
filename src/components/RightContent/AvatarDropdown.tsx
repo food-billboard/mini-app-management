@@ -1,10 +1,15 @@
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  LogoutOutlined,
+  SettingOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import { Avatar, Spin } from 'antd';
-import { parse } from 'querystring'
-import { history, connect } from 'umi';
-import { stringify } from 'querystring';
+import { parse, stringify } from 'querystring';
+import { history, useModel } from 'umi';
+import { flushSync } from 'react-dom'
+import { outLogin } from '@/services'
+import { getPageQuery } from '@/utils';
 import HeaderDropdown from '../HeaderDropdown';
-import { ConnectState } from '@/models/connect'
 import styles from './index.less';
 
 export interface GlobalHeaderRightProps {
@@ -30,8 +35,10 @@ const loginOut = async () => {
 };
 
 const AvatarDropdown = (props: any) => {
-  
-  const { dispatch, userInfo, menu } = props 
+  const { menu } = props;
+
+  const { initialState, setInitialState } = useModel('@@initialState');
+  const { currentUser: userInfo } = initialState || {};
 
   const onMenuClick = async (event: {
     key: React.Key;
@@ -41,19 +48,36 @@ const AvatarDropdown = (props: any) => {
   }) => {
     const { key } = event;
     if (key === 'logout') {
-      await dispatch({
-        type: 'user/logout'
-      })
-      loginOut()
-      return
+      try {
+        await outLogin();
+      } catch (err) {}
+
+      const { redirect } = getPageQuery();
+      flushSync(() => {
+        setInitialState((s) => ({
+          ...s,
+          currentUser: undefined ,
+        }));
+      });
+      // Note: There may be security issues, please note
+      if (window.location.pathname !== '/user/login' && !redirect) {
+        history.replace({
+          pathname: '/user/login',
+          search: stringify({
+            redirect: window.location.href,
+          }),
+        });
+      }
+      loginOut();
+      return;
     }
-    if(key === 'settings') {
-      return history.push(`/admin/setting`)
+    if (key === 'settings') {
+      return history.push(`/admin/setting`);
     }
-    if(key === 'center') {
-      return history.push('/admin')
+    if (key === 'center') {
+      return history.push('/admin');
     }
-  }
+  };
 
   if (!userInfo || !userInfo.username) {
     return (
@@ -66,50 +90,52 @@ const AvatarDropdown = (props: any) => {
           }}
         />
       </span>
-    )
+    );
   }
 
   return (
-    <HeaderDropdown 
+    <HeaderDropdown
       menu={{
-        className: styles.menu, 
+        className: styles.menu,
         selectedKeys: [],
         onClick: onMenuClick as any,
         items: [
           {
             icon: <UserOutlined />,
             label: '个人中心',
-            key: 'center'
+            key: 'center',
           },
           {
             icon: <SettingOutlined />,
             label: '个人设置',
-            key: 'settings'
+            key: 'settings',
           },
-          ...menu ? [
-            {
-              type: 'divider'
-            }
-          ] as any : [],
+          ...(menu
+            ? ([
+                {
+                  type: 'divider',
+                },
+              ] as any)
+            : []),
           {
             icon: <LogoutOutlined />,
             label: '退出登录',
-            key: 'logout'
-          }
-        ]
+            key: 'logout',
+          },
+        ],
       }}
     >
       <span className={`${styles.action} ${styles.account}`}>
-        <Avatar size="small" className={styles.avatar} src={userInfo.avatar} alt="avatar" />
+        <Avatar
+          size="small"
+          className={styles.avatar}
+          src={userInfo.avatar}
+          alt="avatar"
+        />
         <span className={`${styles.name} anticon`}>{userInfo.username}</span>
       </span>
     </HeaderDropdown>
-  )
+  );
+};
 
-}
-
-export default connect(({ user }: ConnectState) => {
-  return {
-    userInfo: user.currentUser
-  }
-})(AvatarDropdown)
+export default AvatarDropdown;

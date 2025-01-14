@@ -122,7 +122,6 @@ export const layout: RuntimeConfig['layout'] = ({ initialState, setInitialState 
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
     childrenRender: (children) => {
-      console.log(initialState)
       if (initialState?.loading) return <PageLoading />;
       return (
         <>

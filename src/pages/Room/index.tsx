@@ -6,11 +6,9 @@ import type { ActionType } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import { identity, pickBy } from 'lodash';
 import React, { useCallback, useRef } from 'react';
-import { connect } from 'umi';
 import columns from './columns';
 import type { IFormRef } from './components/CreateForm';
 import Form from './components/CreateForm';
-import { mapDispatchToProps, mapStateToProps } from './connect';
 
 interface IProps {
   role: any;
@@ -61,13 +59,17 @@ const CardList: React.FC<IProps> = () => {
       action={{
         remove: {
           action: handleRemove,
-          multiple: false 
+          multiple: false,
         },
       }}
       extraActionRender={(record) => {
         return (
           <>
-            <Button style={{paddingLeft: 0}} type="link" onClick={() => handleModalVisible(record)}>
+            <Button
+              style={{ paddingLeft: 0 }}
+              type="link"
+              onClick={() => handleModalVisible(record)}
+            >
               编辑
             </Button>
           </>
@@ -106,4 +108,4 @@ const CardList: React.FC<IProps> = () => {
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CardList);
+export default CardList;

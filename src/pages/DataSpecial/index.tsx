@@ -6,17 +6,15 @@ import {
   postInstanceSpecial,
   putInstanceSpecial,
 } from '@/services';
-import { commonDeleteMethod } from '@/utils';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import { pick } from 'lodash';
-import React, { memo, useCallback, useMemo, useRef } from 'react';
-import { connect, history } from 'umi';
+import React, { useCallback, useMemo, useRef } from 'react';
+import { history } from 'umi';
 import column from './columns';
 import type { IFormRef } from './components/form';
 import Form from './components/form';
-import { mapDispatchToProps, mapStateToProps } from './connect';
 
 const InstanceManage: React.FC<any> = () => {
   const actionRef = useRef<ActionType>();
@@ -72,13 +70,13 @@ const InstanceManage: React.FC<any> = () => {
     async (selectedRows: API_INSTANCE.IGetInstanceSpecialData[]) => {
       try {
         await deleteInstanceSpecial({
-          _id: selectedRows.map(item => item._id).join(','),
+          _id: selectedRows.map((item) => item._id).join(','),
         });
-      }catch(err) {
-        return false 
+      } catch (err) {
+        return false;
       }
-      actionRef.current?.reloadAndRest?.()
-      return true 
+      actionRef.current?.reloadAndRest?.();
+      return true;
     },
     [],
   );
@@ -97,7 +95,7 @@ const InstanceManage: React.FC<any> = () => {
         onClick={() => handleModalVisible()}
       >
         新建
-      </Button>
+      </Button>,
     ];
   }, []);
 
@@ -198,7 +196,4 @@ const InstanceManage: React.FC<any> = () => {
   );
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(memo(InstanceManage));
+export default InstanceManage;

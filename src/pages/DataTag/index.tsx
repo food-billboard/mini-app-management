@@ -5,9 +5,7 @@ import type { ActionType } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import { identity, pickBy } from 'lodash';
 import { memo, useCallback, useRef } from 'react';
-import { connect } from 'umi';
 import columns from './columns';
-import { mapDispatchToProps, mapStateToProps } from './connect';
 
 const TagManage = memo(() => {
   const actionRef = useRef<ActionType>();
@@ -43,7 +41,7 @@ const TagManage = memo(() => {
     async (selectedRows: API_DATA.IGetMovieTagResData[]) => {
       try {
         await deleteMovieTag({
-          _id: selectedRows.map(item => item._id).join(','),
+          _id: selectedRows.map((item) => item._id).join(','),
         });
       } catch (err) {
         return false;
@@ -106,4 +104,4 @@ const TagManage = memo(() => {
   );
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TagManage);
+export default TagManage;

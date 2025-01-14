@@ -1,19 +1,14 @@
-import { Pagination, List, Row, Col, Avatar, Image } from 'antd';
-import { memo, useCallback, useState, Fragment, useEffect, useMemo } from 'react';
-import { unstable_batchedUpdates } from 'react-dom';
-import { merge, noop } from 'lodash';
-import { connect } from 'umi';
-import dayjs from 'dayjs';
-import { StarOutlined, LikeOutlined, MessageOutlined } from '@ant-design/icons';
 import { preview } from '@/components/VideoPreview';
-import { mapStateToProps, mapDispatchToProps } from '../../connect';
 import { GerAdminCommentList } from '@/services';
 import { IMAGE_FALLBACK } from '@/utils';
+import { LikeOutlined, MessageOutlined, StarOutlined } from '@ant-design/icons';
+import { useModel } from '@umijs/max';
+import { Avatar, Col, Image, List, Pagination, Row } from 'antd';
+import dayjs from 'dayjs';
+import { merge, noop } from 'lodash';
+import { Fragment, memo, useCallback, useEffect, useState } from 'react';
+import { unstable_batchedUpdates } from 'react-dom';
 import styles from './index.less';
-
-interface IProps {
-  userInfo: API_ADMIN.IGetAdminInfoRes;
-}
 
 const ICON_MAP = {
   star: StarOutlined,
@@ -21,16 +16,21 @@ const ICON_MAP = {
   message: MessageOutlined,
 };
 
-const Comments = memo((props: IProps) => {
+const Comments = memo(() => {
+  const { initialState } = useModel('@@initialState');
+  const { currentUser: userInfo } = initialState || {};
+
   const [list, setList] = useState<API_ADMIN.IGetAdminCommentData[]>([]);
   const [currPage, setCurrPage] = useState<number>(1);
   const [total, setTotal] = useState<number>(0);
 
-  const { userInfo } = useMemo(() => {
-    return props;
-  }, [props]);
-
-  const IconText = ({ type, text }: { type: keyof typeof ICON_MAP; text: string }) => {
+  const IconText = ({
+    type,
+    text,
+  }: {
+    type: keyof typeof ICON_MAP;
+    text: string;
+  }) => {
     const Component = ICON_MAP[type];
 
     return (
@@ -61,25 +61,28 @@ const Comments = memo((props: IProps) => {
     [currPage],
   );
 
-  const renderMedia = useCallback((content: API_ADMIN.IGetAdminCommentData['content']) => {
-    const { image = [], video = [] } = content || {};
-    const result = [...image.map((item) => ({ src: item, video: false }))];
-    result.push(...video.map((item) => ({ src: item, video: true })));
-    return result.map((item, index) => {
-      const { video: isVideo, src } = item;
-      const method = isVideo ? preview.bind(null, video) : noop;
-      return (
-        <Col key={index} span={8} onClick={() => method()}>
-          <Image
-            fallback={IMAGE_FALLBACK}
-            src={isVideo ? '' : src}
-            preview={!isVideo}
-            className={styles['media-image-list-item']}
-          />
-        </Col>
-      );
-    });
-  }, []);
+  const renderMedia = useCallback(
+    (content: API_ADMIN.IGetAdminCommentData['content']) => {
+      const { image = [], video = [] } = content || {};
+      const result = [...image.map((item) => ({ src: item, video: false }))];
+      result.push(...video.map((item) => ({ src: item, video: true })));
+      return result.map((item, index) => {
+        const { video: isVideo, src } = item;
+        const method = isVideo ? preview.bind(null, video) : noop;
+        return (
+          <Col key={index} span={8} onClick={() => method()}>
+            <Image
+              fallback={IMAGE_FALLBACK}
+              src={isVideo ? '' : src}
+              preview={!isVideo}
+              className={styles['media-image-list-item']}
+            />
+          </Col>
+        );
+      });
+    },
+    [],
+  );
 
   const onPageChange = useCallback((page: number) => {
     setCurrPage(page);
@@ -94,7 +97,7 @@ const Comments = memo((props: IProps) => {
       <List
         size="large"
         className={styles.articleList}
-        rowKey={"id" as any}
+        rowKey={'id' as any}
         itemLayout="vertical"
         dataSource={list}
         renderItem={(item) => (
@@ -102,17 +105,25 @@ const Comments = memo((props: IProps) => {
             key={item['_id']}
             actions={[
               // <IconText key="star" type="star" text={item.total_like} />,
-              <IconText key="like" type="like" text={item.total_like.toString()} />,
-              <IconText key="message" type="message" text={item.sub_comments.toString()} />,
+              <IconText
+                key="like"
+                type="like"
+                text={item.total_like.toString()}
+              />,
+              <IconText
+                key="message"
+                type="message"
+                text={item.sub_comments.toString()}
+              />,
             ]}
           >
             <List.Item.Meta
               title={
                 <div className={styles.listItemMetaTitle}>
-                  <Avatar src={userInfo.avatar} style={{ marginRight: 20 }}>
-                    {userInfo.username}
+                  <Avatar src={userInfo?.avatar} style={{ marginRight: 20 }}>
+                    {userInfo?.username}
                   </Avatar>
-                  {userInfo.username}
+                  {userInfo?.username}
                 </div>
               }
               description={
@@ -139,4 +150,4 @@ const Comments = memo((props: IProps) => {
   );
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Comments);
+export default Comments;

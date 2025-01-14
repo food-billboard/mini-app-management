@@ -10,11 +10,9 @@ import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import React, { useCallback, useRef } from 'react';
-import { connect } from 'umi';
 import columns from './columns';
 import type { IFormRef } from './components/form';
 import Form from './components/form';
-import { mapDispatchToProps, mapStateToProps } from './connect';
 
 const EatWhatClassifyManage: React.FC<any> = () => {
   const actionRef = useRef<ActionType>();
@@ -128,7 +126,4 @@ const EatWhatClassifyManage: React.FC<any> = () => {
   );
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(EatWhatClassifyManage);
+export default EatWhatClassifyManage;

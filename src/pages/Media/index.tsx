@@ -13,7 +13,6 @@ import type { ActionType } from '@ant-design/pro-components';
 import { Button, Modal } from 'antd';
 import { noop } from 'lodash';
 import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
-import { connect } from 'umi';
 import column from './columns';
 import AddModal from './components/AddModal';
 import type { IFormRef } from './components/CreateForm';
@@ -21,7 +20,6 @@ import CreateForm from './components/CreateForm';
 import type { ListModalRef } from './components/ListModal';
 import ListModal, { formatData } from './components/ListModal';
 import ConfirmModal from './components/PosterGenerate';
-import { mapDispatchToProps, mapStateToProps } from './connect';
 
 const MediaManage = memo(() => {
   const actionRef = useRef<ActionType>();
@@ -73,7 +71,7 @@ const MediaManage = memo(() => {
     async (selectedRows: API_MEDIA.IGetMediaListData[]) => {
       try {
         await deleteMedia({
-          _id: selectedRows.map(item => item._id).join(','),
+          _id: selectedRows.map((item) => item._id).join(','),
           type: MEDIA_TYPE_MAP[activeKey] as any,
         });
       } catch (err) {
@@ -305,4 +303,4 @@ const MediaManage = memo(() => {
   );
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MediaManage);
+export default MediaManage;

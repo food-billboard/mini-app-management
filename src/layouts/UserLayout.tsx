@@ -1,10 +1,10 @@
 import Footer from '@/components/Footer';
-import type { ConnectState } from '@/models/connect';
 import { MenuDataItem } from '@ant-design/pro-components';
+import { App } from 'antd';
 import React from 'react';
-import { connect, ConnectProps, Link, Outlet } from 'umi';
-import useToast from '../components/Toast'
+import { ConnectProps, Link, Outlet } from 'umi';
 import logo from '../assets/logo.svg';
+import useToast from '../components/Toast';
 import styles from './UserLayout.less';
 
 export interface UserLayoutProps extends Partial<ConnectProps> {
@@ -13,8 +13,8 @@ export interface UserLayoutProps extends Partial<ConnectProps> {
   };
 }
 
-const UserLayout: React.FC<UserLayoutProps> = (props) => {
-  useToast()
+const UserLayout: React.FC<UserLayoutProps> = () => {
+  useToast();
   return (
     <div className={styles.container}>
       <div className={styles.lang}></div>
@@ -34,6 +34,12 @@ const UserLayout: React.FC<UserLayoutProps> = (props) => {
   );
 };
 
-export default connect(({ settings }: ConnectState) => ({ ...settings }))(
-  UserLayout,
-);
+const Wrapper = (props: any) => {
+  return (
+    <App>
+      <UserLayout {...props} />
+    </App>
+  );
+};
+
+export default Wrapper;

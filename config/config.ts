@@ -18,11 +18,10 @@ const commonConfig = {
     theme: {
       token: {
         colorPrimary: defaultSettings.colorPrimary,
-        itemSelectedBg: 'red'
       },
       components: {
         Menu: {
-          itemSelectedBg: 'red'
+          
         }
       }
     },

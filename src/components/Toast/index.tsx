@@ -15,17 +15,15 @@ let notification: NotificationInstance = AntNotification
 
 const useToast = () => {
 
-  const [internalModal] = AntModal.useModal();
-
   const {
     message: internalMessage,
-    // modal: internalModal,
+    modal: internalModal,
     notification: internalNotification
   } = App.useApp()
 
   useEffect(() => {
     message = internalMessage
-    // modal = internalModal
+    modal = internalModal
     notification = internalNotification
   }, [internalMessage, internalModal, internalNotification])
 

@@ -6,10 +6,9 @@ import type { ActionType } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import { identity, omit, pickBy } from 'lodash';
 import { createRef, memo, useCallback, useRef } from 'react';
-import { connect, history } from 'umi';
+import { history } from 'umi';
 import columns from './columns';
 import CreateForm from './components/CreateForm';
-import { mapDispatchToProps, mapStateToProps } from './connect';
 
 const MemberManage = memo(() => {
   const actionRef = useRef<ActionType>();
@@ -53,8 +52,8 @@ const MemberManage = memo(() => {
     async (selectedRows: API_USER.IGetUserListResData[]) => {
       try {
         await deleteUser({
-          _id: selectedRows.map(item => item._id).join(','),
-        })
+          _id: selectedRows.map((item) => item._id).join(','),
+        });
       } catch (err) {
         return false;
       }
@@ -149,4 +148,4 @@ const MemberManage = memo(() => {
   );
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MemberManage);
+export default MemberManage;
