@@ -6,7 +6,7 @@ import {
   ProFormText,
   ProFormTextArea,
 } from '@ant-design/pro-components';
-import type { FormInstance } from 'antd';
+import { Form } from 'antd';
 import type { Store } from 'antd/lib/form/interface';
 import { merge } from 'lodash';
 import { useCallback, useEffect, useRef } from 'react';
@@ -20,12 +20,12 @@ const BaseView = () => {
   const { initialState } = useModel('@@initialState');
   const { currentUser: userInfo } = initialState || {};
 
-  const formRef = useRef<FormInstance>(null);
+  const [formRef] = Form.useForm();
 
   const setBaseInfo = useCallback(() => {
     if (userInfo) {
       const { avatar, ...nextUserInfo } = userInfo;
-      formRef.current?.setFieldsValue(
+      formRef.setFieldsValue(
         merge({}, nextUserInfo, {
           avatar: Array.isArray(avatar) ? avatar : [avatar],
         }),
@@ -40,7 +40,7 @@ const BaseView = () => {
         avatar: Array.isArray(avatar) ? avatar[0] : avatar,
       }) as API_ADMIN.IPutAdminInfoParams,
     );
-    formRef.current?.resetFields();
+    formRef.resetFields();
     return new Promise<boolean>((resolve) => {
       message.info('操作成功', 1, () => {
         history.replace('/admin');
@@ -58,7 +58,7 @@ const BaseView = () => {
       <div className={styles.left}>
         <ProForm
           // @ts-ignore
-          formRef={formRef}
+          form={formRef}
           onFinish={handlerSubmit}
         >
           <ProFormText

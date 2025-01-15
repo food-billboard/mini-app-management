@@ -1,21 +1,19 @@
-import { Form, Input } from 'antd';
-import type { FormInstance } from 'antd/lib/form';
-import { ProFormTextArea, ProForm } from '@ant-design/pro-components';
-import type { Store } from 'antd/lib/form/interface';
-import React, {
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-  forwardRef,
-  useImperativeHandle,
-} from 'react';
-import { ModalForm } from '@/components/ProModal'
+import { ModalForm } from '@/components/ProModal';
 import SearchForm from '@/components/TransferSelect';
 import Upload from '@/components/Upload';
 import { getMemberList } from '@/services';
-import { fileValidator } from '../../../DataEdit/utils';
+import { ProForm, ProFormTextArea } from '@ant-design/pro-components';
+import { Form, Input } from 'antd';
+import type { Store } from 'antd/lib/form/interface';
 import { omit } from 'lodash';
+import {
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useMemo,
+  useState,
+} from 'react';
+import { fileValidator } from '../../../DataEdit/utils';
 
 type FormData = API_CHAT.IPutRoomParams;
 
@@ -56,24 +54,31 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
     return props;
   }, [props]);
 
-  const formRef = useRef<FormInstance | null>(null);
+  const [formRef] = Form.useForm();
 
   const requiredMap: any = useMemo(() => {
     return isPut ? PUT_REQUIRED_MAP : POST_REQUIRED_MAP;
   }, [isPut]);
 
   const fetchMemberList = useCallback(
-    async (nextParams: Partial<API_CHAT.IGetMemberListParams> & { update?: boolean } = {}) => {
+    async (
+      nextParams: Partial<API_CHAT.IGetMemberListParams> & {
+        update?: boolean;
+      } = {},
+    ) => {
       const params: API_CHAT.IGetMemberListParams = {
         currPage: 0,
         pageSize: 99999,
         ...omit(nextParams, ['update']),
       };
       if (isPut || !!nextParams.update)
-        params.room = nextParams.room || formRef.current?.getFieldValue('_id');
+        params.room = nextParams.room || formRef.getFieldValue('_id');
       try {
         const data = await getMemberList(params);
-        return data.list.map((item: any) => ({ key: item['_id'], title: item.user?.username }));
+        return data.list.map((item: any) => ({
+          key: item['_id'],
+          title: item.user?.username,
+        }));
       } catch (er) {
         return [];
       }
@@ -92,7 +97,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
         _id,
       } = values || {};
       const data = await fetchMemberList({ room: _id, update: true });
-      formRef.current?.setFieldsValue({
+      formRef.setFieldsValue({
         avatar: Array.isArray(avatar) ? avatar : [avatar],
         name,
         description,
@@ -105,7 +110,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
 
   const onCancel = useCallback(() => {
     setVisible(false);
-    formRef.current?.resetFields();
+    formRef.resetFields();
     propsCancel?.();
   }, [formRef, propsCancel]);
 
@@ -126,7 +131,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
         members: members.join(','),
       } as FormData);
       setVisible(false);
-      formRef.current?.resetFields();
+      formRef.resetFields();
     },
     [onSubmit],
   );
@@ -140,7 +145,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       title="新建聊天室"
       open={visible}
       // @ts-ignore
-      formRef={formRef}
+      form={formRef}
       onFinish={onFinish}
       onOpenChange={onVisibleChange}
     >

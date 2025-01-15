@@ -3,14 +3,12 @@ import SearchForm from '@/components/TransferSelect';
 import { getMemberList } from '@/services';
 import { ProForm } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
-import type { FormInstance } from 'antd/lib/form';
 import type { Store } from 'antd/lib/form/interface';
 import {
   forwardRef,
   useCallback,
   useImperativeHandle,
   useMemo,
-  useRef,
   useState,
 } from 'react';
 
@@ -35,12 +33,12 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
     return props;
   }, [props]);
 
-  const formRef = useRef<FormInstance | null>(null);
+  const [formRef] = Form.useForm();
 
   const open = useCallback(
     async (value: string) => {
       setVisible(true);
-      formRef.current?.setFieldsValue({
+      formRef.setFieldsValue({
         room: value,
       });
       const data = await getMemberList({
@@ -60,7 +58,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
 
   const onCancel = useCallback(() => {
     setVisible(false);
-    formRef.current?.resetFields();
+    formRef.resetFields();
     propsCancel?.();
   }, [formRef]);
 
@@ -81,7 +79,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
           _id: _id.join(','),
         } as FormData));
       setVisible(false);
-      formRef.current?.resetFields();
+      formRef.resetFields();
     },
     [onSubmit],
   );
@@ -116,7 +114,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       title="新增成员"
       open={visible}
       // @ts-ignore
-      formRef={formRef}
+      form={formRef}
       onFinish={onFinish}
       onOpenChange={onVisibleChange}
     >

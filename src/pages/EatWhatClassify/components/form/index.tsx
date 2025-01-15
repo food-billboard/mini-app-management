@@ -3,14 +3,12 @@ import RichTextEditor from '@/components/RichTextEditor';
 import { sleep } from '@/utils';
 import { ProFormSelect, ProFormTextArea } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
-import type { FormInstance } from 'antd/lib/form';
 import type { Store } from 'antd/lib/form/interface';
 import {
   forwardRef,
   useCallback,
   useImperativeHandle,
   useMemo,
-  useRef,
   useState,
 } from 'react';
 import { FOOD_MAP, MENU_MAP } from '../../columns';
@@ -33,7 +31,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
     return props;
   }, [props]);
 
-  const formRef = useRef<FormInstance | null>(null);
+  const [formRef] = Form.useForm();
 
   const open = useCallback(
     async (values?: API.GetEatMenuClassifyListData) => {
@@ -46,10 +44,9 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       show();
 
       if (isEdit) {
-        await sleep(1000);
         const { food_type } = values!;
         // 获取修改的数据
-        formRef.current?.setFieldsValue({
+        formRef.setFieldsValue({
           ...values,
           food_type: food_type?.[0] || 'OTHER',
         });
@@ -60,7 +57,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
 
   const onCancel = useCallback(() => {
     setVisible(false);
-    formRef.current?.resetFields();
+    formRef.resetFields();
     propsCancel?.();
   }, [formRef, propsCancel]);
 
@@ -77,7 +74,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       await onSubmit?.(values as FormData)
         .then(() => {
           setVisible(false);
-          formRef.current?.resetFields();
+          formRef.resetFields();
         })
         .catch(() => {});
     },
@@ -93,7 +90,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       title="新增菜单分类"
       open={visible}
       // @ts-ignore
-      formRef={formRef}
+      form={formRef}
       onFinish={onFinish}
       onOpenChange={onVisibleChange}
       modalProps={{

@@ -1,22 +1,20 @@
-import { Form, Input, Select } from 'antd';
-import type { FormInstance } from 'antd/lib/form';
-import { ProFormSelect } from '@ant-design/pro-components';
-import { pick } from 'lodash';
-import type { Store } from 'antd/lib/form/interface';
-import React, {
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-  forwardRef,
-  useImperativeHandle,
-} from 'react';
-import { ModalForm } from '@/components/ProModal'
-import ImageContent from '../Image';
-import VideoContent from '../Video';
-import TextContent from '../Text';
+import { ModalForm } from '@/components/ProModal';
 import { getMemberList } from '@/services';
+import { ProFormSelect } from '@ant-design/pro-components';
+import { Form, Input, Select } from 'antd';
+import type { Store } from 'antd/lib/form/interface';
+import { pick } from 'lodash';
+import {
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useMemo,
+  useState,
+} from 'react';
 import { fileValidator } from '../../../DataEdit/utils';
+import ImageContent from '../Image';
+import TextContent from '../Text';
+import VideoContent from '../Video';
 
 type FormData = API_CHAT.IPostMessageParams;
 
@@ -37,11 +35,9 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
     return props;
   }, [props]);
 
-  const formRef = useRef<FormInstance | null>(null);
+  const [formRef] = Form.useForm();
 
-  const { getFieldValue } = useMemo(() => {
-    return formRef.current! || {};
-  }, [formRef]);
+  const getFieldValue = formRef.getFieldValue;
 
   const fetchMemberList = useCallback(
     async (nextParams: Partial<API_CHAT.IGetMemberListParams> = {}) => {
@@ -52,7 +48,10 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       };
       try {
         const data = await getMemberList(fetchParams);
-        return data.list.map((item: any) => ({ value: item._id, label: item.user?.username }));
+        return data.list.map((item: any) => ({
+          value: item._id,
+          label: item.user?.username,
+        }));
       } catch (er) {
         return [];
       }
@@ -62,7 +61,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
 
   const open = useCallback(
     async (value: string) => {
-      formRef.current?.setFieldsValue({
+      formRef.setFieldsValue({
         _id: value,
       });
       const data = await fetchMemberList({
@@ -76,7 +75,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
 
   const onCancel = useCallback(() => {
     setVisible(false);
-    formRef.current?.resetFields();
+    formRef.resetFields();
     if (propsCancel) propsCancel();
   }, [formRef]);
 
@@ -91,7 +90,12 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   const onFinish = useCallback(
     async (values: Store) => {
       const { media_type, ...nextValues } = values;
-      const contentData: any = pick(values, ['video', 'image', 'audio', 'text']);
+      const contentData: any = pick(values, [
+        'video',
+        'image',
+        'audio',
+        'text',
+      ]);
       const content = contentData[media_type.toLowerCase()];
       await (onSubmit &&
         onSubmit({
@@ -100,7 +104,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
           content: Array.isArray(content) ? content[0] : content,
         } as FormData));
       setVisible(false);
-      formRef.current?.resetFields();
+      formRef.resetFields();
     },
     [onSubmit],
   );
@@ -112,7 +116,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
   const validator = useCallback(
     async (type: string, callback: any, errMsg: string, ...args: any[]) => {
       try {
-        const currentType = formRef.current?.getFieldValue?.('media_type');
+        const currentType = formRef.getFieldValue?.('media_type');
         if (currentType === type) {
           return callback(...args);
         }
@@ -129,7 +133,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       title="新增消息"
       open={visible}
       //@ts-ignore
-      formRef={formRef}
+      form={formRef}
       onFinish={onFinish}
       onOpenChange={onVisibleChange}
     >
@@ -170,7 +174,12 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
           {
             required: getFieldValue?.('media_type') === 'VIDEO',
             message: '请选择视频消息内容',
-            validator: validator.bind(null, 'VIDEO', fileValidator(1), '请选择视频消息内容'),
+            validator: validator.bind(
+              null,
+              'VIDEO',
+              fileValidator(1),
+              '请选择视频消息内容',
+            ),
             validateTrigger: 'onBlur',
           },
         ]}
@@ -180,7 +189,12 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
           {
             required: getFieldValue?.('media_type') === 'IMAGE',
             message: '请选择图片消息内容',
-            validator: validator.bind(null, 'IMAGE', fileValidator(1), '请选择图片消息内容'),
+            validator: validator.bind(
+              null,
+              'IMAGE',
+              fileValidator(1),
+              '请选择图片消息内容',
+            ),
             validateTrigger: 'onBlur',
           },
         ]}
@@ -194,7 +208,11 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
         ]}
       /> */}
       <Form.Item name="point_to" label="特指">
-        <Select options={memberList} placeholder="请选择特指的成员" allowClear />
+        <Select
+          options={memberList}
+          placeholder="请选择特指的成员"
+          allowClear
+        />
       </Form.Item>
       <Form.Item name="_id">
         <Input type="hidden" />

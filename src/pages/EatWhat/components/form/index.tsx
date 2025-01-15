@@ -1,23 +1,22 @@
-import { Form, Input } from 'antd';
-import type { FormInstance } from 'antd/lib/form';
+import { ModalForm } from '@/components/ProModal';
+import { getCurrentMenuClassifyList } from '@/services';
+import { sleep } from '@/utils';
 import {
-  ProFormTextArea,
-  ProFormSelect,
   ProFormDatePicker,
   ProFormDependency,
+  ProFormSelect,
+  ProFormTextArea,
 } from '@ant-design/pro-components';
-import dayjs from 'dayjs';
+import { Form, Input } from 'antd';
 import type { Store } from 'antd/lib/form/interface';
-import React, {
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
+import dayjs from 'dayjs';
+import {
   forwardRef,
+  useCallback,
   useImperativeHandle,
+  useMemo,
+  useState,
 } from 'react';
-import { ModalForm } from '@/components/ProModal'
-import { getCurrentMenuClassifyList } from '@/services';
 import { MENU_MAP } from '../../columns';
 
 type FormData = API.PutEatMenuData | API.PostEatMenuData;
@@ -38,7 +37,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
     return props;
   }, [props]);
 
-  const formRef = useRef<FormInstance | null>(null);
+  const [formRef] = Form.useForm();
 
   const open = useCallback(
     async (values?: API.GetEatMenuListData) => {
@@ -49,10 +48,9 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       };
 
       if (isEdit) {
-        const {} = values;
         // 获取修改的数据
-        formRef.current?.setFieldsValue(values);
         show();
+        formRef.setFieldsValue(values)
       }
 
       show();
@@ -62,7 +60,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
 
   const onCancel = useCallback(() => {
     setVisible(false);
-    formRef.current?.resetFields();
+    formRef.resetFields();
     propsCancel?.();
   }, [formRef, propsCancel]);
 
@@ -78,7 +76,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
     async (values: Store) => {
       await onSubmit?.(values as FormData);
       setVisible(false);
-      formRef.current?.resetFields();
+      formRef.resetFields();
     },
     [onSubmit],
   );
@@ -92,7 +90,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       title="新增菜单"
       open={visible}
       // @ts-ignore
-      formRef={formRef}
+      form={formRef}
       onFinish={onFinish}
       onOpenChange={onVisibleChange}
       modalProps={{
@@ -106,7 +104,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
         initialValue={'BREAKFAST'}
         fieldProps={{
           onChange: () => {
-            formRef.current?.setFieldsValue({
+            formRef.setFieldsValue({
               classify: undefined,
             });
           },

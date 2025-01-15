@@ -9,7 +9,7 @@ export const getCurrentMenuList = (params: API.GetEatMenuListParams) => {
 };
 
 // 新增菜单
-export const postCurrentMenu = (data: API.PostEatMenuData) => {
+export const postCurrentMenu = (data: API.PostEatMenuDataParams) => {
   return request('/api/user/eat_what', {
     method: 'POST',
     data,

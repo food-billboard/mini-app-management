@@ -57,22 +57,20 @@ export default [
       return <Tag color={target?.color}>{target?.label}</Tag>;
     },
   },
-  // {
-  //   title: '内容',
-  //   dataIndex: 'content',
-  //   hideInTable: true,
-  //   key: 'content',
-  //   ellipsis: true,
-  // },
   {
     title: '时间',
     dataIndex: 'date',
     key: 'date',
-    render: (val: string) => {
-      return dayjs(val).format('YYYY-MM-DD');
-    },
+    valueType: 'date',
+    hideInSearch: true 
+  },
+  {
+    title: '时间',
+    dataIndex: 'date',
+    key: 'date',
     valueType: 'dateRange',
     initialValue: [dayjs(), dayjs()],
+    hideInTable: true 
   },
   {
     title: '创建时间',

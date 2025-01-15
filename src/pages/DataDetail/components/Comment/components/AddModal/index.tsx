@@ -1,12 +1,11 @@
-import { Input, Form } from 'antd';
-import type { FormInstance } from 'antd/lib/form';
-import { ProFormTextArea } from '@ant-design/pro-components';
-import type { Store } from 'antd/lib/form/interface';
+import { ModalForm } from '@/components/ProModal';
 import { message } from '@/components/Toast';
-import { ModalForm } from '@/components/ProModal'
-import React, { useCallback, useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import Upload from '@/components/Upload';
-import VideoUpload from '@/components/VideoUpload'
+import VideoUpload from '@/components/VideoUpload';
+import { ProFormTextArea } from '@ant-design/pro-components';
+import { Form, Input } from 'antd';
+import type { Store } from 'antd/lib/form/interface';
+import { forwardRef, useCallback, useImperativeHandle, useState } from 'react';
 
 type FormData = Omit<API_DATA.IPostMovieCommentParams, 'source_type'>;
 
@@ -24,10 +23,10 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
 
   const { onCancel: propsCancel, onSubmit } = props;
 
-  const formRef = useRef<FormInstance | null>(null);
+  const [formRef] = Form.useForm();
 
   const open = useCallback(async (id: string) => {
-    formRef.current?.setFieldsValue({
+    formRef.setFieldsValue({
       _id: id,
     });
     setVisible(true);
@@ -35,7 +34,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
 
   const onCancel = useCallback(() => {
     setVisible(false);
-    formRef.current?.resetFields();
+    formRef.resetFields();
     propsCancel?.();
   }, [formRef, propsCancel]);
 
@@ -49,10 +48,10 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
 
   const onFinish = useCallback(
     async (values: Store) => {
-      const { image, video, text="", ...nextProps } = values;
+      const { image, video, text = '', ...nextProps } = values;
       if (!image.length && !video.length && !text.length) {
         message.info('评论内容不能完全为空，至少填写一项');
-        return false 
+        return false;
       }
       const formData = {
         ...nextProps,
@@ -64,7 +63,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       };
       await (onSubmit && onSubmit(formData as FormData));
       setVisible(false);
-      formRef.current?.resetFields();
+      formRef.resetFields();
       return Promise.resolve();
     },
     [onSubmit],
@@ -79,7 +78,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       title="新增评论"
       open={visible}
       // @ts-ignore
-      formRef={formRef}
+      form={formRef}
       onFinish={onFinish}
       onOpenChange={onVisibleChange}
     >
@@ -110,12 +109,8 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
           allowMultiple: false,
         }}
       />
-      <Form.Item
-        name="_id" 
-      >
-        <Input
-          type="hidden"
-        />
+      <Form.Item name="_id">
+        <Input type="hidden" />
       </Form.Item>
     </ModalForm>
   );

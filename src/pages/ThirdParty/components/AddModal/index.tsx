@@ -1,137 +1,162 @@
-import React, { forwardRef, useImperativeHandle, useState, useRef, useCallback } from 'react'
-import { Form, Input } from 'antd'
+import CodeEditor from '@/components/CodeEditor';
+import { ModalForm } from '@/components/ProModal';
+import { postThirdData, putThirdData } from '@/services';
+import { ProFormSelect, ProFormTextArea } from '@ant-design/pro-components';
+import { Form, Input } from 'antd';
+import type { Store } from 'antd/lib/form/interface';
+import { pick } from 'lodash';
 import {
-  ProFormTextArea,
-  ProFormSelect
-} from '@ant-design/pro-components'
-import { pick } from 'lodash'
-import type { Store } from 'antd/lib/form/interface'
-import type { FormInstance } from 'antd/lib/form'
-import { ModalForm } from '@/components/ProModal'
-import CodeEditor from '@/components/CodeEditor'
-import { putThirdData, postThirdData } from '@/services'
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 
 export type AddModalRef = {
-  open: (value?: API_THIRD.GetThirdListData) => void 
-}
+  open: (value?: API_THIRD.GetThirdListData) => void;
+};
 
-const AddModal = forwardRef<AddModalRef, {
-  onConfirm?: () => void 
-}>((props, ref) => {
+const AddModal = forwardRef<
+  AddModalRef,
+  {
+    onConfirm?: () => void;
+  }
+>((props, ref) => {
+  const [visible, setVisible] = useState<boolean>(false);
 
-  const [ visible, setVisible ] = useState<boolean>(false)
+  const { onConfirm } = props;
 
-  const { onConfirm } = props 
-
-  const formRef = useRef<FormInstance | null>(null)
-  const isEdit = useRef<boolean>(true)
+  const [formRef] = Form.useForm();
+  const isEdit = useRef<boolean>(true);
 
   const open = (value?: API_THIRD.GetThirdListData) => {
+    isEdit.current = !!value;
 
-    isEdit.current = !!value
-
-    if(isEdit.current) {
-      const { params, ...nextValue } = value!
+    if (isEdit.current) {
+      const { params, ...nextValue } = value!;
       // 获取修改的数据
-      formRef.current?.setFieldsValue({
-        ...pick(nextValue, ['name', 'description', 'url', 'method', 'getter', 'example', '_id', 'headers']),
-        params: JSON.stringify(params || "[]")
-      })
+      formRef.setFieldsValue({
+        ...pick(nextValue, [
+          'name',
+          'description',
+          'url',
+          'method',
+          'getter',
+          'example',
+          '_id',
+          'headers',
+        ]),
+        params: JSON.stringify(params || '[]'),
+      });
     }
-    setVisible(true)
-  }
+    setVisible(true);
+  };
 
   const onCancel = useCallback(() => {
-    setVisible(false)
-    formRef.current?.resetFields()
-  }, [])
+    setVisible(false);
+    formRef.resetFields();
+  }, []);
 
-  const onVisibleChange = useCallback((nowVisible: boolean) => {
-    if(!nowVisible) onCancel()
-    if(nowVisible !== visible) setVisible(nowVisible)
-  }, [onCancel, visible])
+  const onVisibleChange = useCallback(
+    (nowVisible: boolean) => {
+      if (!nowVisible) onCancel();
+      if (nowVisible !== visible) setVisible(nowVisible);
+    },
+    [onCancel, visible],
+  );
 
-  const onFinish = useCallback(async (values: Store) => {
-    const method = isEdit.current ? putThirdData : postThirdData
-    await method({
-      ...values,
-      params: JSON.parse(values.params || "{}")
-    } as any)
-    setVisible(false)
-    formRef.current?.resetFields()
-    onConfirm?.()
-  }, [onConfirm])
+  const onFinish = useCallback(
+    async (values: Store) => {
+      const method = isEdit.current ? putThirdData : postThirdData;
+      await method({
+        ...values,
+        params: JSON.parse(values.params || '{}'),
+      } as any);
+      setVisible(false);
+      formRef.resetFields();
+      onConfirm?.();
+    },
+    [onConfirm],
+  );
 
-  useImperativeHandle(ref, () => {
-
-    return {
-      open
-    }
-
-  }, [])
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        open,
+      };
+    },
+    [],
+  );
 
   return (
     <ModalForm
       title="第三方接口设置"
       open={visible}
       // @ts-ignore
-      formRef={formRef}
+      form={formRef}
       onFinish={onFinish}
       onOpenChange={onVisibleChange}
     >
-      <ProFormTextArea 
-        name="name" 
-        label="名称" 
+      <ProFormTextArea
+        name="name"
+        label="名称"
         fieldProps={{
-          autoSize: true
+          autoSize: true,
         }}
-        rules={[{
-          required: true,
-          message: '请输入名称'
-        }]}
+        rules={[
+          {
+            required: true,
+            message: '请输入名称',
+          },
+        ]}
       />
-      <ProFormTextArea 
-        name="url" 
-        label="请求地址" 
+      <ProFormTextArea
+        name="url"
+        label="请求地址"
         fieldProps={{
-          autoSize: true
+          autoSize: true,
         }}
-        rules={[{
-          required: true,
-          message: '请输入请求地址'
-        }]}
+        rules={[
+          {
+            required: true,
+            message: '请输入请求地址',
+          },
+        ]}
       />
-      <ProFormSelect 
-        name="method" 
-        label="请求方法" 
-        initialValue='post'
+      <ProFormSelect
+        name="method"
+        label="请求方法"
+        initialValue="post"
         fieldProps={{
           options: [
             {
               label: 'get',
-              value: 'get'
+              value: 'get',
             },
             {
               label: 'post',
-              value: 'post'
-            }
-          ]
+              value: 'post',
+            },
+          ],
         }}
-        rules={[{
-          required: true,
-          message: '请设置请求方法'
-        }]}
+        rules={[
+          {
+            required: true,
+            message: '请设置请求方法',
+          },
+        ]}
       />
       <Form.Item
         name="params"
-        label='请求参数'
-        help={(
+        label="请求参数"
+        help={
           <span>
             示例：
             <br />
             <pre>
-              {
-`
+              {`
   [
     {
       "name": "obj",
@@ -152,64 +177,44 @@ const AddModal = forwardRef<AddModalRef, {
       }
     }
   ]
-`
-              }
+`}
             </pre>
           </span>
-        )}
+        }
       >
-        <CodeEditor 
-          language="json" 
-          width='100%'
-          height={200}
-        />
+        <CodeEditor language="json" width="100%" height={200} />
       </Form.Item>
-      <Form.Item
-        name="headers"
-        label='请求头'
-      >
-        <CodeEditor 
-          language="json" 
-          width='100%'
-          height={100}
-        />
+      <Form.Item name="headers" label="请求头">
+        <CodeEditor language="json" width="100%" height={100} />
       </Form.Item>
-      <ProFormTextArea 
-        name="getter" 
-        label="数据获取" 
+      <ProFormTextArea
+        name="getter"
+        label="数据获取"
         fieldProps={{
-          autoSize: true
+          autoSize: true,
         }}
       />
-      <ProFormTextArea 
-        name="description" 
-        label="描述" 
-        rules={[{
-          required: true,
-          message: '请输入描述'
-        }]}
+      <ProFormTextArea
+        name="description"
+        label="描述"
+        rules={[
+          {
+            required: true,
+            message: '请输入描述',
+          },
+        ]}
         fieldProps={{
-          autoSize: true
+          autoSize: true,
         }}
       />
-      <Form.Item
-        name="example"
-        label='示例数据'
-      >
-        <CodeEditor 
-          language="json" 
-          width='100%'
-          height={200}
-        />
+      <Form.Item name="example" label="示例数据">
+        <CodeEditor language="json" width="100%" height={200} />
       </Form.Item>
-      <Form.Item
-        name="_id"
-      >
+      <Form.Item name="_id">
         <Input type="hidden" />
       </Form.Item>
     </ModalForm>
-  )
+  );
+});
 
-})
-
-export default AddModal
+export default AddModal;

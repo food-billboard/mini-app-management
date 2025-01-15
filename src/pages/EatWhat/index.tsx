@@ -26,7 +26,9 @@ const EatWhatManage: React.FC<any> = () => {
         if ((values as API.PutEatMenuData)['_id']) {
           await putCurrentMenu(values as API.PutEatMenuData);
         } else {
-          await postCurrentMenu(values as API.PostEatMenuData);
+          await postCurrentMenu({
+            value_list: [values as API.PostEatMenuData]
+          });
         }
         message.success('操作成功');
         return Promise.resolve();

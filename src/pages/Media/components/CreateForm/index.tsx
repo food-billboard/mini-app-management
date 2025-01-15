@@ -1,17 +1,15 @@
-import { Form, Input } from 'antd';
-import type { FormInstance } from 'antd/lib/form';
-import { ProFormTextArea, ProFormSelect } from '@ant-design/pro-components';
-import type { Store } from 'antd/lib/form/interface';
-import  {
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-  forwardRef,
-  useImperativeHandle,
-} from 'react';
-import { ModalForm } from '@/components/ProModal'
+import { ModalForm } from '@/components/ProModal';
 import { MEDIA_AUTH_MAP, MEDIA_UPLOAD_STATUS } from '@/utils';
+import { ProFormSelect, ProFormTextArea } from '@ant-design/pro-components';
+import { Form, Input } from 'antd';
+import type { Store } from 'antd/lib/form/interface';
+import {
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useMemo,
+  useState,
+} from 'react';
 
 type FormData = API_MEDIA.IPutMediaParams;
 
@@ -31,11 +29,11 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
     return props;
   }, [props]);
 
-  const formRef = useRef<FormInstance | null>(null);
+  const [formRef] = Form.useForm();
 
   const open = useCallback(
     async (values: API_MEDIA.IGetMediaListData) => {
-      formRef.current?.setFieldsValue({
+      formRef.setFieldsValue({
         ...values,
         status: values?.info?.status,
       });
@@ -46,7 +44,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
 
   const onCancel = useCallback(() => {
     setVisible(false);
-    formRef.current?.resetFields();
+    formRef.resetFields();
     propsCancel?.();
   }, [formRef, propsCancel]);
 
@@ -62,7 +60,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
     async (values: Store) => {
       await onSubmit?.(values as FormData);
       setVisible(false);
-      formRef.current?.resetFields();
+      formRef.resetFields();
     },
     [onSubmit],
   );
@@ -98,7 +96,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       title="媒体资源修改"
       open={visible}
       // @ts-ignore
-      formRef={formRef}
+      form={formRef}
       onFinish={onFinish}
       onOpenChange={onVisibleChange}
     >

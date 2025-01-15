@@ -186,7 +186,7 @@ class TagCloud extends Component<IProps, IState> {
           width: '100%',
           height,
         }}
-        ref={this.saveRootRef}
+        ref={this.saveRootRef as any}
         onClick={this.props?.onClick}
       >
         {dv && (

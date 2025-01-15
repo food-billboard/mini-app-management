@@ -1,3 +1,4 @@
+import { ModalForm } from '@/components/ProModal';
 import {
   ProFormDigit,
   ProFormDigitRange,
@@ -6,17 +7,14 @@ import {
   ProFormTextArea,
 } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
-import type { FormInstance } from 'antd/lib/form';
 import type { Store } from 'antd/lib/form/interface';
 import {
   forwardRef,
   useCallback,
   useImperativeHandle,
   useMemo,
-  useRef,
   useState,
 } from 'react';
-import { ModalForm } from '@/components/ProModal'
 import { DATA_Name_MAP } from './columns';
 
 type FormData = API_SCREEN.IPostScreenMockDataParams & { _id?: string };
@@ -458,7 +456,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
     return props;
   }, [props]);
 
-  const formRef = useRef<FormInstance | null>(null);
+  const [formRef] = Form.useForm();
 
   const open = useCallback(async (values?: API_SCREEN.IGetScreenMockData) => {
     setIsPut(!!values);
@@ -467,7 +465,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
 
     const { _id, data_kind, description, config_type, config } = values;
 
-    formRef.current?.setFieldsValue({
+    formRef.setFieldsValue({
       data_kind,
       description,
       _id,
@@ -491,7 +489,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
 
   const onCancel = useCallback(() => {
     setVisible(false);
-    formRef.current?.resetFields();
+    formRef.resetFields();
     propsCancel?.();
   }, [formRef, propsCancel]);
 
@@ -518,7 +516,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       const result = await onSubmit?.(params);
       if (typeof result === 'boolean' && !result) return;
       setVisible(false);
-      formRef.current?.resetFields();
+      formRef.resetFields();
     },
     [onSubmit, configValue],
   );
@@ -538,7 +536,7 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
       title={(isPut ? '修改' : '新增') + 'Mock数据'}
       open={visible}
       // @ts-ignore
-      formRef={formRef}
+      form={formRef}
       onFinish={onFinish}
       onOpenChange={onVisibleChange}
     >

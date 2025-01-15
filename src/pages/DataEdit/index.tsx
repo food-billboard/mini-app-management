@@ -38,7 +38,7 @@ import { withTry } from '@/utils';
 const CreateForm = memo(() => {
   const [loading, setLoading] = useState<boolean>(false);
 
-  const formRef = useRef<FormInstance>();
+  const [formRef] = Form.useForm()
 
   const fetchData = async () => {
     const {
@@ -54,7 +54,7 @@ const CreateForm = memo(() => {
       })
         .then((data: API_DATA.IGetMovieInfoRes) => {
           const { poster, video } = data;
-          formRef.current?.setFieldsValue({
+          formRef.setFieldsValue({
             ...data,
             poster: [poster],
             video: [video],
@@ -100,7 +100,7 @@ const CreateForm = memo(() => {
     async (values: Store) => {
       const [, success] = await withTry(handleAdd)(values);
       if (success) {
-        formRef.current?.resetFields();
+        formRef.resetFields();
         history.go(-1);
       }
     },
@@ -108,8 +108,8 @@ const CreateForm = memo(() => {
   );
 
   const handleSaveDraft = useCallback(async () => {
-    await formRef.current?.validateFields(['name']);
-    const value = formRef.current?.getFieldsValue();
+    await formRef.validateFields(['name']);
+    const value = formRef.getFieldsValue();
     return onFinish({
       ...value,
       draft: true,
@@ -124,7 +124,7 @@ const CreateForm = memo(() => {
     <PageContainer title="新建表单">
       <Card bordered loading={loading}>
         <ProForm
-          formRef={formRef}
+          form={formRef}
           onFinish={onFinish}
           submitter={{
             render: (_, dom) => {
