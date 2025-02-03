@@ -82,20 +82,21 @@ const Upload: ReactFC<IProps> = ({
   ...props
 }) => {
   const uploadRef = useRef<FilePond | null>(null);
+  const isMessaging = useRef(false)
 
   const [value, setValue] = useState<IValue[]>([]);
-  const [isMessaging, setIsMessaging] = useState<boolean>(false);
 
   // 文件添加时对其进行加密
   const onAddFile = async (fileObj: FilePondFile) => {
-    if (!isMessaging) {
-      setIsMessaging(true);
+    if (!isMessaging.current) {
+      isMessaging.current = true 
       message.info('文件解析中...', 1, () => {
-        setIsMessaging(false);
+        isMessaging.current = false 
       });
     }
-    if (Object.prototype.toString.call(fileObj.file) !== '[object File]')
+    if (Object.prototype.toString.call(fileObj.file) !== '[object File]') {
       return true;
+    }
 
     const chunkSize = props.chunkSize || CHUNK_SIZE;
 

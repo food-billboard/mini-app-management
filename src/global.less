@@ -27,6 +27,59 @@ ol {
   list-style: none;
 }
 
+// padding
+@size-list: {
+  2: 2px;
+  4: 4px;
+  6: 6px;
+  8: 8px;
+  10: 10px;
+  12: 12px;
+  14: 14px;
+  16: 16px;
+  18: 18px;
+  20: 20px;
+  22: 22px;
+  24: 24px;
+};
+
+each(@size-list, {
+  .p-@{key} {
+    padding: @value;
+  }
+  .p-lr-@{key} {
+    padding: 0 @value;
+  }
+  .p-tb-@{key} {
+    padding: @value 0;
+  }
+  .m-@{key} {
+    margin: @value;
+  }
+  .m-lr-@{key} {
+    margin: 0 @value;
+  }
+  .m-tb-@{key} {
+    margin: @value 0;
+  }
+  .m-l-@{key} {
+    margin-left: @value;
+  }
+  .m-r-@{key} {
+    margin-right: @value;
+  }
+  .m-t-@{key} {
+    margin-top: @value;
+  }
+  .m-b-@{key} {
+    margin-bottom: @value;
+  }
+  .border-r-@{key} {
+    border-radius: @value;
+  }
+  
+});
+
 :where(.css-dev-only-do-not-override-15wgzpl) a{
   color: @primary-color;
 }

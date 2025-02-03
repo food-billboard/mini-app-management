@@ -60,7 +60,12 @@ const StepDataButton = (props: {
       open={visible}
       onOpenChange={onVisibleChange}
       placement="top"
-      overlayClassName={styles['component-code-viewer-overlay']}
+      styles={{
+        
+      }}
+      classNames={{
+        root: styles['component-code-viewer-overlay']
+      }}
     >
       <Button
         className="h-a m-r-4"

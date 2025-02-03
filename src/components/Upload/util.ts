@@ -2,10 +2,26 @@ import SparkMd5 from 'spark-md5';
 
 const objectIdReg = /^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i;
 
-export const encryptionFile = (
+// 同时最大解析数量
+const MAX_ENCRYPTION_COUNT = 2;
+let CURRENT_ENCRYPTION = 0;
+
+export const encryptionFile = async (
   file: File,
   chunkSize: number = 1024 * 1024 * 5,
 ) => {
+  async function check() {
+    // 超过解析上限就休息
+    if (CURRENT_ENCRYPTION >= MAX_ENCRYPTION_COUNT) {
+      await sleep(1000);
+      await check()
+    }
+  }
+
+  await check();
+
+  CURRENT_ENCRYPTION++;
+
   const { size } = file;
 
   let currentChunk: number = 0,
@@ -27,7 +43,10 @@ export const encryptionFile = (
     }
 
     fileReader.onload = async (e: any) => {
-      if (!e.target) return reject('读取错误');
+      if (!e.target) {
+        CURRENT_ENCRYPTION--;
+        return reject('读取错误');
+      }
       //添加读取的内容
       spark.append(e.target.result);
       currentChunk++;
@@ -37,12 +56,16 @@ export const encryptionFile = (
       }
       //读取完毕
       else {
+        CURRENT_ENCRYPTION--;
         resolve(spark.end());
       }
     };
 
     //错误处理
-    fileReader.onerror = reject;
+    fileReader.onerror = (err) => {
+      CURRENT_ENCRYPTION--;
+      reject(err);
+    };
 
     loadNext();
   });

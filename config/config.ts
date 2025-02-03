@@ -69,7 +69,7 @@ const productionConfig: any = merge({}, commonConfig, {
     'process.env.REACT_APP_ENV': 'prod',
     'process.env.REQUEST_API': process.env.REQUEST_API,
   },
-  chunks: ['antdesigns', 'vendors', 'commons', 'umi'],
+  // chunks: ['antdesigns', 'vendors', 'commons', 'umi'],
   //-----打包配置
   base: '/api/backend/',
   publicPath: '/api/backend/',

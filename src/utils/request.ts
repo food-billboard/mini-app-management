@@ -107,6 +107,7 @@ const request = async <ResBody>(url: string, setting: RequestOptions = {} as Req
       body = await axios.request({
         method,
         url,
+        headers,
         ...options,
         ...(params ? { params: formatQuery(params) } : {
           data
