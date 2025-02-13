@@ -166,15 +166,6 @@ const Upload: ReactFC<IProps> = ({
           resMetadata = pick(uploadMetadata, ['md5', 'auth']);
         }
 
-        console.log(
-          resMetadata,
-          Object.keys(resMetadata)
-            .reduce((acc: string, cur: string) => {
-              return `${acc}${cur} ${toBase64(resMetadata[cur])},`;
-            }, '')
-            .slice(0, -1),
-        );
-
         // 添加额外文件数据请求头
         req.setHeader(
           'Upload-Metadata',

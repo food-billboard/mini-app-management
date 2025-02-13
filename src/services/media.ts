@@ -39,3 +39,11 @@ export const generateVideoPoster = (data: API_MEDIA.IPutVideoPoster) => {
     data
   })
 }
+
+// 视频截取
+export const corpVideoChunk = (data: API_MEDIA.ICorpVideoChunk) => {
+  return request('/api/media/video/corp', {
+    method: "POST",
+    data
+  })
+}

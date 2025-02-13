@@ -990,6 +990,17 @@ declare namespace API_MEDIA {
     overlap?: boolean;
   }
 
+  export type ICorpVideoChunk = {
+    _id: string;
+    time: string[][]
+  }
+
+  export type ICorpVideoChunkData = {
+    status: 'fulfilled' | 'rejected'
+    reason: any 
+    value: string 
+  }
+
   export type IGetMediaValidData = {
     complete: boolean;
     error: boolean;
