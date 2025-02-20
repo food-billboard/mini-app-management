@@ -55,6 +55,16 @@ export default [
     width: 100,
   },
   {
+    title: '过期时间',
+    dataIndex: 'expire',
+    width: 150,
+    valueType: 'date',
+    fieldProps: {
+      showTime: true,
+      format: 'YYYY-MM-DD HH:mm:ss'
+    }
+  },
+  {
     title: '文件描述',
     dataIndex: 'description',
     hideInSearch: true,
