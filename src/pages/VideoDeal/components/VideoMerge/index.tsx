@@ -5,12 +5,15 @@ import { ProForm, ProFormDependency } from '@ant-design/pro-components';
 import { Form } from 'antd';
 import type { Store } from 'antd/lib/form/interface';
 import { saveAs } from 'file-saver';
-import { useCallback } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
+import { DealContext } from '../../context'
 import { fileValidator } from '../../../DataEdit/utils';
 import Sorter from './components/Sorter';
 
 const VideoMerge = () => {
   const [formRef] = Form.useForm();
+
+  const { videoList } = useContext(DealContext)
 
   const handleAdd = useCallback(async (fields: any) => {
     const hide = message.loading('正在添加');
@@ -51,7 +54,6 @@ const VideoMerge = () => {
     async (values: Store) => {
       const [, success] = await withTry(handleAdd)(values);
       if (success) {
-        formRef.resetFields();
         modal.confirm({
           title: '提示',
           content: '视频合并成功，是否下载？',
@@ -64,21 +66,17 @@ const VideoMerge = () => {
     [handleAdd],
   );
 
+  useEffect(() => {
+    formRef.setFieldsValue({
+      video: videoList 
+    })
+  }, [videoList])
+
   return (
     <div>
       <ProForm
         form={formRef}
         onFinish={onFinish}
-        // submitter={{
-        //   render: (_, dom) => {
-        //     return (
-        //       <FooterToolbar>
-
-        //         {dom}
-        //       </FooterToolbar>
-        //     );
-        //   },
-        // }}
       >
         <VideoUpload
           wrapper={{

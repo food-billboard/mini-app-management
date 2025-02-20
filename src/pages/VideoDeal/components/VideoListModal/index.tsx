@@ -1,6 +1,6 @@
 import { Button, Modal } from "antd"
 import { CloseCircleOutlined, CheckCircleOutlined } from '@ant-design/icons'
-import { forwardRef, ReactNode, useImperativeHandle, useState } from "react"
+import { forwardRef, FC, useImperativeHandle, useState } from "react"
 import styles from './index.less'
 
 export type VideoListModalRef = {
@@ -8,12 +8,12 @@ export type VideoListModalRef = {
 }
 
 export type VideoListModalProps = {
-  extraFooter?: ReactNode
+  extraFooter?: FC<any>
 }
 
 const VideoListModal = forwardRef<VideoListModalRef, VideoListModalProps>((props, ref) => {
 
-  const { extraFooter } = props 
+  const { extraFooter: ExtraFooter } = props 
 
   const [open, setOpen] = useState(false)
   const [videoList, setVideoList] = useState<API_MEDIA.ICorpVideoChunkData[]>([])
@@ -35,7 +35,11 @@ const VideoListModal = forwardRef<VideoListModalRef, VideoListModalProps>((props
         return (
           <>
             <CancelBtn />
-            {extraFooter}
+            {
+              ExtraFooter && (
+                <ExtraFooter videoList={videoList} />
+              )
+            }
           </>
         )
       }}
