@@ -2,7 +2,7 @@ import { message, modal } from '@/components/Toast';
 import VideoUpload from '@/components/VideoUpload';
 import { withTry } from '@/utils';
 import { ProForm, ProFormDependency } from '@ant-design/pro-components';
-import { Form } from 'antd';
+import { Form, Result } from 'antd';
 import type { Store } from 'antd/lib/form/interface';
 import { saveAs } from 'file-saver';
 import { useCallback } from 'react';
@@ -63,6 +63,13 @@ const VideoMerge = () => {
     },
     [handleAdd],
   );
+
+  return (
+    <Result  
+      status="500"
+      title="功能未完成"
+    />
+  )
 
   return (
     <div>

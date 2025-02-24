@@ -95,9 +95,9 @@ const VideoMerge = () => {
 
   useEffect(() => {
     formRef.setFieldsValue({
-      video: videoList 
+      video: videoList || []
     })
-  }, [videoList])
+  }, [])
 
   return (
     <div>
