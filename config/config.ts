@@ -1,6 +1,6 @@
 import { defineConfig } from '@umijs/max';
 import { merge } from 'lodash';
-import * as MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
+// import * as MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routerConfig from './router-config';
@@ -69,24 +69,17 @@ const productionConfig: any = merge({}, commonConfig, {
     'process.env.REACT_APP_ENV': 'prod',
     'process.env.REQUEST_API': process.env.REQUEST_API,
   },
-  // chunks: ['antdesigns', 'vendors', 'commons', 'umi'],
   //-----打包配置
   base: '/api/backend/',
   publicPath: '/api/backend/',
+  esbuildMinifyIIFE: true,
   chainWebpack(config: any) {
-    // config.plugin('HappyPack').use(HappyPack, [
+    // ? 反正还没用到这个编辑器，配置直接先去掉算了
+    // config.plugin('monaco-editor').use(MonacoWebpackPlugin, [
     //   {
-    //     id: 'js',
-    //     loaders: ['babel-loader'],
-    //     threadPool: happyThreadPool,
+    //     languages: ['javascript', 'json'],
     //   },
     // ]);
-
-    config.plugin('monaco-editor').use(MonacoWebpackPlugin, [
-      {
-        languages: ['javascript', 'json'],
-      },
-    ]);
     // 过滤掉momnet的那些不使用的国际化文件
     config
       .plugin('replace')
