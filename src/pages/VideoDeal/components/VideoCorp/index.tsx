@@ -116,6 +116,7 @@ const VideoMerge = () => {
             initialValue: [],
           }}
           item={{
+            maxFileSize: '10240MB',
             maxFiles: 1,
             acceptedFileTypes: ['video/*'],
             allowMultiple: false,
