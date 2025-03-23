@@ -11,14 +11,14 @@ import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 import { useCallback, useContext, useEffect, useRef } from 'react';
 import { fileValidator } from '../../../DataEdit/utils';
+import { DealContext } from '../../context';
 import VideoListModal, { VideoListModalRef } from '../VideoListModal';
-import { DealContext } from '../../context'
 import TimePicker from './components/TimePicker';
 
 const VideoMerge = () => {
   const [formRef] = Form.useForm();
 
-  const { onChange, videoList } = useContext(DealContext)
+  const { onChange, videoList } = useContext(DealContext);
 
   const videoListModalRef = useRef<VideoListModalRef>(null);
 
@@ -61,9 +61,9 @@ const VideoMerge = () => {
   // 去合并
   const handleMerge = useCallback((videoList) => {
     onChange('merge', {
-      videoList
-    })
-  }, [])
+      videoList,
+    });
+  }, []);
 
   // 批量下载
   const handleDownload = useCallback(async (videoList) => {
@@ -74,13 +74,13 @@ const VideoMerge = () => {
       // 异步下载每个文件并添加到zip中
       for (let index = 0; index < videoList.length; index++) {
         const file = videoList[index];
-        const { status, value } = file 
-        if(status === 'fulfilled') {
+        const { status, value } = file;
+        if (status === 'fulfilled') {
           const [fileName] = value.split('/').slice(-1);
           // 使用axios以blob格式下载文件
           const response = await axios.get(value, { responseType: 'blob' });
           // 将下载的blob转换为JSZip可以处理的Uint8Array
-          zip.file(fileName, new Uint8Array(response.data));
+          zip.file(`${index + 1}-${fileName}`, response.data);
         }
       }
 
@@ -95,9 +95,9 @@ const VideoMerge = () => {
 
   useEffect(() => {
     formRef.setFieldsValue({
-      video: videoList || []
-    })
-  }, [])
+      video: videoList || [],
+    });
+  }, []);
 
   return (
     <div>
@@ -120,7 +120,7 @@ const VideoMerge = () => {
             maxFiles: 1,
             acceptedFileTypes: ['video/*'],
             allowMultiple: false,
-            expire: true 
+            expire: true,
           }}
         />
         <ProForm.Item
@@ -146,14 +146,16 @@ const VideoMerge = () => {
         extraFooter={({ videoList }) => {
           return (
             <>
-              {
-                videoList.every((item: any) => item.status === 'fulfilled') && (
-                  <Button onClick={handleMerge.bind(null, videoList)}>去合并</Button>
-                )
-              }
-              <AsyncButton onClick={handleDownload.bind(null, videoList)}>
-                批量下载
-              </AsyncButton>
+              {videoList.every((item: any) => item.status === 'fulfilled') && (
+                <>
+                  <Button onClick={handleMerge.bind(null, videoList)}>
+                    去合并
+                  </Button>
+                  <AsyncButton onClick={handleDownload.bind(null, videoList)}>
+                    批量下载
+                  </AsyncButton>
+                </>
+              )}
             </>
           );
         }}
