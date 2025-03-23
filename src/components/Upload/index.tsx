@@ -15,6 +15,7 @@ import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import { pick } from 'lodash';
 import pMap from 'p-map';
+import dayjs from 'dayjs'
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FilePond, FilePondProps, registerPlugin } from 'react-filepond';
 import {
@@ -48,6 +49,7 @@ export interface IProps extends FilePondProps {
   value: string[];
   onChange: (...args: any[]) => any;
   onLoad?: (id: string) => void;
+  expire?: boolean 
 }
 
 interface ReactFC<TProps> extends React.FC<TProps> {
@@ -79,6 +81,7 @@ export type FilePondInitialFile = IInitFileType;
 const Upload: ReactFC<IProps> = ({
   value: propsValue = [],
   onLoad,
+  expire,
   ...props
 }) => {
   const uploadRef = useRef<FilePond | null>(null);
@@ -135,6 +138,9 @@ const Upload: ReactFC<IProps> = ({
       chunk: CHUNK_SIZE,
       auth: 'PUBLIC',
     };
+    if(expire) {
+      uploadMetadata.expire = dayjs().add(1, 'day').format('YYYY-MM-DD HH:mm:ss')
+    }
     let uploadId: string = '';
 
     const upload = new TusUpload(file, {
@@ -239,6 +245,7 @@ const Upload: ReactFC<IProps> = ({
       },
       // 上传进度 不用onProgress 因为这个更准确
       onChunkComplete: function onChunkComplete(
+        _,
         bytesUploaded: number,
         bytesTotal: number,
       ) {

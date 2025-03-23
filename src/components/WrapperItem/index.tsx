@@ -14,8 +14,8 @@ function WrapperItem<T>(
   Component: React.FC<any>,
   interState?: Partial<TFormState<T>>,
 ) {
-  return function (outrState: TFormState<T>) {
-    const { wrapper = {}, item = {} } = merge({}, interState, outrState);
+  return function (outerState: TFormState<T>) {
+    const { wrapper = {}, item = {} } = merge({}, interState, outerState);
 
     return (
       <Item {...wrapper}>

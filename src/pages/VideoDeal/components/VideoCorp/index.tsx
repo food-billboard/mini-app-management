@@ -120,6 +120,7 @@ const VideoMerge = () => {
             maxFiles: 1,
             acceptedFileTypes: ['video/*'],
             allowMultiple: false,
+            expire: true 
           }}
         />
         <ProForm.Item
