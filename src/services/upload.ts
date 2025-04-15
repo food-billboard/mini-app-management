@@ -65,7 +65,7 @@ export const checkUploadFile = (
   });
 };
 
-export const uploadFile = (params: Upload.IUploadParams) => {
+export const uploadFile = async (params: Upload.IUploadParams) => {
   const { file, offset, ...nextParams } = params;
   return request<{ headers: { 'Upload-Offset': number }; [key: string]: any }>(
     '/api/customer/upload/weapp',
