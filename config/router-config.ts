@@ -254,6 +254,67 @@ export default [
         ],
       },
       {
+        path: '/score',
+        name: '积分管理',
+        title: '积分管理',
+        icon: 'account-book',
+        routes: [
+          {
+            path: '/score/award',
+            title: '奖品管理',
+            name: '奖品管理',
+            routes: [
+              {
+                path: '/score/award',
+                component: '@/pages/AwardManage',
+              },
+              {
+                path: '/data/main/edit',
+                component: '@/pages/AwardEdit',
+                title: '奖品修改',
+                name: '奖品修改',
+                hideInMenu: true,
+              }
+            ],
+          },
+          {
+            path: '/score/score-memory',
+            title: '积分记录',
+            name: '积分记录',
+            routes: [
+              {
+                path: '/score/score-memory',
+                component: '@/pages/ScoreMemoryManage',
+              }
+            ],
+          },
+          {
+            path: '/data/exchange-manage',
+            title: '兑换记录',
+            name: '兑换记录',
+            component: '@/pages/ExchangeMemoryManage',
+          },
+          {
+            path: '/data/about',
+            title: '数据相关管理',
+            name: '数据相关管理',
+            routes: [
+              {
+                path: '/data/about',
+                component: '@/pages/DataAbout',
+              },
+              {
+                path: '/data/about/:name',
+                component: '@/pages/DataAboutDetail',
+                title: '数据相关详情',
+                name: '数据相关详情',
+                hideInMenu: true,
+              },
+            ],
+          },
+        ],
+      },
+      {
         path: '/screen',
         name: '大屏管理',
         title: '大屏管理',
