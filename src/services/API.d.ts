@@ -1358,3 +1358,155 @@ declare namespace API_RASPBERRY {
     _id: string;
   };
 }
+
+declare namespace API_SCORE {
+
+  export type GetListResponse<T> = {
+    total: number 
+    list: T[]
+  }
+
+  export type GetScoreMemoryListParams = {
+    content?: string 
+    start_date?: string 
+    end_date?: string 
+    currPage?: number 
+    pageSize?: number
+  }
+
+  export type GetScoreMemoryListData = {
+    _id: string 
+    target_user: string 
+    target_user_name: string 
+    create_user: string 
+    create_user_name: string 
+    target_score: number 
+    create_content: string 
+    create_description: string 
+    createdAt: string 
+    updatedAt: string 
+  }
+
+  export type PostScoreMemoryParams = {
+    target_user: string 
+    create_content: string 
+    create_description?: string 
+    target_score: number 
+  }
+
+  export type GetScoreExchangeMemoryListParams = {
+    content?: string 
+    start_date?: string 
+    end_date?: string 
+    check_start_date?: string 
+    check_end_date?: string 
+    checked?: boolean 
+    currPage?: number 
+    pageSize?: number 
+  }
+
+  export type GetScoreExchangeMemoryListData = {
+    _id: string 
+    exchange_user: string 
+    exchange_user_name: string 
+    exchange_target: string 
+    exchange_target_name: string 
+    award_name: string 
+    award_exchange_score: string 
+    award_image_list: string[]
+    check_time: string 
+    createdAt: string 
+    updatedAt: string 
+  }
+
+  export type PostScoreExchangeMemoryParams = {
+    target_user: string 
+    award: string 
+  }
+
+  export type CheckScoreExchangeMemoryParams = {
+    _id: string 
+  }
+
+  export type GetScoreClassifyListParams = {
+    _id: string 
+    create_user: string 
+    create_user_name: string 
+    content: string 
+    description: string 
+    createdAt: string 
+    updatedAt: string 
+  }
+
+  export type GetScoreClassifyListData = {
+    content?: string 
+    start_date?: string 
+    end_date?: string 
+    currPage?: number 
+    pageSize?: number 
+  }
+
+  export type PutScoreClassifyParams = {
+    _id: string 
+    content: string 
+    description?: string 
+  }
+
+  export type PostScoreClassifyParams = {
+    content: string 
+    description?: string 
+  }
+
+  export type DeleteScoreClassifyParams = {
+    _id: string 
+  }
+
+  export type GetScoreAwardParams = {
+    content?: string 
+    inventory?: string 
+    exchange_score?: string 
+    award_cycle?: string 
+    start_date?: string 
+    end_date?: string 
+    currPage?: number 
+    pageSize?: number 
+  }
+
+  export type GetScoreAwardData = {
+    _id: string 
+    inventory: number 
+    exchange_score: number 
+    award_image_list: string[]
+    award_name: string 
+    award_cycle: string 
+    award_cycle_count: number 
+    award_description: string 
+    createdAt: string 
+    updatedAt: string 
+  }
+
+  export type PutScoreAwardParams = {
+    award_name: string 
+    award_description?: string 
+    award_image_list: string 
+    award_cycle: string 
+    award_cycle_count: number 
+    inventory: number 
+    exchange_score: number 
+    _id: string 
+  }
+
+  export type PostScoreAwardParams = {
+    award_name: string 
+    award_description?: string 
+    award_image_list: string 
+    award_cycle: string 
+    award_cycle_count: number 
+    inventory: number 
+    exchange_score: number 
+  }
+
+  export type DeleteScoreAwardParams = {
+    _id: string 
+  }
+}
