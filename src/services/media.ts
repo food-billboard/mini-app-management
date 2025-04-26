@@ -47,3 +47,11 @@ export const corpVideoChunk = (data: API_MEDIA.ICorpVideoChunk) => {
     data
   })
 }
+
+// 创建媒体数据库
+export const createMediaDataBase = (data: API_MEDIA.ICreateMediaData) => {
+  return request('/api/media/video/create', {
+    method: "POST",
+    data
+  })
+}

@@ -1011,6 +1011,16 @@ declare namespace API_MEDIA {
   };
 
   export type IGetMediaValidRes = IGetMediaValidData[];
+
+  export type ICreateMediaData = {
+    type: string 
+    file_name?: string 
+    src: string 
+    poster?: string 
+    description?: string 
+    expire?: string 
+  }
+
 }
 
 declare namespace API_CHAT {

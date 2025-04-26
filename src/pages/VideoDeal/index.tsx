@@ -4,6 +4,7 @@ import { useState, useCallback, useRef } from 'react';
 import VideoCompress from './components/VideoCompress';
 import VideoCorp from './components/VideoCorp';
 import VideoMerge from './components/VideoMerge';
+import VideoCreate from './components/VideoCreate';
 import { DealContext } from './context';
 import styles from './index.less';
 
@@ -44,6 +45,11 @@ const VideoDeal = () => {
                 label: '视频压缩',
                 key: 'compress',
                 children: <VideoCompress />,
+              },
+              {
+                label: '视频数据库创建',
+                key: 'create',
+                children: <VideoCreate />,
               },
             ]}
           />

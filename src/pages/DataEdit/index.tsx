@@ -1,6 +1,5 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { Form, Rate, Input, Card, Button } from 'antd';
-import type { FormInstance } from 'antd/lib/form';
 import { FooterToolbar } from '@ant-design/pro-components';
 import {
   ProForm,
