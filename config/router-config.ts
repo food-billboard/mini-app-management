@@ -257,7 +257,7 @@ export default [
         path: '/score',
         name: '积分管理',
         title: '积分管理',
-        icon: 'account-book',
+        icon: 'AccountBookOutlined',
         routes: [
           {
             path: '/score/award',
@@ -269,7 +269,7 @@ export default [
                 component: '@/pages/AwardManage',
               },
               {
-                path: '/data/main/edit',
+                path: '/score/award/main/edit',
                 component: '@/pages/AwardEdit',
                 title: '奖品修改',
                 name: '奖品修改',
@@ -285,32 +285,21 @@ export default [
               {
                 path: '/score/score-memory',
                 component: '@/pages/ScoreMemoryManage',
+              },
+              {
+                path: '/score/score-memory/classify',
+                component: '@/pages/ScoreClassifyManage',
+                title: '积分原因分类管理',
+                name: '积分原因分类管理',
+                hideInMenu: true,
               }
             ],
           },
           {
-            path: '/data/exchange-manage',
+            path: '/score/exchange-manage',
             title: '兑换记录',
             name: '兑换记录',
             component: '@/pages/ExchangeMemoryManage',
-          },
-          {
-            path: '/data/about',
-            title: '数据相关管理',
-            name: '数据相关管理',
-            routes: [
-              {
-                path: '/data/about',
-                component: '@/pages/DataAbout',
-              },
-              {
-                path: '/data/about/:name',
-                component: '@/pages/DataAboutDetail',
-                title: '数据相关详情',
-                name: '数据相关详情',
-                hideInMenu: true,
-              },
-            ],
           },
         ],
       },

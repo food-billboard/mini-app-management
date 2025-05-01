@@ -1,20 +1,26 @@
 import { ProPage } from '@/components/ProTable';
 import { message } from '@/components/Toast';
-import { deleteScreenList, getScreenList } from '@/services';
+import {
+  deleteScoreClassify,
+  getScoreClassifyList,
+  postScoreClassify,
+  putScoreClassify
+} from '@/services';
+import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType } from '@ant-design/pro-components';
-import { Button } from 'antd';
 import { memo, useCallback, useRef } from 'react';
 import columns from './columns';
-import { exportData, LeadIn } from './utils';
+import EditForm from './components/Edit';
 
-const ScreenManage = memo(() => {
+const ScoreClassifyManage = memo(() => {
+
   const actionRef = useRef<ActionType>();
 
   const handleDelete = useCallback(
-    async (record: API_SCREEN.IGetScreenListData[]) => {
-      const { _id } = record[0];
-
-      await deleteScreenList({ _id })
+    async (record: API_SCORE.GetScoreClassifyListData[]) => {
+      await deleteScoreClassify({
+        _id: record.map((item) => item._id).join(','),
+      })
         .then(() => {
           return actionRef.current?.reloadAndRest?.();
         })
@@ -25,64 +31,58 @@ const ScreenManage = memo(() => {
     [],
   );
 
-  const handleExport = useCallback(
-    async (record: API_SCREEN.IGetScreenListData) => {
-      const { _id } = record;
-
-      await exportData({ _id, type: 'screen' }).catch(() => {
-        message.info('导出失败');
-      });
-    },
-    [],
-  );
-
-  const handleLeadIn = useCallback(async () => {
-    LeadIn('screen', () => {
-      return actionRef.current?.reloadAndRest?.();
-    });
-  }, []);
+  const handleSave = useCallback((value) => {
+    const { _id } = value
+    return _id ? putScoreClassify(value) : postScoreClassify(value)
+  }, [])
 
   return (
     <ProPage
       action={{
         remove: {
-          multiple: false,
           action: handleDelete,
         },
       }}
       extraActionRender={(record) => {
         return (
-          <>
-            <Button
-              style={{ padding: 0 }}
-              key="export"
-              type="link"
-              onClick={handleExport.bind(null, record)}
-            >
-              导出
-            </Button>
-          </>
+          <EditForm
+            extraButtonProps={{
+              type: 'link',
+              style: { paddingLeft: 0 },
+            }}
+            onSubmit={handleSave}
+            value={record}
+          >
+            编辑
+          </EditForm>
         );
       }}
+      toolBarRender={() => [
+        <EditForm
+          key="add"
+          extraButtonProps={{
+            type: 'primary',
+            icon: <PlusOutlined />,
+          }}
+          onSubmit={handleSave}
+        >
+          新增
+        </EditForm>,
+      ]}
       scroll={{ x: 'max-content' }}
-      headerTitle="大屏列表"
+      headerTitle="积分原因分类管理"
       actionRef={actionRef}
       rowKey="_id"
-      toolBarRender={() => {
-        return [
-          <Button key="leadin" type="primary" onClick={handleLeadIn}>
-            导入
-          </Button>,
-        ];
-      }}
       tableAlertRender={false}
       pagination={{
         pageSize: 10,
       }}
-      request={({ current, createdAt, ...nextParams }) => {
-        return getScreenList({
+      request={async ({ current, createdAt=[], ...nextParams }) => {
+        const [start_date, end_date] = createdAt as any;
+        return getScoreClassifyList({
           currPage: (current || 1) - 1,
-          createdAt: JSON.stringify(createdAt) as any,
+          start_date,
+          end_date,
           ...nextParams,
         })
           .then((data) => {
@@ -91,9 +91,8 @@ const ScreenManage = memo(() => {
           .catch(() => ({ data: [], total: 0 }));
       }}
       columns={columns as any}
-      rowSelection={false}
     />
   );
 });
 
-export default ScreenManage;
+export default ScoreClassifyManage;

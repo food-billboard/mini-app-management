@@ -1,30 +1,52 @@
-import React from 'react'
-import { Tag, Image } from 'antd'
-import { history } from 'umi';
-import { IMAGE_FALLBACK } from '@/utils'
+import { SCORE_AWARD_CYCLE_TYPE_ARRAY } from '@/utils'
 
 export default [
   {
-    title: 'id',
-    dataIndex: '_id',
-    copyable: true,
+    title: '奖品名称',
+    dataIndex: 'award_name',
     hideInSearch: true 
   },
   {
-    title: '大屏名称',
-    dataIndex: 'name',
-    hideInSearch: true 
-  },
-  {
-    title: '名称',
+    title: '模糊查询',
     dataIndex: 'content',
     valueType: 'text',
     hideInTable: true,
   },
   {
     title: '描述',
-    dataIndex: 'description',
+    dataIndex: 'award_description',
     hideInSearch: true 
+  },
+  {
+    title: '库存',
+    dataIndex: 'inventory',
+  },
+  {
+    title: '所需积分',
+    dataIndex: 'exchange_score',
+    hideInSearch: true,
+  },
+  {
+    title: '兑换周期',
+    dataIndex: 'award_cycle',
+    valueEnum: SCORE_AWARD_CYCLE_TYPE_ARRAY.reduce((acc, cur) => {
+      return {
+        ...acc,
+        [cur.value] : {
+          text: cur.label
+        }
+      } 
+    }, {}),
+  },
+  {
+    title: '兑换周期次数',
+    dataIndex: 'award_cycle_count',
+    hideInSearch: true,
+  },
+  {
+    title: '创建用户',
+    dataIndex: 'create_user_name',
+    hideInSearch: true,
   },
   {
     title: '创建时间',
@@ -40,65 +62,6 @@ export default [
   {
     title: '修改时间',
     dataIndex: 'updatedAt',
-    hideInSearch: true 
-  },
-  {
-    title: '创建用户',
-    dataIndex: 'user',
-    hideInSearch: true,
-    renderText: (value: { username: string; _id: string }) => {
-      if (!value.username) return <span>-</span>;
-      return <a onClick={() => history.push(`/member/${value['_id']}`)}>{value.username}</a>;
-    },
-  },
-  {
-    title: '状态',
-    dataIndex: 'enable',
-    render: (val: boolean) => {
-      if(val) {
-        return (
-          <Tag color="green">启用</Tag>
-        )
-      }
-      return <Tag color="red">禁用</Tag>
-    },
-    hideInSearch: true 
-  },
-  {
-    title: '状态',
-    dataIndex: 'enable',
-    hideInTable: true,
-    valueEnum: {
-      enable: { 
-        text: '启用',
-        status: 'Success',
-      },
-      disable: {
-        text: '禁用',
-        status: 'Error',
-      }
-    },
-    search: {
-      transform: (value: any) => {
-        return {
-          enable: value === 'enable' ? '1' : '0'
-        }
-      }
-    }
-  },
-  {
-    title: '海报',
-    dataIndex: 'poster',
-    hideInSearch: true,
-    render: (value: string) => {
-      return (
-        <Image src={value} width={50} height={50} fallback={IMAGE_FALLBACK} />
-      )
-    }
-  },
-  {
-    title: '版本',
-    dataIndex: 'version',
     hideInSearch: true 
   },
 ]

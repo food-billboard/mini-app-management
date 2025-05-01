@@ -1,88 +1,29 @@
 import { ProPage } from '@/components/ProTable';
-import { message } from '@/components/Toast';
-import { deleteScreenList, getScreenList } from '@/services';
-import type { ActionType } from '@ant-design/pro-components';
-import { Button } from 'antd';
-import { memo, useCallback, useRef } from 'react';
+import { getScoreExchangeMemoryList } from '@/services';
 import columns from './columns';
-import { exportData, LeadIn } from './utils';
 
-const ScreenManage = memo(() => {
-  const actionRef = useRef<ActionType>();
-
-  const handleDelete = useCallback(
-    async (record: API_SCREEN.IGetScreenListData[]) => {
-      const { _id } = record[0];
-
-      await deleteScreenList({ _id })
-        .then(() => {
-          return actionRef.current?.reloadAndRest?.();
-        })
-        .catch(() => {
-          message.info('删除错误');
-        });
-    },
-    [],
-  );
-
-  const handleExport = useCallback(
-    async (record: API_SCREEN.IGetScreenListData) => {
-      const { _id } = record;
-
-      await exportData({ _id, type: 'screen' }).catch(() => {
-        message.info('导出失败');
-      });
-    },
-    [],
-  );
-
-  const handleLeadIn = useCallback(async () => {
-    LeadIn('screen', () => {
-      return actionRef.current?.reloadAndRest?.();
-    });
-  }, []);
-
+const ExchangeMemoryManage = () => {
   return (
     <ProPage
       action={{
-        remove: {
-          multiple: false,
-          action: handleDelete,
-        },
-      }}
-      extraActionRender={(record) => {
-        return (
-          <>
-            <Button
-              style={{ padding: 0 }}
-              key="export"
-              type="link"
-              onClick={handleExport.bind(null, record)}
-            >
-              导出
-            </Button>
-          </>
-        );
+        remove: false,
       }}
       scroll={{ x: 'max-content' }}
-      headerTitle="大屏列表"
-      actionRef={actionRef}
+      headerTitle="兑换记录管理"
       rowKey="_id"
-      toolBarRender={() => {
-        return [
-          <Button key="leadin" type="primary" onClick={handleLeadIn}>
-            导入
-          </Button>,
-        ];
-      }}
       tableAlertRender={false}
       pagination={{
         pageSize: 10,
       }}
-      request={({ current, createdAt, ...nextParams }) => {
-        return getScreenList({
+      request={async ({ current, createdAt = [], check_date = [], ...nextParams }) => {
+        const [start_date, end_date] = createdAt as any;
+        const [check_start_date, check_end_date] = check_date as any;
+        return getScoreExchangeMemoryList({
           currPage: (current || 1) - 1,
-          createdAt: JSON.stringify(createdAt) as any,
+          start_date,
+          end_date,
+          check_start_date, 
+          check_end_date,
           ...nextParams,
         })
           .then((data) => {
@@ -94,6 +35,6 @@ const ScreenManage = memo(() => {
       rowSelection={false}
     />
   );
-});
+};
 
-export default ScreenManage;
+export default ExchangeMemoryManage;

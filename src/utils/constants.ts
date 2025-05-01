@@ -73,7 +73,44 @@ const SCHEDULE_STATUS: any = {
   SCHEDULING: '任务开启执行',
 };
 
+const SCORE_AWARD_CYCLE_TYPE = {
+  NONE: '无限制',
+  DAY: "按天",
+  WEEK: "按周",
+  MONTH: "按月",
+  QUARTER: "按季度",
+  YEAR: "按年"
+}
+const SCORE_AWARD_CYCLE_TYPE_ARRAY = [
+  {
+    label: '无限制',
+    value: 'NONE'
+  },
+  {
+    label: '按天',
+    value: 'DAY'
+  },
+  {
+    label: '按周',
+    value: 'WEEK'
+  },
+  {
+    label: '按月',
+    value: 'MONTH'
+  },
+  {
+    label: '按季度',
+    value: 'QUARTER'
+  },
+  {
+    label: '按年',
+    value: 'YEAR'
+  }
+]
+
 export {
+  SCORE_AWARD_CYCLE_TYPE,
+  SCORE_AWARD_CYCLE_TYPE_ARRAY,
   MESSAGE_MEDIA_TYPE,
   SOURCE_TYPE,
   MOVIE_STATUS,

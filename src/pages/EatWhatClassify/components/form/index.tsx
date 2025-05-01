@@ -1,6 +1,5 @@
 import { ModalForm } from '@/components/ProModal';
 import RichTextEditor from '@/components/RichTextEditor';
-import { sleep } from '@/utils';
 import { ProFormSelect, ProFormTextArea } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import type { Store } from 'antd/lib/form/interface';

@@ -1417,6 +1417,8 @@ declare namespace API_SCORE {
     check_time: string 
     createdAt: string 
     updatedAt: string 
+    currPage: number 
+    pageSize: number 
   }
 
   export type PostScoreExchangeMemoryParams = {
@@ -1429,6 +1431,14 @@ declare namespace API_SCORE {
   }
 
   export type GetScoreClassifyListParams = {
+    content?: string 
+    start_date?: string 
+    end_date?: string 
+    currPage?: number 
+    pageSize?: number 
+  }
+
+  export type GetScoreClassifyListData = {
     _id: string 
     create_user: string 
     create_user_name: string 
@@ -1436,14 +1446,8 @@ declare namespace API_SCORE {
     description: string 
     createdAt: string 
     updatedAt: string 
-  }
-
-  export type GetScoreClassifyListData = {
-    content?: string 
-    start_date?: string 
-    end_date?: string 
-    currPage?: number 
-    pageSize?: number 
+    currPage: number 
+    pageSize: number 
   }
 
   export type PutScoreClassifyParams = {
@@ -1488,7 +1492,7 @@ declare namespace API_SCORE {
   export type PutScoreAwardParams = {
     award_name: string 
     award_description?: string 
-    award_image_list: string 
+    award_image_list: string[]
     award_cycle: string 
     award_cycle_count: number 
     inventory: number 
@@ -1499,7 +1503,7 @@ declare namespace API_SCORE {
   export type PostScoreAwardParams = {
     award_name: string 
     award_description?: string 
-    award_image_list: string 
+    award_image_list: string[]
     award_cycle: string 
     award_cycle_count: number 
     inventory: number 
