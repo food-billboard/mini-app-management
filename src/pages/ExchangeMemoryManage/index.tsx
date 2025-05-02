@@ -6,7 +6,7 @@ const ExchangeMemoryManage = () => {
   return (
     <ProPage
       action={{
-        remove: false,
+        show: false 
       }}
       scroll={{ x: 'max-content' }}
       headerTitle="兑换记录管理"

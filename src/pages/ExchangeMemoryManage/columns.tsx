@@ -27,11 +27,6 @@ export default [
     hideInSearch: true 
   },
   {
-    title: '积分描述',
-    dataIndex: 'create_description',
-    hideInSearch: true 
-  },
-  {
     title: '兑换时间',
     dataIndex: 'createdAt',
     valueType: 'dateRange',

@@ -11,6 +11,7 @@ import type { ActionType } from '@ant-design/pro-components';
 import { memo, useCallback, useRef } from 'react';
 import columns from './columns';
 import EditForm from './components/Edit';
+import { postScoreExchangeMemory, postScoreMemory } from '/src/services/score';
 
 const ScoreAwardManage = memo(() => {
   const actionRef = useRef<ActionType>();
@@ -30,7 +31,9 @@ const ScoreAwardManage = memo(() => {
 
   const handleSave = useCallback((value) => {
     const { _id } = value;
-    return _id ? putScoreAward(value) : postScoreAward(value);
+    return (_id ? putScoreAward(value) : postScoreAward(value)).then(() => {
+      return actionRef.current?.reloadAndRest?.();
+    });
   }, []);
 
   return (
@@ -40,6 +43,7 @@ const ScoreAwardManage = memo(() => {
           action: handleDelete,
         },
       }}
+      rowSelection={{}}
       extraActionRender={(record) => {
         return (
           <EditForm
@@ -83,7 +87,6 @@ const ScoreAwardManage = memo(() => {
           ...nextParams,
         })
           .then((data) => {
-            console.log(data)
             return { data: data.list, total: data.total };
           })
           .catch(() => ({ data: [], total: 0 }));

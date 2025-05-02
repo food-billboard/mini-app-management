@@ -14,6 +14,7 @@ export type ProTableProps<DataSource, U, ValueType = 'text'> = AntProTableProps<
   ValueType
 > & {
   action: {
+    show?: boolean;
     remove?:
       | false
       | {
@@ -48,7 +49,7 @@ const ProTable = <
     ...nextProps
   } = props;
 
-  const { remove = false } = action || {};
+  const { remove = false, show = true } = action || {};
 
   const actionLoading = useRef(false);
 
@@ -150,20 +151,24 @@ const ProTable = <
       )}
       columns={[
         ...propsColumns,
-        {
-          valueType: 'option',
-          title: '操作',
-          key: 'option',
-          dataIndex: 'option',
-          render: (_, record, index) => {
-            return (
-              <>
-                {removeAction([record], false)}
-                {extraActionRender && extraActionRender(record, index)}
-              </>
-            );
-          },
-        },
+        ...(show
+          ? ([
+              {
+                valueType: 'option',
+                title: '操作',
+                key: 'option',
+                dataIndex: 'option',
+                render: (_: any, record: any, index: number) => {
+                  return (
+                    <>
+                      {removeAction([record], false)}
+                      {extraActionRender && extraActionRender(record, index)}
+                    </>
+                  );
+                },
+              },
+            ] as any[])
+          : []),
       ]}
     />
   );

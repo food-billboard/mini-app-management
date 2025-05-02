@@ -33,7 +33,10 @@ const ScoreClassifyManage = memo(() => {
 
   const handleSave = useCallback((value) => {
     const { _id } = value
-    return _id ? putScoreClassify(value) : postScoreClassify(value)
+    return (_id ? putScoreClassify(value) : postScoreClassify(value))
+    .then(() => {
+      return actionRef.current?.reloadAndRest?.()
+    })
   }, [])
 
   return (

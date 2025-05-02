@@ -1,21 +1,21 @@
 import { ProPage } from '@/components/ProTable';
-import { Button } from 'antd'
-import { history } from 'umi';
 import { getScoreMemoryList } from '@/services';
+import { Button } from 'antd';
+import { history } from 'umi';
 import columns from './columns';
 
 const ScoreMemoryManage = () => {
   return (
     <ProPage
       action={{
-        remove: false,
+        show: false,
       }}
       toolBarRender={() => [
         <Button
           key="add"
-          type='primary'
+          type="primary"
           onClick={() => {
-            history.push('/score/score-memory/classify')
+            history.push('/score/score-memory/classify');
           }}
         >
           积分原因分类管理
