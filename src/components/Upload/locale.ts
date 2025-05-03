@@ -5,7 +5,7 @@ export default {
   labelFileSizeNotAvailable: '文件大小不可用',
   labelFileLoading: '加载',
   labelFileLoadError: '加载错误',
-  labelFileProcessing: '上传',
+  labelFileProcessing: '上传中',
   labelFileProcessingComplete: '已上传',
   labelFileProcessingAborted: '上传已取消',
   labelFileProcessingError: '上传出错',

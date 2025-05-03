@@ -1,5 +1,5 @@
 import { message } from '@/components/Toast';
-import { useDeepCompareEffect } from 'ahooks';
+import { useDeepCompareEffect, useGetState } from 'ahooks';
 import {
   FilePondErrorDescription,
   FilePondFile,
@@ -16,7 +16,7 @@ import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import { pick } from 'lodash';
 import pMap from 'p-map';
 import dayjs from 'dayjs'
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FilePond, FilePondProps, registerPlugin } from 'react-filepond';
 import {
   HttpRequest,
@@ -88,6 +88,16 @@ const Upload: ReactFC<IProps> = ({
   const isMessaging = useRef(false)
 
   const [value, setValue] = useState<IValue[]>([]);
+  const [isUploading, setIsUploading, getIsUploading] = useGetState(true)
+
+  const mergeProcess = useRef({
+    current: 0,
+    total: 0
+  })
+
+  const labelFileProcessing = useMemo(() =>  {
+    return isUploading ? '上传中' : '合并中'
+  }, [isUploading])
 
   // 文件添加时对其进行加密
   const onAddFile = async (fileObj: FilePondFile) => {
@@ -213,6 +223,19 @@ const Upload: ReactFC<IProps> = ({
             return [...restValue, ...newValue];
           });
         }
+        if(method === 'patch') {
+          const isUploading = getIsUploading()
+          const current = res.getHeader('Upload-Merge-Offset')
+          const total = res.getHeader('Upload-Merge-Total')
+          mergeProcess.current = {
+            current: current || 0,
+            total: total || 1
+          }
+          if(isUploading && total) {
+            setIsUploading(!total)
+            progress(true, 0, 100)
+          }
+        }
       },
       // 自定义文件id
       fingerprint: () => {
@@ -229,6 +252,7 @@ const Upload: ReactFC<IProps> = ({
       // 不重试
       onShouldRetry: () => false,
       onError: function onError(err: Error) {
+        setIsUploading(true)
         error(err.message);
         setValue((prevValue) => {
           return prevValue.map((val) => {
@@ -249,11 +273,17 @@ const Upload: ReactFC<IProps> = ({
         bytesUploaded: number,
         bytesTotal: number,
       ) {
-        progress(true, bytesUploaded, bytesTotal);
+        const isUploading = getIsUploading()
+        if(isUploading) {
+          progress(true, bytesUploaded, bytesTotal);
+        }else {
+          progress(true, mergeProcess.current.current, mergeProcess.current.total)
+        }
       },
       onSuccess: function onSuccess() {
         load(fieldName);
         onLoad?.(uploadId);
+        setIsUploading(true)
       },
     });
 
@@ -371,6 +401,7 @@ const Upload: ReactFC<IProps> = ({
       beforeAddFile={onAddFile}
       onremovefile={onremovefile}
       {...china}
+      labelFileProcessing={labelFileProcessing}
       {...props}
     />
   ) : null;

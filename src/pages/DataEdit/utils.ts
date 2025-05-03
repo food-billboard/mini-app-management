@@ -21,7 +21,6 @@ export function localFetchData4Array<T extends object, O = T[], K = any>(
     ]
   ): Promise<K[]> {
     const [, data] = await withTry<O>(fetchMethod)(...restArgs);
-    console.log(data, 2222222);
     if (!data) return [];
     const lastParams = pickParams[pickParams.length - 1];
     const getOriginData = typeof lastParams === 'function' ? lastParams : null;
