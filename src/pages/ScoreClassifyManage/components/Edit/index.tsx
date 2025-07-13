@@ -1,24 +1,33 @@
 import { ModalForm } from '@/components/ProModal';
-import { ProFormTextArea } from '@ant-design/pro-components';
+import { ProFormSelect, ProFormTextArea } from '@ant-design/pro-components';
+import type { ButtonProps } from 'antd';
 import { Button, Form, Input } from 'antd';
-import type { ButtonProps } from 'antd'
 import type { Store } from 'antd/lib/form/interface';
 import { ReactNode, useCallback, useState } from 'react';
+import { getScorePrimaryClassifyList } from '@/services'
 
-type FormData = API_SCORE.PutScoreClassifyParams | API_SCORE.PostScoreClassifyParams;
+type FormData =
+  | API_SCORE.PutScoreClassifyParams
+  | API_SCORE.PostScoreClassifyParams;
 
 type IProps = {
   onCancel?: () => any;
   onSubmit?: (data: FormData) => any;
   children?: ReactNode;
   value?: API_SCORE.GetScoreClassifyListData;
-  extraButtonProps?: ButtonProps
+  extraButtonProps?: ButtonProps;
 };
 
 const CreateForm = (props: IProps) => {
   const [visible, setVisible] = useState<boolean>(false);
 
-  const { onCancel: propsCancel, onSubmit, children, value, extraButtonProps } = props;
+  const {
+    onCancel: propsCancel,
+    onSubmit,
+    children,
+    value,
+    extraButtonProps,
+  } = props;
 
   const [formRef] = Form.useForm();
 
@@ -32,7 +41,10 @@ const CreateForm = (props: IProps) => {
     show();
 
     if (isEdit) {
-      formRef.setFieldsValue(value);
+      formRef.setFieldsValue({
+        ...value,
+        primary: value.primary_id 
+      });
     }
   }, [value]);
 
@@ -75,6 +87,24 @@ const CreateForm = (props: IProps) => {
         onFinish={onFinish}
         onOpenChange={onVisibleChange}
       >
+        <ProFormSelect
+          rules={[{ required: true }]}
+          placeholder={'请选择一级分类'}
+          request={async (params) => {
+            // const { keyWords } = params;
+            return getScorePrimaryClassifyList({})
+            .then((data) => {
+              return data.list.map((item: any) => {
+                return {
+                  label: item.content,
+                  value: item._id,
+                };
+              });
+            });
+          }}
+          name="primary"
+          label="一级分类"
+        />
         <ProFormTextArea
           required
           name="content"

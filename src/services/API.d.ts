@@ -1438,6 +1438,17 @@ declare namespace API_SCORE {
     _id: string 
   }
 
+  export type GetScorePrimaryClassifyListParams = {
+    content?: string 
+  }
+
+  export type GetScorePrimaryClassifyListData = {
+    _id: string 
+    content: string 
+    createdAt: string 
+    updatedAt: string 
+  }
+
   export type GetScoreClassifyListParams = {
     content?: string 
     start_date?: string 
@@ -1450,12 +1461,12 @@ declare namespace API_SCORE {
     _id: string 
     create_user: string 
     create_user_name: string 
+    primary_content: string 
+    primary_id: string 
     content: string 
     description: string 
     createdAt: string 
     updatedAt: string 
-    currPage: number 
-    pageSize: number 
   }
 
   export type PutScoreClassifyParams = {

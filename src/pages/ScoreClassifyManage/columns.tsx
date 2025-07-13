@@ -1,3 +1,4 @@
+import { getScorePrimaryClassifyList } from '@/services'
 
 export default [
   {
@@ -15,6 +16,23 @@ export default [
     title: '描述',
     dataIndex: 'description',
     hideInSearch: true 
+  },
+  {
+    title: '一级分类',
+    dataIndex: 'primary_id',
+    renderText: (_: any, record: any) => record.primary_name,
+    valueType: 'select',
+    request: async () => {
+      return getScorePrimaryClassifyList({})
+      .then(data => {
+        return data.list.map((item: any) => {
+          return {
+            label: item.content,
+            value: item._id 
+          }
+        })
+      })
+    }
   },
   {
     title: '创建时间',

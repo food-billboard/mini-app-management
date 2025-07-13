@@ -40,6 +40,14 @@ export const checkScoreExchangeMemory = (data: API_SCORE.CheckScoreExchangeMemor
   });
 };
 
+// 一级分类列表
+export const getScorePrimaryClassifyList = (params: API_SCORE.GetScorePrimaryClassifyListParams) => {
+  return request<API_SCORE.GetListResponse<API_SCORE.GetScorePrimaryClassifyListData>>('/api/manage/score/classify/primary', {
+    method: 'GET',
+    params
+  });
+};
+
 // 分类列表
 export const getScoreClassifyList = (params: API_SCORE.GetScoreClassifyListParams) => {
   return request<API_SCORE.GetListResponse<API_SCORE.GetScoreClassifyListData>>('/api/manage/score/classify', {
