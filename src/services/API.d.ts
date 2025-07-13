@@ -1465,6 +1465,7 @@ declare namespace API_SCORE {
     primary_id: string 
     content: string 
     description: string 
+    image: string 
     createdAt: string 
     updatedAt: string 
   }
@@ -1473,11 +1474,13 @@ declare namespace API_SCORE {
     _id: string 
     content: string 
     description?: string 
+    image: string 
   }
 
   export type PostScoreClassifyParams = {
     content: string 
     description?: string 
+    image: string 
   }
 
   export type DeleteScoreClassifyParams = {

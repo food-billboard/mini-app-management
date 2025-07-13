@@ -4,7 +4,9 @@ import type { ButtonProps } from 'antd';
 import { Button, Form, Input } from 'antd';
 import type { Store } from 'antd/lib/form/interface';
 import { ReactNode, useCallback, useState } from 'react';
+import UploadForm from '@/components/Upload';
 import { getScorePrimaryClassifyList } from '@/services'
+import { fileValidator } from '../../../DataEdit/utils';
 
 type FormData =
   | API_SCORE.PutScoreClassifyParams
@@ -112,6 +114,22 @@ const CreateForm = (props: IProps) => {
           label="内容"
           fieldProps={{
             autoSize: true,
+          }}
+        />
+        <UploadForm
+          wrapper={{
+            label: '图片',
+            name: 'image',
+            rules: [
+              {
+                required: true,
+                validator: fileValidator(1),
+                validateTrigger: 'onBlur',
+              },
+            ],
+          }}
+          item={{
+            acceptedFileTypes: ['image/*'],
           }}
         />
         <ProFormTextArea
