@@ -1,5 +1,6 @@
 import { request } from '@/utils';
 import { merge } from 'lodash'
+import dayjs from 'dayjs'
 
 const { REACT_APP_ENV  } = process.env
 
@@ -13,6 +14,7 @@ export interface LoginParamsType {
 
 export interface RegisterParamsType extends Pick<LoginParamsType, 'mobile' | 'password' | 'captcha'> {
   email: string
+  birthday: string
 }
 
 export interface ResetParamsType extends Pick<RegisterParamsType, 'email' | 'password' | 'captcha'> {}
@@ -55,6 +57,9 @@ export async function forgetPassword(params: ResetParamsType) {
 export async function register(params: RegisterParamsType) {
   return request('/api/user/logon/register', {
     method: 'POST',
-    data: params
+    data: {
+      ...params,
+      birthday: dayjs().format('YYYY-MM-DD')
+    }
   })
 }

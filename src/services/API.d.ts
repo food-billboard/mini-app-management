@@ -87,6 +87,8 @@ declare namespace API {
     attentions: string 
     hot: string 
     issue: string 
+    birthday: string 
+    score: string 
   }
 
   export interface LoginStateType {
@@ -166,6 +168,8 @@ declare namespace API_USER {
     updatedAt: string;
     status: keyof typeof UserStatus;
     avatar: string;
+    score: string
+    birthday: string 
   }
 
   export interface IPostUserParams {
@@ -177,6 +181,7 @@ declare namespace API_USER {
     description: string;
     // role: keyof typeof UserRole
     role: string;
+    birthday: string 
   }
 
   export interface IPutUserParams extends IPostUserParams {
@@ -782,6 +787,8 @@ declare namespace API_ADMIN {
     updatedAt: string;
     avatar: string;
     description: string;
+    score: string
+    birthday: string 
   }
 
   export interface IPutAdminInfoParams {
@@ -791,6 +798,7 @@ declare namespace API_ADMIN {
     mobile: number;
     email: string;
     password: string;
+    birthday: string 
   }
 
   export interface IGetAdminIssueListParams {

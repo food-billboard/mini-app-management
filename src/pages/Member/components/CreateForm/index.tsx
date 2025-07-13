@@ -1,14 +1,20 @@
-import { Form, Input } from 'antd';
-import type { FormInstance } from 'antd/lib/form';
-import { ProFormText, ProFormSelect, ProFormTextArea } from '@ant-design/pro-components';
-import type { Store } from 'antd/lib/form/interface';
-import React, { Component, createRef } from 'react';
-import { ModalForm } from '@/components/ProModal'
+import { ModalForm } from '@/components/ProModal';
 import { message } from '@/components/Toast';
 import Upload from '@/components/Upload';
 import { getUserDetail } from '@/services';
-import { fileValidator } from '../../../DataEdit/utils';
 import { ROLES_MAP, sleep } from '@/utils';
+import {
+  ProFormDatePicker,
+  ProFormSelect,
+  ProFormText,
+  ProFormTextArea,
+} from '@ant-design/pro-components';
+import { Form, Input } from 'antd';
+import dayjs from 'dayjs'
+import type { FormInstance } from 'antd/lib/form';
+import type { Store } from 'antd/lib/form/interface';
+import { Component, createRef } from 'react';
+import { fileValidator } from '../../../DataEdit/utils';
 
 export type FormData = API_DATA.IPutMovieParams | API_DATA.IPostMovieParams;
 
@@ -41,11 +47,14 @@ class CreateForm extends Component<IProps, IState> {
     const isEdit = !!id;
 
     const show = (callback?: any) => {
-      this.setState({
-        visible: true,
-        loading: isEdit,
-        editable: isEdit,
-      }, callback);
+      this.setState(
+        {
+          visible: true,
+          loading: isEdit,
+          editable: isEdit,
+        },
+        callback,
+      );
     };
 
     if (id) {
@@ -54,15 +63,16 @@ class CreateForm extends Component<IProps, IState> {
         _id: id,
       })
         .then((data: API_USER.IGetUserDetailRes) => {
-          const { avatar } = data;
+          const { avatar, birthday, } = data;
           show(async () => {
-            await sleep(1000)
+            await sleep(1000);
             this.formRef.current?.setFieldsValue({
               ...data,
+              birthday: dayjs(birthday),
               poster: Array.isArray(avatar) ? avatar : [avatar],
               _id: id,
             });
-          })
+          });
         })
         .catch(() => {
           message.info('数据获取错误，请重试');
@@ -116,7 +126,11 @@ class CreateForm extends Component<IProps, IState> {
             },
           ]}
         />
-        <ProFormText.Password name="password" label="密码" placeholder={'请输入密码'} />
+        <ProFormText.Password
+          name="password"
+          label="密码"
+          placeholder={'请输入密码'}
+        />
         <ProFormText
           name="email"
           label="邮箱"
@@ -152,6 +166,25 @@ class CreateForm extends Component<IProps, IState> {
               required: true,
             },
           ]}
+        />
+        <ProFormDatePicker
+          label="出生年月"
+          name="birthday"
+          rules={[
+            {
+              required: true,
+              message: '请选择出生年月',
+            },
+          ]}
+          fieldProps={{
+            format: 'YYYY-MM-DD',
+            style: {
+              width: '100%',
+            },
+            disabledDate: date => {
+              return dayjs().diff(date) <= 0 
+            }
+          }}
         />
         <ProFormSelect
           options={ROLES_MAP_ENUM}

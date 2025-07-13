@@ -5,8 +5,10 @@ import {
   ProForm,
   ProFormText,
   ProFormTextArea,
+  ProFormDatePicker
 } from '@ant-design/pro-components';
 import { Form } from 'antd';
+import dayjs from 'dayjs'
 import type { Store } from 'antd/lib/form/interface';
 import { merge } from 'lodash';
 import { useCallback, useEffect, useRef } from 'react';
@@ -24,9 +26,10 @@ const BaseView = () => {
 
   const setBaseInfo = useCallback(() => {
     if (userInfo) {
-      const { avatar, ...nextUserInfo } = userInfo;
+      const { avatar, birthday, ...nextUserInfo } = userInfo;
       formRef.setFieldsValue(
         merge({}, nextUserInfo, {
+          birthday: dayjs(birthday),
           avatar: Array.isArray(avatar) ? avatar : [avatar],
         }),
       );
@@ -94,6 +97,25 @@ const BaseView = () => {
                 message: '请输入描述',
               },
             ]}
+          />
+          <ProFormDatePicker 
+            label="出生年月"
+            name="birthday"
+            rules={[
+              {
+                required: true,
+                message: '请选择出生年月',
+              },
+            ]}
+            fieldProps={{
+              format: 'YYYY-MM-DD',
+              style: {
+                width: '100%'
+              },
+              disabledDate: date => {
+                return dayjs().diff(date) <= 0 
+              }
+            }}
           />
           <ProFormText
             name="mobile"
