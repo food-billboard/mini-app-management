@@ -1,3 +1,4 @@
+import { getScoreClassifyList } from '@/services'
 
 export default [
   {
@@ -17,9 +18,57 @@ export default [
     hideInTable: true,
   },
   {
+    title: '分类',
+    dataIndex: 'target_classify',
+    renderText: (_: any, record: any) => record.target_classify_name,
+    valueType: 'select',
+    fieldProps: {
+      showSearch: true,
+      filterOption: false,
+    },
+    request: async ({ keyWords }: any) => {
+      return getScoreClassifyList({ content: keyWords })
+      .then(data => {
+        return data.list.reduce((acc: any[], cur: any) => {
+          const { primary_id, primary_content, content, _id } = cur 
+          const index = acc.findIndex(item => item.key === primary_id)
+          if(!!~index) {
+            acc[index].options.push({
+              label: content,
+              value: _id 
+            })
+          }else {
+            acc.push({
+              label: primary_content,
+              title: primary_content,
+              key: primary_id,
+              options: [
+                {
+                  label: content,
+                  value: _id 
+                }
+              ]
+            })
+          }
+          return acc 
+        }, [])
+      })
+    }
+  },
+  {
     title: '积分分数',
     dataIndex: 'target_score',
-    hideInSearch: true 
+    valueType: 'digit',
+  },
+  {
+    title: '积分类型',
+    dataIndex: 'score_type',
+    valueType: 'select',
+    valueEnum: {
+      DONE: '完成',
+      DEAL: '待完成 | 未评分',
+      TODO: '待定'
+    }
   },
   {
     title: '积分原因',

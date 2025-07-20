@@ -1380,6 +1380,9 @@ declare namespace API_SCORE {
     end_date?: string 
     currPage?: number 
     pageSize?: number
+    target_classify?: string 
+    score_type?: string 
+    target_score?: string 
   }
 
   export type GetScoreMemoryListData = {
@@ -1393,6 +1396,9 @@ declare namespace API_SCORE {
     create_description: string 
     createdAt: string 
     updatedAt: string 
+    target_classify: string 
+    target_classify_name: string 
+    score_type: string
   }
 
   export type PostScoreMemoryParams = {
@@ -1400,6 +1406,8 @@ declare namespace API_SCORE {
     create_content: string 
     create_description?: string 
     target_score: number 
+    target_classify: string 
+    score_type: string 
   }
 
   export type GetScoreExchangeMemoryListParams = {
