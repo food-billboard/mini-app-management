@@ -33,7 +33,7 @@ const ScoreAwardManage = memo(() => {
     const { _id } = value;
     const values = {
       ...value,
-      award_image_list: value.award_image_list[0] || ''
+      award_image_list: value.award_image_list.join(',')
     }
     return (_id ? putScoreAward(values) : postScoreAward(values)).then(() => {
       return actionRef.current?.reloadAndRest?.();
