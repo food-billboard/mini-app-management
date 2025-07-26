@@ -29,9 +29,13 @@ const ScoreAwardManage = memo(() => {
     [],
   );
 
-  const handleSave = useCallback((value) => {
+  const handleSave = useCallback(async (value) => {
     const { _id } = value;
-    return (_id ? putScoreAward(value) : postScoreAward(value)).then(() => {
+    const values = {
+      ...value,
+      award_image_list: value.award_image_list[0] || ''
+    }
+    return (_id ? putScoreAward(values) : postScoreAward(values)).then(() => {
       return actionRef.current?.reloadAndRest?.();
     });
   }, []);

@@ -31,9 +31,15 @@ const ScoreClassifyManage = memo(() => {
     [],
   );
 
-  const handleSave = useCallback((value) => {
+  const handleSave = useCallback(async (value) => {
     const { _id } = value
-    return (_id ? putScoreClassify(value) : postScoreClassify(value))
+    const values = {
+      ...value,
+      image: value.image[0] || '',
+      max_age: value.age[1],
+      min_age: value.age[0]
+    }
+    return (_id ? putScoreClassify(values) : postScoreClassify(values))
     .then(() => {
       return actionRef.current?.reloadAndRest?.()
     })

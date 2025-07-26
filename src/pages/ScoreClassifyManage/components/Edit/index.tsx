@@ -1,5 +1,5 @@
 import { ModalForm } from '@/components/ProModal';
-import { ProFormSelect, ProFormTextArea } from '@ant-design/pro-components';
+import { ProFormSelect, ProFormTextArea, ProFormDigitRange } from '@ant-design/pro-components';
 import type { ButtonProps } from 'antd';
 import { Button, Form, Input } from 'antd';
 import type { Store } from 'antd/lib/form/interface';
@@ -17,7 +17,7 @@ type IProps = {
   onSubmit?: (data: FormData) => any;
   children?: ReactNode;
   value?: API_SCORE.GetScoreClassifyListData;
-  extraButtonProps?: ButtonProps;
+  extraButtonProps?:  ButtonProps;
 };
 
 const CreateForm = (props: IProps) => {
@@ -45,7 +45,8 @@ const CreateForm = (props: IProps) => {
     if (isEdit) {
       formRef.setFieldsValue({
         ...value,
-        primary: value.primary_id 
+        primary: value.primary_id,
+        age: [value.min_age, value.max_age]
       });
     }
   }, [value]);
@@ -131,6 +132,11 @@ const CreateForm = (props: IProps) => {
           item={{
             acceptedFileTypes: ['image/*'],
           }}
+        />
+        <ProFormDigitRange 
+          label="年龄范围" 
+          name="age" 
+          required
         />
         <ProFormTextArea
           name="description"

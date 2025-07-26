@@ -1476,6 +1476,8 @@ declare namespace API_SCORE {
     image: string 
     createdAt: string 
     updatedAt: string 
+    max_age: number
+    min_age: number
   }
 
   export type PutScoreClassifyParams = {
@@ -1483,12 +1485,16 @@ declare namespace API_SCORE {
     content: string 
     description?: string 
     image: string 
+    max_age: number
+    min_age: number 
   }
 
   export type PostScoreClassifyParams = {
     content: string 
     description?: string 
     image: string 
+    max_age: number
+    min_age: number 
   }
 
   export type DeleteScoreClassifyParams = {

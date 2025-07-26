@@ -27,7 +27,12 @@ export default [
       filterOption: false,
     },
     request: async ({ keyWords }: any) => {
-      return getScoreClassifyList({ content: keyWords })
+      if(!keyWords) return []
+      return getScoreClassifyList({ 
+        content: keyWords,
+        currPage: 0,
+        pageSize: 999
+      })
       .then(data => {
         return data.list.reduce((acc: any[], cur: any) => {
           const { primary_id, primary_content, content, _id } = cur 

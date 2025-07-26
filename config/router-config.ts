@@ -267,13 +267,6 @@ export default [
               {
                 path: '/score/award',
                 component: '@/pages/AwardManage',
-              },
-              {
-                path: '/score/award/main/edit',
-                component: '@/pages/AwardEdit',
-                title: '奖品修改',
-                name: '奖品修改',
-                hideInMenu: true,
               }
             ],
           },

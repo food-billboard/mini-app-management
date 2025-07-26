@@ -20,7 +20,7 @@ export default [
   {
     title: '一级分类',
     dataIndex: 'primary_id',
-    renderText: (_: any, record: any) => record.primary_name,
+    renderText: (_: any, record: any) => record.primary_content,
     valueType: 'select',
     request: async () => {
       return getScorePrimaryClassifyList({})
