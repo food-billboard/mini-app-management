@@ -1512,6 +1512,22 @@ declare namespace API_SCORE {
     pageSize?: number 
   }
 
+  export type GetScoreScoreParams = {
+    content?: string 
+    currPage?: number 
+    pageSize?: number 
+  }
+
+  export type GetScoreUserData = {
+    _id: string 
+    username: string 
+    email: string 
+    avatar: string 
+    description: string 
+    createdAt: string 
+    updatedAt: string 
+  }
+
   export type GetScoreAwardData = {
     _id: string 
     inventory: number 
@@ -1544,6 +1560,11 @@ declare namespace API_SCORE {
     award_cycle_count: number 
     inventory: number 
     exchange_score: number 
+  }
+
+  export type PutScoreUserParams = {
+    _id: string 
+    join_task: boolean 
   }
 
   export type DeleteScoreAwardParams = {

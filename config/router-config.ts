@@ -294,6 +294,12 @@ export default [
             name: '兑换记录',
             component: '@/pages/ExchangeMemoryManage',
           },
+          {
+            path: '/score/score-user-manage',
+            title: '人员管理',
+            name: '人员管理',
+            component: '@/pages/ScoreUserManage',
+          },
         ],
       },
       {

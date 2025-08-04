@@ -111,3 +111,19 @@ export const deleteScoreAward = (params: API_SCORE.DeleteScoreAwardParams) => {
     params
   });
 };
+
+// 参与用户列表
+export const getScoreUser = (params: API_SCORE.GetScoreScoreParams) => {
+  return request<API_SCORE.GetListResponse<API_SCORE.GetScoreUserData>>('/api/manage/score/join-task', {
+    method: 'GET',
+    params
+  });
+};
+
+// 修改积分参与人员
+export const putScoreUser = (data: API_SCORE.PutScoreUserParams) => {
+  return request('/api/manage/score/join-task', {
+    method: 'PUT',
+    data
+  });
+};
