@@ -948,9 +948,43 @@ declare namespace API_MEDIA {
     size?: number | string;
   }
 
+  export interface IGetMediaDetailParams {
+    _id?: string;
+    type: 'video' | 'image'
+  }
+
   export interface IGetMediaListRes {
     total: number;
     list: IGetMediaListData[];
+  }
+
+  export interface IGetLongTimeTaskListParams {
+    currPage?: number;
+    pageSize?: number;
+    app: string 
+  }
+
+  export interface ILongTimeTaskListRes {
+    total: number;
+    list: IGetLongTimeTaskListData[];
+  }
+
+  export interface IGetLongTimeTaskListData {
+    _id: string;
+    app: string;
+    page: string;
+    create_user: string;
+    create_user_avatar: string;
+    createdAt: string;
+    updatedAt: string;
+    create_user_name: string 
+    status: 'SUCCESS' | 'FAIL' | 'PROCESS';
+    request_url: string 
+    request_method: string 
+    request_data: string 
+    deal_time: string 
+    response: string 
+    checked: boolean 
   }
 
   export interface IGetMediaListData {
@@ -981,6 +1015,7 @@ declare namespace API_MEDIA {
     _id: string;
     type: 0 | 1 | 2;
     name?: string;
+    expire?: string 
   }
 
   export interface IDeleteMediaParams extends Pick<IPutMediaParams, '_id' | 'type'> {}
@@ -1001,12 +1036,22 @@ declare namespace API_MEDIA {
   export type ICorpVideoChunk = {
     _id: string;
     time: string[][]
+    page: string 
   }
 
   export type ICorpVideoChunkData = {
     status: 'fulfilled' | 'rejected'
     reason: any 
     value: string 
+  }
+
+  export type IMergeVideoChunk = {
+    _id: string;
+    page: string 
+  }
+
+  export type IMergeVideoChunkData = {
+    data: string 
   }
 
   export type IGetMediaValidData = {

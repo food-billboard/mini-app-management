@@ -3,7 +3,7 @@ import { message, notification } from '@/components/Toast'
 import axios from 'axios';
 import type { AxiosRequestConfig } from 'axios'
 import { stringify } from 'querystring'
-import { debounce } from 'lodash'
+import { debounce, get } from 'lodash'
 import { formatQuery } from './utils'
 
 const codeMessage: {[key: string] : string} = {
@@ -53,7 +53,7 @@ export const misManage = (error: any) => {
     if( error.errorType === 'system' && err.code === '401' ){
       return dispatchLogin(err);
     }
-    message.error(err.msg || '网络错误');
+    message.error(err.errMsg || '网络错误');
     return
   }
   const { response } = error;
@@ -62,9 +62,9 @@ export const misManage = (error: any) => {
   }
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
-    const { status, url } = response;
+    const { status, url, data } = response;
     notification.error({
-      message: `请求错误 ${status}: ${url}`,
+      message: get(data, 'res.errMsg') || `请求错误 ${status}: ${url}`,
       description: errorText,
     });
   } else if (!response) {
@@ -124,6 +124,7 @@ const request = async <ResBody>(url: string, setting: RequestOptions = {} as Req
     error.errorType = 'system';
     error.messageType = 'response';
     if(mis) misManage(error);
+    return {}
     throw error
   }
 

@@ -1,15 +1,24 @@
 import PageContainer from '@/components/PageContainer';
 import { Tabs } from 'antd';
-import { useState, useCallback, useRef } from 'react';
+import { useLocation } from 'umi'
+import { useUpdate } from 'ahooks'
+import { useState, useCallback, useRef, useEffect } from 'react';
 import VideoCompress from './components/VideoCompress';
 import VideoCorp from './components/VideoCorp';
 import VideoMerge from './components/VideoMerge';
 import VideoCreate from './components/VideoCreate';
 import { DealContext } from './context';
 import styles from './index.less';
+import { get } from 'lodash';
 
 const VideoDeal = () => {
-  const [ currentTab, setCurrentTab ] = useState('merge');
+
+  const { state } = useLocation()
+  const update = useUpdate()
+
+  const [ currentTab, setCurrentTab ] = useState(() => {
+    return get(state, 'tab') || 'merge'
+  });
   
   const extraParams = useRef<any>({})
 
@@ -18,6 +27,10 @@ const VideoDeal = () => {
     setCurrentTab(key)
   }, [])
 
+  useEffect(() => {
+    extraParams.current = {...state as any}
+    update()
+  }, [])
 
   return (
     <PageContainer>
@@ -27,7 +40,10 @@ const VideoDeal = () => {
           ...extraParams.current
         }}>
           <Tabs
-            onChange={setCurrentTab}
+            onChange={(tab) => {
+              extraParams.current = {}
+              setCurrentTab(tab)
+            }}
             accessKey={currentTab}
             destroyInactiveTabPane
             items={[

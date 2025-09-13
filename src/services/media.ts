@@ -1,8 +1,27 @@
 import { request } from '@/utils'
 
+// 耗时任务列表
+export const getLongTimeTaskList = (params: Omit<API_MEDIA.IGetLongTimeTaskListParams, 'app'>) => {
+  return request<API_MEDIA.ILongTimeTaskListRes>('/api/customer/task', {
+    method: 'GET',
+    params: {
+      ...params,
+      app: 'MANAGE'
+    }
+  })
+}
+
 // 媒体获取
 export const getMediaList = (params: API_MEDIA.IGetMediaListParams) => {
   return request<API_MEDIA.IGetMediaListRes>('/api/manage/media', {
+    method: 'GET',
+    params
+  })
+}
+
+// 媒体详情获取
+export const getMediaDetail = (params: API_MEDIA.IGetMediaDetailParams) => {
+  return request<API_MEDIA.IGetMediaListData>('/api/media', {
     method: 'GET',
     params
   })
@@ -44,7 +63,21 @@ export const generateVideoPoster = (data: API_MEDIA.IPutVideoPoster) => {
 export const corpVideoChunk = (data: API_MEDIA.ICorpVideoChunk) => {
   return request('/api/media/video/corp', {
     method: "POST",
-    data
+    data: {
+      ...data,
+      app: 'MANAGE'
+    },
+  })
+}
+
+// 视频合并
+export const mergeVideoChunk = (data: API_MEDIA.IMergeVideoChunk) => {
+  return request('/api/media/video/merge', {
+    method: "POST",
+    data: {
+      ...data,
+      app: 'MANAGE'
+    },
   })
 }
 
@@ -52,6 +85,9 @@ export const corpVideoChunk = (data: API_MEDIA.ICorpVideoChunk) => {
 export const createMediaDataBase = (data: API_MEDIA.ICreateMediaData) => {
   return request('/api/media/video/create', {
     method: "POST",
-    data
+    data: {
+      ...data,
+      app: 'MANAGE'
+    },
   })
 }

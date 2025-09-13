@@ -1,6 +1,6 @@
 import { ModalForm } from '@/components/ProModal';
 import { MEDIA_AUTH_MAP, MEDIA_UPLOAD_STATUS } from '@/utils';
-import { ProFormSelect, ProFormTextArea } from '@ant-design/pro-components';
+import { ProFormSelect, ProFormTextArea, ProFormDatePicker } from '@ant-design/pro-components';
 import { Form, Input } from 'antd';
 import type { Store } from 'antd/lib/form/interface';
 import {
@@ -58,7 +58,11 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
 
   const onFinish = useCallback(
     async (values: Store) => {
-      await onSubmit?.(values as FormData);
+      const { expire, ...nextData } = values 
+      await onSubmit?.({
+        ...nextData,
+        expire: expire || ''
+      } as FormData);
       setVisible(false);
       formRef.resetFields();
     },
@@ -112,6 +116,15 @@ const CreateForm = forwardRef<IFormRef, IProps>((props, ref) => {
         label="文件名称"
         fieldProps={{
           autoSize: true,
+        }}
+      />
+      <ProFormDatePicker
+        name="expire"
+        label="过期时间"
+        fieldProps={{
+          allowClear: true,
+          format: 'YYYY-MM-DD HH:mm:ss',
+          showTime: true 
         }}
       />
       <ProFormTextArea

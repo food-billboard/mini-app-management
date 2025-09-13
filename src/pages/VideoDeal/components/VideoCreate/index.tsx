@@ -1,13 +1,12 @@
 import { message } from '@/components/Toast';
-import Upload from '@/components/Upload';
 import {
   ProForm,
   ProFormSelect,
   ProFormTextArea,
-  ProFormSwitch,
   ProFormDatePicker
 } from '@ant-design/pro-components';
 import { Form } from 'antd';
+import dayjs from 'dayjs'
 import type { Store } from 'antd/lib/form/interface';
 import { useCallback } from 'react';
 import { createMediaDataBase } from '@/services'
@@ -24,19 +23,18 @@ const VideoCreate = () => {
         expire,
         ...nextFields
       } = values;
-
-      console.log(expire, values, 22222)
   
       const params: any = {
         ...nextFields,
         expire,
         poster: Array.isArray(poster) ? poster[0] : poster,
+        page: `视频处理-视频数据库创建(${dayjs().format('YYYY-MM-DD')})`
       };
   
       try {
         await createMediaDataBase(params);
         hide();
-        message.success('操作成功');
+        message.info('数据库任务创建中，可稍后查看结果')
         return true;
       } catch (error) {
         hide();
@@ -91,6 +89,7 @@ const VideoCreate = () => {
           fieldProps={{
             autoSize: true,
           }}
+          placeholder={`文件在数据库中的位置，如"/static/video/xxx.mp4"`}
           rules={[
             {
               required: true,

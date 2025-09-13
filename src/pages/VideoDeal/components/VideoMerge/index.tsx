@@ -1,14 +1,15 @@
-import { message, modal } from '@/components/Toast';
+import { message } from '@/components/Toast';
 import VideoUpload from '@/components/VideoUpload';
 import { withTry } from '@/utils';
 import { ProForm, ProFormDependency } from '@ant-design/pro-components';
-import { Form, Result } from 'antd';
+import { Form } from 'antd';
 import type { Store } from 'antd/lib/form/interface';
-import { saveAs } from 'file-saver';
 import { useCallback, useContext, useEffect } from 'react';
+import dayjs from 'dayjs'
 import { DealContext } from '../../context'
 import { fileValidator } from '../../../DataEdit/utils';
 import Sorter from './components/Sorter';
+import { mergeVideoChunk } from '@/services'
 
 const VideoMerge = () => {
   const [formRef] = Form.useForm();
@@ -17,32 +18,20 @@ const VideoMerge = () => {
 
   const handleAdd = useCallback(async (fields: any) => {
     const hide = message.loading('正在添加');
-    // const method = fields['_id'] ? putMovie : postMovie;
-    const method = async (value: any) => {};
 
     const {
-      video,
-      poster,
-      district = [],
-      classify = [],
-      language = [],
-      ...nextFields
+      video
     } = fields;
 
     const params = {
-      ...nextFields,
-      classify: Array.isArray(classify) ? classify : [classify],
-      district: Array.isArray(district) ? district : [district],
-      language: Array.isArray(language) ? language : [language],
-      video: Array.isArray(video) ? video[0] : video,
-      poster: Array.isArray(poster) ? poster[0] : poster,
+      _id: video.join(','),
+      page: `视频处理-视频合并(${dayjs().format('YYYY-MM-DD')})`
     };
 
     try {
-      await method(params);
+      const result = await mergeVideoChunk(params);
       hide();
-      message.success('操作成功');
-      return true;
+      return result;
     } catch (error) {
       hide();
       message.error('操作失败请重试！');
@@ -54,13 +43,7 @@ const VideoMerge = () => {
     async (values: Store) => {
       const [, success] = await withTry(handleAdd)(values);
       if (success) {
-        modal.confirm({
-          title: '提示',
-          content: '视频合并成功，是否下载？',
-          onOk: () => {
-            saveAs('TODO');
-          },
-        });
+        message.info('任务执行中，请稍后查看')
       }
     },
     [handleAdd],
@@ -71,13 +54,6 @@ const VideoMerge = () => {
       video: videoList || []
     })
   }, [])
-
-  return (
-    <Result  
-      status="500"
-      title="功能未完成"
-    />
-  )
 
   return (
     <div>
@@ -108,11 +84,9 @@ const VideoMerge = () => {
             return (
               <ProForm.Item name="result" label="顺序调整">
                 <Sorter
-                  value={video?.map((item: any) => {
-                    return {
-                      url: item,
-                      id: '',
-                    };
+                  value={video}
+                  onChange={value => formRef.setFieldsValue({
+                    video: value 
                   })}
                 />
               </ProForm.Item>

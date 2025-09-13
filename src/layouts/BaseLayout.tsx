@@ -3,6 +3,7 @@ import { App } from 'antd';
 import useToast from '../components/Toast'
 import ImagePreview from '../components/ImagePreview'
 import VideoPreview from '../components/VideoPreview'
+import LongTaskAction from '@/components/LongTimeTaskAction'
 
 const BasicLayout = () => {
 
@@ -12,6 +13,7 @@ const BasicLayout = () => {
     <div>
       <ImagePreview />
       <VideoPreview />
+      <LongTaskAction />
       <Outlet />
     </div>
   );
