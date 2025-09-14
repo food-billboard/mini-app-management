@@ -7,6 +7,7 @@ import VideoCompress from './components/VideoCompress';
 import VideoCorp from './components/VideoCorp';
 import VideoMerge from './components/VideoMerge';
 import VideoCreate from './components/VideoCreate';
+import VideoTypeChange from './components/VideoTypeChange'
 import { DealContext } from './context';
 import styles from './index.less';
 import { get } from 'lodash';
@@ -66,6 +67,11 @@ const VideoDeal = () => {
                 label: '视频数据库创建',
                 key: 'create',
                 children: <VideoCreate />,
+              },
+              {
+                label: '视频类型转换',
+                key: 'exchange',
+                children: <VideoTypeChange />,
               },
             ]}
           />

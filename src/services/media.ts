@@ -70,6 +70,17 @@ export const corpVideoChunk = (data: API_MEDIA.ICorpVideoChunk) => {
   })
 }
 
+// 视频类型转换
+export const changeVideoType = (data: API_MEDIA.IChangeVideoType) => {
+  return request('/api/media/video/change', {
+    method: "POST",
+    data: {
+      ...data,
+      app: 'MANAGE'
+    },
+  })
+}
+
 // 视频合并
 export const mergeVideoChunk = (data: API_MEDIA.IMergeVideoChunk) => {
   return request('/api/media/video/merge', {

@@ -1039,6 +1039,12 @@ declare namespace API_MEDIA {
     page: string 
   }
 
+  export type IChangeVideoType = {
+    _id: string;
+    type: string
+    page: string 
+  }
+
   export type ICorpVideoChunkData = {
     status: 'fulfilled' | 'rejected'
     reason: any 

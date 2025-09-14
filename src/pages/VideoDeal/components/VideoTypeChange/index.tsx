@@ -1,37 +1,34 @@
 import { message } from '@/components/Toast';
 import VideoUpload from '@/components/VideoUpload';
-import { mergeVideoChunk } from '@/services';
+import { changeVideoType } from '@/services';
 import { withTry } from '@/utils';
-import { ProForm, ProFormDependency } from '@ant-design/pro-components';
+import { ProForm, ProFormText } from '@ant-design/pro-components';
 import { Form } from 'antd';
 import type { Store } from 'antd/lib/form/interface';
-import dayjs from 'dayjs';
+import dayjs from 'dayjs'
 import { useCallback, useContext, useEffect } from 'react';
 import { fileValidator } from '../../../DataEdit/utils';
 import { DealContext } from '../../context';
-import Sorter from './components/Sorter';
 
-const VideoMerge = () => {
+const VideoTypeChange = () => {
   const [formRef] = Form.useForm();
 
-  const { videoList } = useContext(DealContext);
+  const { onChange, videoList } = useContext(DealContext);
 
   const handleAdd = useCallback(async (fields: any) => {
-    const hide = message.loading('正在添加');
 
-    const { video } = fields;
+    const { video, type, } = fields;
 
     const params = {
       _id: video.join(','),
-      page: `视频处理-视频合并(${dayjs().format('YYYY-MM-DD')})`,
+      type,
+      page: `视频处理-视频类型转换(${dayjs().format('YYYY-MM-DD')})`
     };
 
     try {
-      const result = await mergeVideoChunk(params);
-      hide();
+      const result = await changeVideoType(params);
       return result;
     } catch (error) {
-      hide();
       message.error('操作失败请重试！');
       return false;
     }
@@ -41,7 +38,7 @@ const VideoMerge = () => {
     async (values: Store) => {
       const [, success] = await withTry(handleAdd)(values);
       if (success) {
-        message.info('任务执行中，请稍后查看');
+        message.info('任务执行中，可稍后查看结果')
       }
     },
     [handleAdd],
@@ -67,32 +64,23 @@ const VideoMerge = () => {
                 validateTrigger: 'onBlur',
               },
             ],
+            initialValue: [],
           }}
           item={{
-            maxFiles: null,
+            maxFileSize: '10240MB',
             allowMultiple: true,
             expire: true,
           }}
         />
-        <ProFormDependency name={['video']}>
-          {({ video }) => {
-            return (
-              <ProForm.Item name="result" label="顺序调整">
-                <Sorter
-                  value={video}
-                  onChange={(value) =>
-                    formRef.setFieldsValue({
-                      video: value,
-                    })
-                  }
-                />
-              </ProForm.Item>
-            );
-          }}
-        </ProFormDependency>
+        <ProFormText
+          name="type"
+          label="视频格式"
+          required
+          placeholder={"输入要转换的视频格式"}
+        />
       </ProForm>
     </div>
   );
 };
 
-export default VideoMerge;
+export default VideoTypeChange;

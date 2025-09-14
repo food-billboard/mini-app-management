@@ -53,7 +53,7 @@ export const misManage = (error: any) => {
     if( error.errorType === 'system' && err.code === '401' ){
       return dispatchLogin(err);
     }
-    message.error(err.errMsg || '网络错误');
+    message.error(typeof err.errMsg === 'string' ? err.errMsg : '网络错误');
     return
   }
   const { response } = error;
@@ -63,8 +63,9 @@ export const misManage = (error: any) => {
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
     const { status, url, data } = response;
+    const errMsg = get(data, 'res.errMsg')
     notification.error({
-      message: get(data, 'res.errMsg') || `请求错误 ${status}: ${url}`,
+      message: typeof errMsg === 'string' ? errMsg : `请求错误 ${status}: ${url}`,
       description: errorText,
     });
   } else if (!response) {

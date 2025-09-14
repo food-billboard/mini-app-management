@@ -33,7 +33,6 @@ const Wrapper = (props: {
   };
 
   useDebounceEffect(() => {
-    console.log(value, 27777)
     async function fetchData() {
       let data: API_MEDIA.IGetMediaListData[] = []
       for(let index = 0; index < value.length; index ++) {

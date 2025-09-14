@@ -1,7 +1,6 @@
 import VideoListModal, { VideoListModalRef } from "@/pages/VideoDeal/components/VideoListModal"
 import AsyncButton from '../AsyncButton';
 import { message, modal } from '../Toast';
-import { Button } from 'antd';
 import { history } from 'umi'
 import axios from 'axios';
 import { saveAs } from 'file-saver';
@@ -119,8 +118,36 @@ let CallbackMap: any = {
           title: '提示',
           content: '视频合并成功，是否下载？',
           onOk: () => {
-            console.log(value, 2222)
-            // saveAs('TODO');
+            const { response } = value
+            const [filename] = JSON.parse(response).split('/').slice(-1)
+            saveAs(JSON.parse(response), filename);
+          },
+        });
+      }
+    }, [visible, value])
+
+    return (<></>)
+  },
+  '视频处理-视频格式转换': (props: {
+    visible: boolean 
+    value: API_MEDIA.IGetLongTimeTaskListData
+    onClose: () => void 
+  }) => {
+
+    const { visible, onClose, value } = props 
+
+    useEffect(() => {
+      if(visible) {
+        modal.confirm({
+          title: '提示',
+          content: '视频格式转换成功，是否下载？',
+          onOk: () => {
+            const { response } = value
+            const dataList = JSON.parse(response)
+            for(let i = 0; i < dataList.length; i ++) {
+              const [filename] = dataList[i].split('/').slice(-1)
+              saveAs(dataList[i], filename);
+            }
           },
         });
       }
