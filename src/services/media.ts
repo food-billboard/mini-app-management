@@ -72,7 +72,7 @@ export const corpVideoChunk = (data: API_MEDIA.ICorpVideoChunk) => {
 
 // 视频类型转换
 export const changeVideoType = (data: API_MEDIA.IChangeVideoType) => {
-  return request('/api/media/video/change', {
+  return request('/api/media/video/exchange', {
     method: "POST",
     data: {
       ...data,

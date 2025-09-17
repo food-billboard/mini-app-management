@@ -141,10 +141,28 @@ const Upload: ReactFC<IProps> = ({
     abort,
   ) => {
     const { md5 } = metadata;
+    let type = file.type
+    if(!type) {
+      const [suffix] = file.name.split('.').slice(-1)
+      switch(suffix) {
+        case 'mkv': 
+          type = 'video/x-matroska'
+          break 
+        case 'rmvb':
+          type = 'video/vnd.rn-realvideo'
+          break 
+        case 'avi':
+          type = 'video/x-msvideo'
+          break 
+        case 'mov':
+            type = 'video/quicktime'
+            break 
+      }
+    }
     const uploadMetadata: { [key: string]: string | number } = {
       md5,
       size: file.size,
-      mime: file.type,
+      mime: type,
       chunk: CHUNK_SIZE,
       auth: 'PUBLIC',
     };

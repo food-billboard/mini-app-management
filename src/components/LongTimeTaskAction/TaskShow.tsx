@@ -3,7 +3,7 @@ import { useCallback, useMemo, useState } from 'react';
 import {  } from '@/services'
 import { getCallbackMap } from './utils';
 
-const RaskShow = (props: { value: API_MEDIA.IGetLongTimeTaskListData, onClose: () => void }) => {
+const TaskShow = (props: { value: API_MEDIA.IGetLongTimeTaskListData, onClose: () => void }) => {
   const { value, onClose } = props;
   const { checked, status, page } = value;
 
@@ -39,4 +39,4 @@ const RaskShow = (props: { value: API_MEDIA.IGetLongTimeTaskListData, onClose: (
   );
 };
 
-export default RaskShow;
+export default TaskShow;

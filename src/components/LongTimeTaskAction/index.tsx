@@ -4,7 +4,7 @@ import { CloudUploadOutlined } from '@ant-design/icons'
 import { FloatButton, Tooltip } from 'antd'
 import { Modal } from '../ProModal'
 import ProTable from '../ProTable'
-import RaskShow from './TaskShow'
+import TaskShow from './TaskShow'
 import {
   getLongTimeTaskList
 } from '@/services';
@@ -37,7 +37,7 @@ export default () => {
           extraActionRender={record => {
             return (
               <>
-                <RaskShow onClose={() => setVisible(false)} value={record as API_MEDIA.IGetLongTimeTaskListData} />
+                <TaskShow onClose={() => setVisible(false)} value={record as API_MEDIA.IGetLongTimeTaskListData} />
               </>
             )
           }}

@@ -128,33 +128,73 @@ let CallbackMap: any = {
 
     return (<></>)
   },
-  '视频处理-视频格式转换': (props: {
+  '视频处理-视频类型转换': (props: {
     visible: boolean 
-    value: API_MEDIA.IGetLongTimeTaskListData
     onClose: () => void 
+    onModalClose: () => void 
+    value: API_MEDIA.IGetLongTimeTaskListData
   }) => {
 
-    const { visible, onClose, value } = props 
+    const { visible, value, onClose, onModalClose } = props 
+    const { response } = value 
 
-    useEffect(() => {
-      if(visible) {
-        modal.confirm({
-          title: '提示',
-          content: '视频格式转换成功，是否下载？',
-          onOk: () => {
-            const { response } = value
-            const dataList = JSON.parse(response)
-            for(let i = 0; i < dataList.length; i ++) {
-              const [filename] = dataList[i].split('/').slice(-1)
-              saveAs(dataList[i], filename);
-            }
-          },
-        });
+    const videoListModalRef = useRef<VideoListModalRef>(null);
+
+  // 批量下载
+  const handleDownload = useCallback(async (videoList) => {
+    try {
+      // 创建一个新的JSZip对象
+      const zip = new JSZip();
+
+      // 异步下载每个文件并添加到zip中
+      for (let index = 0; index < videoList.length; index++) {
+        const file = videoList[index];
+        const { status, value } = file;
+        if (status === 'fulfilled') {
+          const [fileName] = value.split('/').slice(-1);
+          // 使用axios以blob格式下载文件
+          const response = await axios.get(value, { responseType: 'blob' });
+          // 将下载的blob转换为JSZip可以处理的Uint8Array
+          zip.file(`${index + 1}-${fileName}`, response.data);
+        }
       }
-    }, [visible, value])
 
-    return (<></>)
-  }
+      // 生成ZIP文件的blob对象
+      const content = await zip.generateAsync({ type: 'blob' });
+      // 使用file-saver触发文件下载
+      saveAs(content, 'bundle.zip');
+    } catch (error) {
+      message.info('批量下载失败');
+    }
+  }, []);
+
+  useEffect(() => {
+    if(visible) {
+      console.log(1111)
+      videoListModalRef.current?.open(JSON.parse(response));
+    }
+  }, [visible, response])
+
+    return  (
+      <VideoListModal
+        ref={videoListModalRef}
+        extraFooter={({ videoList }) => {
+          return (
+            <>
+              {videoList.every((item: any) => item.status === 'fulfilled') && (
+                <>
+                  <AsyncButton onClick={handleDownload.bind(null, videoList)}>
+                    批量下载
+                  </AsyncButton>
+                </>
+              )}
+            </>
+          );
+        }}
+        
+      />
+    )
+  },
 }
 let prevDataList: any = null
 
