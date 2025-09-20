@@ -102,3 +102,14 @@ export const createMediaDataBase = (data: API_MEDIA.ICreateMediaData) => {
     },
   })
 }
+
+// 视频压缩
+export const videoCompress = (data: API_MEDIA.ICompressVideo) => {
+  return request('/api/media/video/compress', {
+    method: "POST",
+    data: {
+      ...data,
+      app: 'MANAGE'
+    },
+  })
+}

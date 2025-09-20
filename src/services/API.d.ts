@@ -1039,6 +1039,11 @@ declare namespace API_MEDIA {
     page: string 
   }
 
+  export type ICompressVideo = {
+    _id: string;
+    page: string 
+  }
+
   export type IChangeVideoType = {
     _id: string;
     type: string
