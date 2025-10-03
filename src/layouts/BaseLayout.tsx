@@ -10,7 +10,9 @@ const BasicLayout = () => {
   useToast()
 
   return (
-    <div>
+    <div style={{
+      height: 'calc(100vh - 56px - 112.188px - 16px)'
+    }}>
       <ImagePreview />
       <VideoPreview />
       <LongTaskAction />

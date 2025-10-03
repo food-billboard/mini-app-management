@@ -2,11 +2,15 @@
   padding: 12px;
   position: relative;
   height: 100%;
-  overflow-y: auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  &-content {
+    flex: 1;
+    overflow-y: auto;
+  }
   &-save {
-    margin-top: 24px;
-    position: sticky;
-    bottom: 0;
+    padding-top: 24px;
   }
 }
 

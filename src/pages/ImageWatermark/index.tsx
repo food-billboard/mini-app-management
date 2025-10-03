@@ -1,6 +1,6 @@
 import { message, modal } from '@/components/Toast';
 import { UploadOutlined } from '@ant-design/icons';
-import { useUpdate } from 'ahooks';
+import { useDebounceEffect, useGetState, useUpdate } from 'ahooks';
 import type { UploadFile } from 'antd';
 import {
   Button,
@@ -108,6 +108,18 @@ type Value = {
   key: string;
 };
 
+async function fetchPosition(metadata: any) {
+  const { latitude, longitude } = metadata;
+  if (latitude === undefined) return {};
+  const response = await reverseGeocoding(longitude, latitude);
+
+  const {
+    addressComponent: { city, province },
+  } = response;
+
+  return { text: `${province}${city}` };
+}
+
 const ImageDom = (props: {
   value: Value;
   onChange: (value: Partial<Value>, action: 'edit' | 'delete') => void;
@@ -117,74 +129,81 @@ const ImageDom = (props: {
   const { value, onChange, checked, onChecked } = props;
   const { objectUrl, time, text, file, fileObj, type } = value;
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading, getLoading] = useGetState(true);
   const [stateText, setStateText] = useState(text);
 
   const update = useUpdate();
 
   const objectUrlRef = useRef(objectUrl);
+  const meta = useRef<any>({});
+
+  const handlePosition = useCallback(async() => {
+    const editInfo = await fetchPosition(meta.current);
+    onChange(editInfo, 'edit')
+  }, []);
 
   useEffect(() => {
-    async function fetchPosition(metadata: any) {
-      const { latitude, longitude } = metadata;
-      if (latitude === undefined) return;
-      const response = await reverseGeocoding(longitude, latitude);
-
-      const { addressComponent: { city, province } } = response 
-
-      onChange({ text: `${province}${city}` }, 'edit');
-    }
-
     async function getData() {
       setLoading(true);
 
-      const allMetadata = await exifr.parse(file.originFileObj! || file);
+      let allMetadata: any = {}
+
+      try {
+        allMetadata = await exifr.parse(file.originFileObj! || file);
+      }catch(err) {}
+
+      // const editInfo = await fetchPosition(allMetadata);
+
+      meta.current = allMetadata;
+
+      setLoading(false);
 
       onChange(
         {
+          // ...editInfo,
           time: allMetadata.DateTimeOriginal
             ? dayjs(allMetadata.DateTimeOriginal).format('YYYY-MM-DD')
             : dayjs().format('YYYY-MM-DD'),
         },
         'edit',
       );
-
-      await fetchPosition(allMetadata);
-
-      setLoading(false);
     }
 
     getData();
   }, []);
 
-  useEffect(() => {
-    console.log(text);
-    let url = '';
+  useDebounceEffect(
+    () => {
+      let url = '';
+      generateWatermark(
+        fileObj,
+        type,
+        dayjs(time).format('YYYY-MM-DD'),
+        text,
+      ).then((blob) => {
+        if (blob) {
+          url = URL.createObjectURL(blob as any);
+          objectUrlRef.current = url;
+          onChange(
+            {
+              objectUrl: url,
+              watermarkBlob: blob as any,
+            },
+            'edit',
+          );
+          update();
+        }
+      });
 
-    generateWatermark(
-      fileObj,
-      type,
-      dayjs(time).format('YYYY-MM-DD'),
-      text,
-    ).then((blob) => {
-      if (blob) {
-        url = URL.createObjectURL(blob as any);
-        objectUrlRef.current = url;
-        onChange(
-          {
-            objectUrl: url,
-            watermarkBlob: blob as any,
-          },
-          'edit',
-        );
-        update();
-      }
-    });
-
-    return () => {
-      URL.revokeObjectURL(objectUrlRef.current);
-    };
-  }, [time, text]);
+      return () => {
+        URL.revokeObjectURL(objectUrlRef.current);
+      };
+    },
+    [time, text],
+    {
+      wait: 1000,
+    },
+  );
 
   useEffect(() => {
     setStateText(text);
@@ -221,7 +240,14 @@ const ImageDom = (props: {
       </div>
       <Button
         block
-        style={{ marginTop: 4 }}
+        style={{ marginTop: 4, marginBottom: 4 }}
+        onClick={handlePosition}
+      >
+        获取定位
+      </Button>
+      <Button
+        block
+        style={{ marginTop: 4, marginBottom: 12 }}
         danger
         onClick={() => onChange(value, 'delete')}
       >
@@ -231,8 +257,26 @@ const ImageDom = (props: {
   );
 };
 
+function useStateValue(
+  value: Value[] = [],
+): [Value[], (value: Value[] | ((prev: Value[]) => Value[])) => void] {
+  const update = useUpdate();
+  const valueRef = useRef<Value[]>(value);
+  return [
+    valueRef.current,
+    (value: Value[] | ((prev: Value[]) => Value[])) => {
+      if (Array.isArray(value)) {
+        valueRef.current = value;
+      } else {
+        valueRef.current = value(valueRef.current);
+      }
+      update();
+    },
+  ];
+}
+
 const ImageWatermark = () => {
-  const [value, setValue] = useState<Value[]>([]);
+  const [value, setValue] = useStateValue([]);
   const [selectList, setSelectList] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [downloadLoading, setDownloadLoading] = useState(false);
@@ -248,6 +292,7 @@ const ImageWatermark = () => {
         const src = (file.url || file.name || '').toLowerCase();
         let jpegBlob: any = file.originFileObj! || file;
         let [, type] = file.type!.split('/');
+
         if (src.match(/\.heic$/i)) {
           jpegBlob = await heic2any({
             blob: new Blob([file.originFileObj! || file]),
@@ -287,7 +332,10 @@ const ImageWatermark = () => {
       for (let index = 0; index < value.length; index++) {
         const fileObject = value[index];
         const { watermarkBlob, type, fileObj } = fileObject;
-        zip.file(`${index + 1}.${type || 'jpeg'}`, watermarkBlob as any);
+        zip.file(
+          `${Date.now()}-${index + 1}.${type || 'jpeg'}`,
+          watermarkBlob as any,
+        );
       }
 
       // 生成ZIP文件的blob对象
@@ -327,6 +375,7 @@ const ImageWatermark = () => {
           return [...acc, item];
         }, []);
         setValue(newValue);
+        setSelectList([]);
       },
     });
   }, [selectList, value]);
@@ -357,24 +406,28 @@ const ImageWatermark = () => {
           }
         }, []);
         setValue(newValue);
+        setSelectList([]);
       },
     });
   }, [selectList, value]);
 
   const onImageChange = useCallback(
     (index, newValue, action) => {
-      let targetValue = value[index];
-      const nextValue = [...value];
-      if (action === 'delete') {
-        nextValue.splice(index, 1);
-      } else {
-        targetValue = {
-          ...targetValue,
-          ...newValue,
-        };
-        nextValue.splice(index, 1, targetValue);
-      }
-      setValue([...nextValue]);
+      setValue((prev) => {
+        let targetValue = prev[index];
+        const nextValue = [...prev];
+        if (action === 'delete') {
+          nextValue.splice(index, 1);
+        } else {
+          targetValue = {
+            ...targetValue,
+            ...newValue,
+          };
+          nextValue.splice(index, 1, targetValue);
+        }
+        return [...nextValue];
+      });
+      setSelectList([]);
     },
     [value],
   );
@@ -385,44 +438,46 @@ const ImageWatermark = () => {
 
   return (
     <div className={styles['image-watermark']}>
-      <Upload
-        multiple
-        fileList={[]}
-        beforeUpload={beforeUpload}
-        accept="image/*"
-      >
-        <Button
-          style={{ marginBottom: value.length ? 24 : 0 }}
-          loading={loading}
-          icon={<UploadOutlined />}
+      <div className={styles['image-watermark-content']}>
+        <Upload
+          multiple
+          fileList={[]}
+          beforeUpload={beforeUpload}
+          accept="image/*"
         >
-          选择图片上传
-        </Button>
-      </Upload>
-      <Row gutter={24}>
-        {value.map((item, index) => {
-          const selectIndex = selectList.indexOf(item.key);
-          const checked = !!~selectIndex;
-          return (
-            <Col key={item.key} span={6}>
-              <ImageDom
-                checked={checked}
-                onChecked={() => {
-                  const newValue = [...selectList];
-                  if (checked) {
-                    newValue.splice(selectIndex, 1);
-                  } else {
-                    newValue.push(item.key);
-                  }
-                  setSelectList(newValue);
-                }}
-                value={item}
-                onChange={onImageChange.bind(null, index)}
-              />
-            </Col>
-          );
-        })}
-      </Row>
+          <Button
+            style={{ marginBottom: value.length ? 24 : 0 }}
+            loading={loading}
+            icon={<UploadOutlined />}
+          >
+            选择图片上传
+          </Button>
+        </Upload>
+        <Row gutter={24}>
+          {value.map((item, index) => {
+            const selectIndex = selectList.indexOf(item.key);
+            const checked = !!~selectIndex;
+            return (
+              <Col key={item.key} span={6}>
+                <ImageDom
+                  checked={checked}
+                  onChecked={() => {
+                    const newValue = [...selectList];
+                    if (checked) {
+                      newValue.splice(selectIndex, 1);
+                    } else {
+                      newValue.push(item.key);
+                    }
+                    setSelectList(newValue);
+                  }}
+                  value={item}
+                  onChange={onImageChange.bind(null, index)}
+                />
+              </Col>
+            );
+          })}
+        </Row>
+      </div>
       <div className={styles['image-watermark-save']}>
         <Button danger style={{ marginRight: 24 }} onClick={handleDelete}>
           清空
