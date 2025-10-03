@@ -98,6 +98,12 @@ export default [
             name: '视频处理',
           },
           {
+            title: '图片水印',
+            path: '/media/image-watermark',
+            component: '@/pages/ImageWatermark',
+            name: '图片水印',
+          },
+          {
             path: '/media/video/list',
             component: '@/pages/VideoList',
             title: '视频列表',

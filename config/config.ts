@@ -20,10 +20,8 @@ const commonConfig = {
         colorPrimary: defaultSettings.colorPrimary,
       },
       components: {
-        Menu: {
-          
-        }
-      }
+        Menu: {},
+      },
     },
   },
   locale: false,
@@ -44,8 +42,13 @@ const commonConfig = {
     '@primary-color': defaultSettings.colorPrimary,
   },
   headScripts: [
-    // 解决首次加载时白屏的问题
     { src: '/scripts/loading.js', async: true },
+    `
+      window._AMapSecurityConfig = {
+        serviceHost:'http://${process.env.RASPBERRY_IP}/_AMapService',  
+      }
+    `,
+    `https://webapi.amap.com/maps?v=2.0&key=${process.env.AMP_KEY}`,
   ],
   proxy: (proxy as any)[REACT_APP_ENV || 'prod'],
 };
@@ -54,6 +57,7 @@ const developmentConfig: any = merge({}, commonConfig, {
   define: {
     'process.env.REACT_APP_ENV': 'dev',
     'process.env.REQUEST_API': process.env.REQUEST_API,
+    'process.env.AMP_KEY': process.env.AMP_KEY,
   },
   // chainWebpack(config: any) {
   //   config.plugin('monaco-editor').use(MonacoWebpackPlugin, [
@@ -68,6 +72,7 @@ const productionConfig: any = merge({}, commonConfig, {
   define: {
     'process.env.REACT_APP_ENV': 'prod',
     'process.env.REQUEST_API': process.env.REQUEST_API,
+    'process.env.AMP_KEY': process.env.AMP_KEY,
   },
   //-----打包配置
   base: '/api/backend/',
@@ -138,6 +143,7 @@ const productionLocalConfig: any = merge({}, productionConfig, {
   define: {
     'process.env.REACT_APP_ENV': 'prod-local',
     'process.env.REQUEST_API': process.env.REQUEST_API,
+    'process.env.AMP_KEY': process.env.AMP_KEY,
   },
   base: '/api/backend/',
   publicPath: '/api/backend/',
