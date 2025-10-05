@@ -137,20 +137,22 @@ const ImageDom = (props: {
   const objectUrlRef = useRef(objectUrl);
   const meta = useRef<any>({});
 
-  const handlePosition = useCallback(async() => {
+  const handlePosition = useCallback(async () => {
     const editInfo = await fetchPosition(meta.current);
-    onChange(editInfo, 'edit')
+    onChange(editInfo, 'edit');
   }, []);
 
   useEffect(() => {
     async function getData() {
       setLoading(true);
 
-      let allMetadata: any = {}
+      let allMetadata: any = {};
 
       try {
         allMetadata = await exifr.parse(file.originFileObj! || file);
-      }catch(err) {}
+      } catch (err) {}
+
+      allMetadata = allMetadata || {}
 
       // const editInfo = await fetchPosition(allMetadata);
 
@@ -294,11 +296,15 @@ const ImageWatermark = () => {
         let [, type] = file.type!.split('/');
 
         if (src.match(/\.heic$/i)) {
-          jpegBlob = await heic2any({
-            blob: new Blob([file.originFileObj! || file]),
-            toType: 'image/jpeg',
-          });
-          type = 'jpeg';
+          try {
+            jpegBlob = await heic2any({
+              blob: new Blob([file.originFileObj! || file]),
+              toType: 'image/jpeg',
+            });
+            type = 'jpeg';
+          } catch (err) {
+            continue;
+          }
         }
 
         const object = {
