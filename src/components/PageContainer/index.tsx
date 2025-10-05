@@ -12,6 +12,11 @@ const PageContainer = (props: PageContainerProps) => {
         paddingInlinePageContainerContent: 20,
       }}
       {...props}
+      style={{
+        height: '100%',
+        overflowY: 'auto',
+        ...props.style
+      }}
     />
   )
 

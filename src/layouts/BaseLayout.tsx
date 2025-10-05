@@ -11,7 +11,7 @@ const BasicLayout = () => {
 
   return (
     <div style={{
-      height: 'calc(100vh - 56px - 112.188px - 16px)'
+      height: 'calc(100vh - 56px - 72.188px - 16px)'
     }}>
       <ImagePreview />
       <VideoPreview />
