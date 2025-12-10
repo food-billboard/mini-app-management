@@ -1594,7 +1594,8 @@ declare namespace API_SCORE {
     award_cycle_count: number 
     award_description: string 
     createdAt: string 
-    updatedAt: string 
+    updatedAt: string
+    enable: string
   }
 
   export type PutScoreAwardParams = {
@@ -1606,6 +1607,7 @@ declare namespace API_SCORE {
     inventory: number 
     exchange_score: number 
     _id: string 
+    enable: string 
   }
 
   export type PostScoreAwardParams = {
@@ -1616,6 +1618,7 @@ declare namespace API_SCORE {
     award_cycle_count: number 
     inventory: number 
     exchange_score: number 
+    enable: string
   }
 
   export type PutScoreUserParams = {

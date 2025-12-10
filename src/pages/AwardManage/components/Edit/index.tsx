@@ -6,6 +6,7 @@ import {
   ProFormDigit,
   ProFormSelect,
   ProFormTextArea,
+  ProFormSwitch
 } from '@ant-design/pro-components';
 import type { ButtonProps } from 'antd';
 import { Button, Form, Input } from 'antd';
@@ -46,7 +47,10 @@ const CreateForm = (props: IProps) => {
     show();
 
     if (isEdit) {
-      formRef.setFieldsValue(value);
+      formRef.setFieldsValue({
+        ...value,
+        enable: value.enable === 'ENABLE'
+      });
     }
   }, [value]);
 
@@ -66,7 +70,10 @@ const CreateForm = (props: IProps) => {
 
   const onFinish = useCallback(
     async (values: Store) => {
-      await onSubmit?.(values as FormData)
+      await onSubmit?.({
+        ...values,
+        enable: values.enable ? 'ENABLE' : 'DISABLE'
+      } as FormData)
         .then(() => {
           setVisible(false);
           formRef.resetFields();
@@ -105,6 +112,12 @@ const CreateForm = (props: IProps) => {
           fieldProps={{
             autoSize: true,
           }}
+        />
+        <ProFormSwitch
+          required
+          name="enable"
+          label="是否启用"
+          initialValue
         />
         <ProFormTextArea
           name="award_description"

@@ -1,10 +1,10 @@
-import { SCORE_AWARD_CYCLE_TYPE_ARRAY } from '@/utils'
+import { SCORE_AWARD_CYCLE_TYPE_ARRAY } from '@/utils';
 
 export default [
   {
     title: '奖品名称',
     dataIndex: 'award_name',
-    hideInSearch: true 
+    hideInSearch: true,
   },
   {
     title: '模糊查询',
@@ -13,9 +13,18 @@ export default [
     hideInTable: true,
   },
   {
+    title: '是否启用',
+    dataIndex: 'enable',
+    valueType: 'select',
+    valueEnum: {
+      ENABLE: '启用',
+      DISABLE: '禁用',
+    }
+  },
+  {
     title: '描述',
     dataIndex: 'award_description',
-    hideInSearch: true 
+    hideInSearch: true,
   },
   {
     title: '库存',
@@ -32,10 +41,10 @@ export default [
     valueEnum: SCORE_AWARD_CYCLE_TYPE_ARRAY.reduce((acc, cur) => {
       return {
         ...acc,
-        [cur.value] : {
-          text: cur.label
-        }
-      } 
+        [cur.value]: {
+          text: cur.label,
+        },
+      };
     }, {}),
   },
   {
@@ -52,16 +61,16 @@ export default [
     title: '创建时间',
     dataIndex: 'createdAt',
     valueType: 'dateRange',
-    hideInTable: true 
+    hideInTable: true,
   },
   {
     title: '创建时间',
     dataIndex: 'createdAt',
-    hideInSearch: true 
+    hideInSearch: true,
   },
   {
     title: '修改时间',
     dataIndex: 'updatedAt',
-    hideInSearch: true 
+    hideInSearch: true,
   },
-]
+];
