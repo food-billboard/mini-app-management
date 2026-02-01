@@ -12,3 +12,4 @@ export * from './third';
 export * from './respberry';
 export * from './eatWhat';
 export * from './score'
+export * from './other'

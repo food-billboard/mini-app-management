@@ -306,6 +306,12 @@ export default [
             name: '人员管理',
             component: '@/pages/ScoreUserManage',
           },
+          {
+            path: '/score/holiday',
+            title: '假期管理',
+            name: '假期管理',
+            component: '@/pages/HolidayManage',
+          },
         ],
       },
       {

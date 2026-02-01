@@ -1630,3 +1630,25 @@ declare namespace API_SCORE {
     _id: string 
   }
 }
+
+declare namespace API_OTHER {
+  export type GetListResponse<T> = {
+    total: number 
+    list: T[]
+  }
+
+  export type GetHolidayListParams = {
+    year: number 
+  }
+
+  export type GetHolidayListData = {
+    _id: string 
+    year: string 
+    holiday: string[]
+  }
+
+  export type PostHolidayParams = {
+    year: number 
+    holiday: string[]
+  }
+}
