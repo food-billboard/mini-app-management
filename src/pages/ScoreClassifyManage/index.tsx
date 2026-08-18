@@ -41,7 +41,7 @@ const ScoreClassifyManage = memo(() => {
     }
     return (_id ? putScoreClassify(values) : postScoreClassify(values))
     .then(() => {
-      return actionRef.current?.reloadAndRest?.()
+      return actionRef.current?.reload?.()
     })
   }, [])
 

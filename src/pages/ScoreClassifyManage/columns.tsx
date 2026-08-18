@@ -1,4 +1,5 @@
 import { getScorePrimaryClassifyList } from '@/services'
+import { Image } from 'antd'
 
 export default [
   {
@@ -16,6 +17,16 @@ export default [
     title: '描述',
     dataIndex: 'description',
     hideInSearch: true 
+  },
+    {
+    title: '图片',
+    dataIndex: 'image',
+    hideInSearch: true,
+    render: (value) => {
+      return (
+        <Image src={value} width={20} />
+      )
+    }
   },
   {
     title: '一级分类',
