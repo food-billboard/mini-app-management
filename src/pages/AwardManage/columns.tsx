@@ -1,10 +1,19 @@
 import { SCORE_AWARD_CYCLE_TYPE_ARRAY } from '@/utils';
+import { Image } from 'antd';
 
 export default [
   {
     title: '奖品名称',
     dataIndex: 'award_name',
     hideInSearch: true,
+  },
+  {
+    title: '图片',
+    dataIndex: 'award_image_list',
+    hideInSearch: true,
+    render: (value: string[]) => {
+      return <Image src={value?.[0]} width={20} />;
+    },
   },
   {
     title: '模糊查询',
@@ -19,7 +28,7 @@ export default [
     valueEnum: {
       ENABLE: '启用',
       DISABLE: '禁用',
-    }
+    },
   },
   {
     title: '描述',

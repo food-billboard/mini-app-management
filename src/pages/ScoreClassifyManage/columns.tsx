@@ -1,11 +1,11 @@
-import { getScorePrimaryClassifyList } from '@/services'
-import { Image } from 'antd'
+import { getScorePrimaryClassifyList } from '@/services';
+import { Image } from 'antd';
 
 export default [
   {
     title: '内容',
     dataIndex: 'content',
-    hideInSearch: true 
+    hideInSearch: true,
   },
   {
     title: '模糊查询',
@@ -16,17 +16,15 @@ export default [
   {
     title: '描述',
     dataIndex: 'description',
-    hideInSearch: true 
+    hideInSearch: true,
   },
-    {
+  {
     title: '图片',
     dataIndex: 'image',
     hideInSearch: true,
-    render: (value) => {
-      return (
-        <Image src={value} width={20} />
-      )
-    }
+    render: (value: string) => {
+      return <Image src={value} width={20} />;
+    },
   },
   {
     title: '一级分类',
@@ -34,36 +32,35 @@ export default [
     renderText: (_: any, record: any) => record.primary_content,
     valueType: 'select',
     request: async () => {
-      return getScorePrimaryClassifyList({})
-      .then(data => {
+      return getScorePrimaryClassifyList({}).then((data) => {
         return data.list.map((item: any) => {
           return {
             label: item.content,
-            value: item._id 
-          }
-        })
-      })
-    }
+            value: item._id,
+          };
+        });
+      });
+    },
   },
   {
     title: '创建时间',
     dataIndex: 'createdAt',
     valueType: 'dateRange',
-    hideInTable: true 
+    hideInTable: true,
   },
   {
     title: '创建时间',
     dataIndex: 'createdAt',
-    hideInSearch: true 
+    hideInSearch: true,
   },
   {
     title: '修改时间',
     dataIndex: 'updatedAt',
-    hideInSearch: true 
+    hideInSearch: true,
   },
   {
     title: '创建用户',
     dataIndex: 'create_user_name',
     hideInSearch: true,
   },
-]
+];
